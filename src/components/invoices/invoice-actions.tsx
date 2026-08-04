@@ -25,13 +25,57 @@ export function InvoiceActions({
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string>();
   const [confirm, setConfirm] = useState<Confirm>();
+  // Set only when both copy paths fail, so the link can still be copied manually.
+  const [shareUrl, setShareUrl] = useState<string>();
 
   const isDraft = status === "DRAFT";
   const isVoid = status === "VOID";
 
+  /**
+   * Copy the client payment link.
+   *
+   * navigator.clipboard only exists in a secure context. This deployment is served over
+   * plain HTTP on an IP address, so the modern API is simply undefined and the previous
+   * implementation threw on click with no visible result. Falls back to the legacy
+   * execCommand path, and if that is unavailable too, reveals the URL so it can be
+   * copied by hand rather than failing silently.
+   */
   const share = async () => {
-    await navigator.clipboard.writeText(`${window.location.origin}/pay/${publicToken}`);
-    setMessage("Payment link copied");
+    const url = `${window.location.origin}/pay/${publicToken}`;
+
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareUrl(undefined);
+        setMessage("Payment link copied");
+        return;
+      } catch {
+        // Permission denied or blocked — drop through to the fallback.
+      }
+    }
+
+    try {
+      const field = document.createElement("textarea");
+      field.value = url;
+      // Keep it off-screen but still selectable; display:none would break the copy.
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      const copied = document.execCommand("copy");
+      document.body.removeChild(field);
+      if (copied) {
+        setShareUrl(undefined);
+        setMessage("Payment link copied");
+        return;
+      }
+    } catch {
+      // Fall through to showing the link.
+    }
+
+    setMessage(undefined);
+    setShareUrl(url);
   };
 
   const send = () => startTransition(async () => {
@@ -110,5 +154,23 @@ export function InvoiceActions({
     </Button>}
 
     {message && <span aria-live="polite" className="basis-full text-xs text-muted-foreground">{message}</span>}
+
+    {shareUrl && (
+      <div className="basis-full rounded-xl border bg-muted/40 p-3">
+        <label htmlFor="share-url" className="text-xs font-medium text-muted-foreground">
+          Your browser blocked automatic copying. Select and copy this link:
+        </label>
+        <input
+          id="share-url"
+          readOnly
+          value={shareUrl}
+          onFocus={(event) => event.currentTarget.select()}
+          className="mt-1.5 w-full rounded-lg border bg-card px-3 py-2 font-mono text-xs"
+        />
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Clipboard access needs HTTPS, which this address does not use yet.
+        </p>
+      </div>
+    )}
   </div>;
 }

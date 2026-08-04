@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                   return (
                     <tr key={invoice.id} className="border-t transition-colors hover:bg-muted/40">
                       <th scope="row" className="px-5 py-4 text-left font-medium">
-                        <Link className="hover:text-primary" href={`/invoices/${invoice.id}`}>{invoice.invoiceNumber}</Link>
+                        <Link className="text-primary underline decoration-primary/35 decoration-2 underline-offset-4 transition hover:decoration-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40" href={`/invoices/${invoice.id}`}>{invoice.invoiceNumber}</Link>
                       </th>
                       <td className="px-5 py-4">{invoice.client.name}</td>
                       <td className={`px-5 py-4 ${isOverdue ? "font-medium text-amber-700" : "text-muted-foreground"}`}>

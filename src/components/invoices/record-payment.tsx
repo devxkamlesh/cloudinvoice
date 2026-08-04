@@ -49,14 +49,27 @@ export function RecordPayment({ invoiceId, balance, currencySymbol }: { invoiceI
     triggerRef.current?.focus();
   }
 
-  function submit(formData: FormData) {
+  /**
+   * onSubmit with preventDefault rather than the `action` prop: React resets an
+   * uncontrolled form once a form action resolves, including when it returns a
+   * validation error. With `action={...}` a rejected amount also erased the payment
+   * date and reference the user had already filled in.
+   */
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
     startTransition(async () => {
       const result = await recordPayment(formData);
-      if (result?.error) setError(result.error);
-      else {
-        setError(undefined);
-        setOpen(false);
+      if (result?.error) {
+        setError(result.error);
+        return; // Keep what was typed.
       }
+      setError(undefined);
+      form.reset();
+      setOpen(false);
+      triggerRef.current?.focus();
     });
   }
 
@@ -67,7 +80,7 @@ export function RecordPayment({ invoiceId, balance, currencySymbol }: { invoiceI
   }
 
   return <div role="dialog" aria-modal="true" aria-labelledby="record-payment-title" className="fixed inset-0 z-50 grid place-items-center bg-slate-950/40 p-4">
-    <form action={submit} className="surface w-full max-w-lg rounded-2xl p-6">
+    <form onSubmit={onSubmit} className="surface w-full max-w-lg rounded-2xl p-6">
       <input type="hidden" name="invoiceId" value={invoiceId} />
 
       <div className="flex items-start justify-between gap-4">
@@ -128,7 +141,11 @@ export function RecordPayment({ invoiceId, balance, currencySymbol }: { invoiceI
         </label>
       </div>
 
-      {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          {error} <span className="text-red-600">Your entries have been kept.</span>
+        </p>
+      )}
 
       <div className="mt-6 flex justify-end gap-3">
         <Button type="button" variant="outline" onClick={close}>Cancel</Button>
