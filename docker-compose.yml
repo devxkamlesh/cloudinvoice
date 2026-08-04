@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudinvoice-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=cloudinvoice
+      # Comes from .env, which is gitignored. Deliberately no default value: this file
+      # is tracked in git, and a fallback here would publish the live password. The
+      # `:?` form makes compose fail loudly if the variable is missing rather than
+      # silently starting Postgres with unexpected credentials.
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      - POSTGRES_DB=cloudinvoice
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - cloudinvoice-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudinvoice"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      # Loopback only. The app reaches Postgres over the compose network, so nothing
+      # needs this published publicly. Use an SSH tunnel for admin access.
+      # 5433 belongs to dailyhabitos, so this project uses 5434.
+      - "127.0.0.1:5434:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloudinvoice-app
+    restart: unless-stopped
+    ports:
+      # TODO: change to "127.0.0.1:3002:3000" once the nginx vhost fronts this app,
+      # matching how ghumo, studio and monitor are exposed on this host. Publishing on
+      # 0.0.0.0 puts the app on the public internet over plain HTTP and lets visitors
+      # bypass the Cloudflare allowlist in /etc/nginx/cf-allow.conf.
+      - "3002:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      # From .env. Must point at host `postgres` (the compose service name), not
+      # localhost. Never inline the password here; this file is tracked in git.
+      - DATABASE_URL=${DATABASE_URL:?set DATABASE_URL in .env}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - CLOUDINARY_URL=${CLOUDINARY_URL}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - UPSTASH_REDIS_REST_URL=${UPSTASH_REDIS_REST_URL}
+      - UPSTASH_REDIS_REST_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+      # Read at runtime by MarketingShell, which is a Server Component, so a runtime
+      # env var is enough here. Verified: NEXT_PUBLIC_APP_URL resolves correctly in the
+      # rendered sitemap and JSON-LD without being passed as a Docker build arg.
+      # A client component reading this would need an ARG in the Dockerfile instead.
+      - NEXT_PUBLIC_SUPPORT_EMAIL=${NEXT_PUBLIC_SUPPORT_EMAIL}
+    networks:
+      - cloudinvoice-network
+    healthcheck:
+      # Use 127.0.0.1 rather than localhost: in the alpine image localhost can resolve
+      # to ::1 first, but the Next.js server binds IPv4, which made every probe fail
+      # with "connection refused" and left the container permanently unhealthy.
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  cloudinvoice-network:
+    driver: bridge

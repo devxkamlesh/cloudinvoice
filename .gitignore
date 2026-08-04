@@ -1,0 +1,23 @@
+node_modules
+.next
+.next.previous
+.env
+.env.local
+*.tsbuildinfo
+coverage
+prisma/*.db
+
+# Build output (never worth committing)
+.open-next
+.serverless
+.serverless_nextjs
+.serverless_plugins
+out
+*.tar.gz
+
+# Docker/deploy artifacts
+cloudinvoice-latest.tar.gz
+
+# Editor / OS
+.DS_Store
+Thumbs.db
