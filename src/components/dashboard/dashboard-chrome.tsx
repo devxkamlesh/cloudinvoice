@@ -68,57 +68,63 @@ export function DashboardChrome({
   // Prefix match so /invoices/new and /invoices/[id] keep the Invoices item lit.
   const isActive = (href: string) => (href === "/dashboard" ? pathname === href : pathname.startsWith(href));
 
-  const navLinks = (onNavigate?: () => void) => NAV.map(({ href, label, icon: Icon }) => (
-    <Link
-      key={href}
-      href={href}
-      onClick={onNavigate}
-      aria-current={isActive(href) ? "page" : undefined}
-      className={cn(
-        "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-        isActive(href) ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-      )}
-    >
-      <Icon className="size-4" aria-hidden="true" />{label}
-    </Link>
-  ));
+  const navLinks = (onNavigate?: () => void) => NAV.map(({ href, label, icon: Icon }) => {
+    const active = isActive(href);
+    return (
+      <Link
+        key={href}
+        href={href}
+        onClick={onNavigate}
+        data-active={active}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "app-nav-item flex h-10 items-center gap-3 px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+          active ? "" : "font-medium text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+        )}
+      >
+        <Icon className="size-4 shrink-0" aria-hidden="true" />{label}
+      </Link>
+    );
+  });
 
   const footerLinks = (onNavigate?: () => void) => (
     <>
       <Link
         href="/settings"
         onClick={onNavigate}
+        data-active={isActive("/settings")}
         aria-current={isActive("/settings") ? "page" : undefined}
         className={cn(
-          "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition",
-          isActive("/settings") ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          "app-nav-item flex h-10 items-center gap-3 px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+          isActive("/settings") ? "" : "font-medium text-muted-foreground hover:bg-muted/70 hover:text-foreground"
         )}
       >
-        <Settings className="size-4" aria-hidden="true" />Settings
+        <Settings className="size-4 shrink-0" aria-hidden="true" />Settings
       </Link>
       {isAdmin && (
         <Link
           href="/admin"
           onClick={onNavigate}
-          className="flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-amber-700 transition hover:bg-amber-50"
+          className="flex h-10 items-center gap-3 rounded-[.625rem] px-3 text-sm font-medium text-amber-700 transition hover:bg-amber-500/10 dark:text-amber-300"
         >
-          <ShieldCheck className="size-4" aria-hidden="true" />Admin
+          <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />Admin
         </Link>
       )}
     </>
   );
 
   return (
-    <div className="flex min-h-screen bg-muted/30">
+    <div className="flex min-h-screen">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r bg-card p-4 lg:flex">
+      <aside className="hidden w-64 shrink-0 flex-col border-r bg-card px-4 py-5 lg:flex">
         <Link href="/dashboard" className="mb-8 px-2" aria-label="CloudInvoice dashboard"><Logo /></Link>
         <Link
           href="/invoices/new"
-          className="mb-6 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white transition hover:opacity-90"
+          className="mb-7 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white shadow-sm shadow-primary/25 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         >
           <Plus className="size-4" aria-hidden="true" />New invoice
         </Link>
+        <p className="app-eyebrow mb-2 px-3">Workspace</p>
         <nav aria-label="Main" className="space-y-1">{navLinks()}</nav>
         <div className="mt-auto space-y-1 border-t pt-4">{footerLinks()}</div>
       </aside>
@@ -145,14 +151,15 @@ export function DashboardChrome({
             >
               <Plus className="size-4" aria-hidden="true" />New invoice
             </Link>
+            <p className="app-eyebrow mb-2 px-3">Workspace</p>
             <nav aria-label="Main" className="space-y-1">{navLinks(() => setOpen(false))}</nav>
             <div className="mt-auto space-y-1 border-t pt-4">{footerLinks(() => setOpen(false))}</div>
           </div>
         </>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-card px-4 sm:px-7">
+      <div className="app-canvas flex min-w-0 flex-1 flex-col bg-background">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-card/85 px-4 backdrop-blur-xl sm:px-7">
           <div className="flex min-w-0 items-center gap-3">
             <button
               ref={triggerRef}

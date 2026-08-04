@@ -11,13 +11,87 @@
   --color-primary: var(--primary);
 }
 
-:root { --background: #f8fafc; --foreground: #172033; --muted: #eff3f8; --muted-foreground: #62708a; --card: #ffffff; --border: #e5eaf1; --primary: #2855d9; }
-.dark { --background: #0c1220; --foreground: #eef2ff; --muted: #192238; --muted-foreground: #9ba8be; --card: #111a2b; --border: #24314a; --primary: #7796ff; }
-@media (prefers-color-scheme: dark) { :root:not(.light) { --background: #0c1220; --foreground: #eef2ff; --muted: #192238; --muted-foreground: #9ba8be; --card: #111a2b; --border: #24314a; --primary: #7796ff; } }
+/* Signed-in product palette. The primary is pulled toward the violet used on the
+   marketing surface so the two halves read as one product, while the neutrals stay
+   light and high-contrast — this is where people read invoices and print them. */
+:root { --background: #f7f8fc; --foreground: #14172b; --muted: #eef0f8; --muted-foreground: #5d6480; --card: #ffffff; --border: #e3e6f0; --primary: #5b4ae0; }
+.dark { --background: #0a0b12; --foreground: #f0f1fa; --muted: #171a26; --muted-foreground: #a0a5bd; --card: #101220; --border: #232636; --primary: #a99bff; }
+@media (prefers-color-scheme: dark) { :root:not(.light) { --background: #0a0b12; --foreground: #f0f1fa; --muted: #171a26; --muted-foreground: #a0a5bd; --card: #101220; --border: #232636; --primary: #a99bff; } }
 * { border-color: var(--border); }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; }
 ::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }
-.surface { background: color-mix(in srgb, var(--card) 94%, transparent); border: 1px solid var(--border); box-shadow: 0 1px 2px rgb(15 23 42 / .04); }
+/* Upgrading .surface rather than migrating every call site: it is already used by the
+   invoice form, clients, analytics, settings and admin pages, so improving it here
+   lifts the whole signed-in product at once without touching dense JSX. Deliberately
+   sets no border-radius — call sites specify their own. */
+.surface {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgb(15 23 42 / .04), 0 8px 24px -16px rgb(15 23 42 / .12);
+}
+.dark .surface { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -18px rgb(0 0 0 / .6); }
+
+/* --- Signed-in product utilities -------------------------------------------------
+   Named `app-*` to mirror the existing `marketing-*` set, so it is obvious at a
+   glance which surface a class belongs to. All of these work in light and dark,
+   because the dashboard keeps its theme toggle. */
+
+/* Elevated panel. Slightly warmer than .surface with a hairline top highlight, which
+   reads as depth without a heavy shadow. */
+.app-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgb(15 23 42 / .04), 0 8px 24px -16px rgb(15 23 42 / .12);
+}
+.dark .app-panel { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -18px rgb(0 0 0 / .6); }
+
+/* Stat tile. The tinted corner gives the numbers somewhere to sit without a border
+   change on hover, which would shift layout. */
+.app-stat {
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.app-stat::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -3rem;
+  inset-block-start: -3rem;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 16%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.app-stat:hover { border-color: color-mix(in srgb, var(--primary) 34%, var(--border)); box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--primary) 55%, transparent); }
+
+/* Sidebar item. The active state uses a left accent bar plus a tint rather than a
+   flat grey fill, so the current section is obvious at a glance. */
+.app-nav-item { position: relative; border-radius: .625rem; transition: background .18s ease, color .18s ease; }
+.app-nav-item[data-active="true"] {
+  background: color-mix(in srgb, var(--primary) 11%, transparent);
+  color: var(--primary);
+  font-weight: 600;
+}
+.app-nav-item[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: .45rem;
+  inset-inline-start: -.5rem;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+/* Section heading eyebrow, matching the marketing rhythm at product scale. */
+.app-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-foreground); }
+
+/* Subtle page backdrop so full-bleed tables do not float on flat colour. */
+.app-canvas { background-image: radial-gradient(60rem 24rem at 50% -8rem, color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%); }
 .grid-bg { background-image: linear-gradient(to right, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px); background-size: 44px 44px; }
 @media print { aside, header, .no-print { display: none !important; } body { background: white; } .surface { border: 0; box-shadow: none; } }
 

@@ -64,8 +64,9 @@ export default async function DashboardPage() {
     <main className="mx-auto w-full max-w-7xl p-5 sm:p-7">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-muted-foreground">Good to see you</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">Your business at a glance</h1>
+          <p className="app-eyebrow">Overview</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">Your business at a glance</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Every figure below covers this workspace, all time.</p>
         </div>
         <Button asChild>
           <Link href="/invoices/new"><FilePlus2 className="size-4" aria-hidden="true" />New invoice</Link>
@@ -73,22 +74,27 @@ export default async function DashboardPage() {
       </div>
 
       <section aria-label="Workspace summary" className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map(({ label, value, hint, icon: Icon }) => (
-          <article key={label} className="surface rounded-2xl p-5">
-            <div className="flex items-start justify-between">
-              <p className="text-sm font-medium text-muted-foreground">{label}</p>
-              <Icon className={`size-5 ${label === "Overdue" && overdueCount > 0 ? "text-amber-600" : "text-primary"}`} aria-hidden="true" />
-            </div>
-            <p className="mt-5 text-2xl font-semibold tracking-tight">{value}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
-          </article>
-        ))}
+        {cards.map(({ label, value, hint, icon: Icon }) => {
+          const warn = label === "Overdue" && overdueCount > 0;
+          return (
+            <article key={label} className="app-stat p-5">
+              <div className="relative flex items-start justify-between gap-3">
+                <p className="text-sm font-medium text-muted-foreground">{label}</p>
+                <span className={`grid size-9 shrink-0 place-items-center rounded-xl ${warn ? "bg-amber-500/12 text-amber-600 dark:text-amber-300" : "bg-primary/10 text-primary"}`}>
+                  <Icon className="size-[1.05rem]" aria-hidden="true" />
+                </span>
+              </div>
+              <p className="relative mt-5 text-[1.75rem] font-semibold leading-none tracking-[-0.02em] tabular-nums">{value}</p>
+              <p className="relative mt-2 text-xs text-muted-foreground">{hint}</p>
+            </article>
+          );
+        })}
       </section>
 
       {overdueCount > 0 && (
-        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4">
-          <AlertTriangle className="size-5 shrink-0 text-amber-700" aria-hidden="true" />
-          <p className="min-w-0 flex-1 text-sm text-amber-900">
+        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-500/10 p-4">
+          <AlertTriangle className="size-5 shrink-0 text-amber-600 dark:text-amber-300" aria-hidden="true" />
+          <p className="min-w-0 flex-1 text-sm font-medium text-amber-900 dark:text-amber-100">
             {overdueCount} invoice{overdueCount === 1 ? " is" : "s are"} past the due date and still unpaid.
           </p>
           <Button asChild variant="outline" size="sm">
@@ -97,13 +103,13 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <section className="surface mt-7 overflow-hidden rounded-2xl">
+      <section className="app-panel mt-7 overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-5">
           <div>
-            <h2 className="font-semibold">Recent invoices</h2>
+            <h2 className="font-semibold tracking-[-0.01em]">Recent invoices</h2>
             <p className="mt-1 text-sm text-muted-foreground">Your six most recent, newest first.</p>
           </div>
-          <Link href="/invoices" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+          <Link href="/invoices" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
             All invoices <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
@@ -134,7 +140,7 @@ export default async function DashboardPage() {
                 {recent.map((invoice) => {
                   const isOverdue = OPEN_STATUSES.includes(invoice.status) && invoice.dueDate < now;
                   return (
-                    <tr key={invoice.id} className="border-t">
+                    <tr key={invoice.id} className="border-t transition-colors hover:bg-muted/40">
                       <th scope="row" className="px-5 py-4 text-left font-medium">
                         <Link className="hover:text-primary" href={`/invoices/${invoice.id}`}>{invoice.invoiceNumber}</Link>
                       </th>
