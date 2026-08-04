@@ -11,6 +11,17 @@
   --color-primary: var(--primary);
 }
 
+/* View Transition API support for the theme toggle animation. When the toggle runs,
+   the browser captures the old and new states as pseudo-elements and we can animate
+   between them. The clip-path circle is set in JS based on the button position. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 999; }
+
 /* Signed-in product palette. The primary is pulled toward the violet used on the
    marketing surface so the two halves read as one product, while the neutrals stay
    light and high-contrast — this is where people read invoices and print them. */

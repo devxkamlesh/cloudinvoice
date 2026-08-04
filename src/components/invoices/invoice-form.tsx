@@ -92,10 +92,15 @@ export function InvoiceForm({
     </div>;
   }
 
-  return <form onSubmit={form.handleSubmit(submit)} className="grid gap-6 xl:grid-cols-[1fr_320px]">
+  return <form onSubmit={form.handleSubmit(submit)} className="grid gap-6 xl:grid-cols-[1fr_360px]">
     <div className="space-y-6">
-      <section className="surface rounded-2xl p-5 sm:p-6">
-        <h2 className="font-semibold">Invoice details</h2>
+      <section className="app-panel p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="font-semibold tracking-[-0.01em]">Invoice details</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Client, dates, and tax mode.</p>
+          </div>
+        </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-3">
           <label className="text-sm font-medium sm:col-span-3">Bill to<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("clientId")}><option value="">Select a client</option>{clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}</select></label>
           <label className="text-sm font-medium">Issue date<Input type="date" className="mt-1.5" {...form.register("issueDate")} /></label>
@@ -131,8 +136,9 @@ export function InvoiceForm({
         </div>
       </section>
 
-      <section className="surface rounded-2xl p-5 sm:p-6">
-        <h2 className="font-semibold">Notes and terms</h2>
+      <section className="app-panel p-5 sm:p-6">
+        <h2 className="font-semibold tracking-[-0.01em]">Notes and terms</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Additional context for your client.</p>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <label className="text-sm font-medium">Notes<Textarea className="mt-1.5" placeholder="Thanks for your business." {...form.register("notes")} /></label>
           <label className="text-sm font-medium">Payment terms<Textarea className="mt-1.5" {...form.register("terms")} /></label>
@@ -140,8 +146,8 @@ export function InvoiceForm({
       </section>
     </div>
 
-    <aside className="surface h-fit rounded-2xl p-5 sm:p-6">
-      <h2 className="font-semibold">Invoice total</h2>
+    <aside className="app-panel sticky top-20 h-fit p-5 sm:p-6">
+      <h2 className="font-semibold tracking-[-0.01em]">Invoice total</h2>
       <dl className="mt-5 space-y-3 text-sm">
         <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>₹{calculated.base.toFixed(2)}</dd></div>
         <div className="flex justify-between"><dt className="text-muted-foreground">{taxMode === "INTRA_STATE" ? "CGST + SGST" : "IGST"}</dt><dd>₹{calculated.tax.toFixed(2)}</dd></div>
