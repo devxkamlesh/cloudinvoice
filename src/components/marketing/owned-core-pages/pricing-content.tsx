@@ -24,7 +24,7 @@ export const pricingTiers = [
     annual: "₹639",
     annualNote: "₹7,668 billed yearly · save ₹1,920",
     action: "Register interest",
-    href: "mailto:hello@cloudinvoice.app?subject=CloudInvoice%20Studio%20plan",
+    href: "/contact",
     featured: true,
     features: ["Everything in Starter", "Stripe payment collection", "UPI QR payments", "Email invoice delivery", "Payment status tracking"]
   },
@@ -35,7 +35,7 @@ export const pricingTiers = [
     annual: "₹1,599",
     annualNote: "₹19,188 billed yearly · save ₹4,800",
     action: "Register interest",
-    href: "mailto:hello@cloudinvoice.app?subject=CloudInvoice%20Business%20plan",
+    href: "/contact",
     featured: false,
     features: ["Everything in Studio", "Priority workspace support", "Advanced reporting", "Team workspace planning", "Custom onboarding"]
   },
@@ -46,7 +46,7 @@ export const pricingTiers = [
     annual: "Let's talk",
     annualNote: "A plan shaped around your operating model",
     action: "Talk to our team",
-    href: "mailto:hello@cloudinvoice.app?subject=CloudInvoice%20Enterprise",
+    href: "/contact",
     featured: false,
     features: ["Everything in Business", "Security review support", "Implementation planning", "Commercial terms", "Dedicated success contact"]
   }

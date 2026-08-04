@@ -13,6 +13,18 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# NEXT_PUBLIC_* values are inlined into the client bundle and into the metadata of
+# statically prerendered pages at BUILD time. The `environment:` block in
+# docker-compose.yml is only applied at run time, so without these build args the
+# canonical and og:url tags on every static marketing page bake as
+# http://localhost:3000. Passed through from compose via build.args.
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_SUPPORT_EMAIL
+ARG NEXT_PUBLIC_SECURITY_EMAIL
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV NEXT_PUBLIC_SUPPORT_EMAIL=$NEXT_PUBLIC_SUPPORT_EMAIL
+ENV NEXT_PUBLIC_SECURITY_EMAIL=$NEXT_PUBLIC_SECURITY_EMAIL
+
 # Generate Prisma Client
 RUN npx prisma generate
 

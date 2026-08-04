@@ -38,17 +38,46 @@ enum TaxMode {
   INTER_STATE
 }
 
+// Platform-wide role, deliberately separate from Membership.role.
+//
+// Membership.role answers "what may this user do inside that one workspace".
+// PlatformRole answers "may this user operate the service itself". Conflating the two
+// would mean anyone who creates a workspace becomes an owner of something, and an
+// escalation bug in org handling would hand out platform access.
+//
+// Defaults to USER. Promotion is intentionally not exposed in the product: it is a
+// deliberate database action, so no request path can grant it.
+enum PlatformRole {
+  USER
+  ADMIN
+}
+
+// Organization-scoped role. Written at workspace creation and enforced for actions
+// that change the workspace itself rather than its business records.
+enum MemberRole {
+  OWNER
+  MEMBER
+}
+
 model User {
   id            String    @id
   name          String
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
+  // Platform access. Never set from a request path — see PlatformRole.
+  platformRole  PlatformRole @default(USER)
+  // Set when an admin suspends an account. A suspended user keeps their data but is
+  // refused at the session guard, so suspension is reversible and non-destructive.
+  suspendedAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
   memberships   Membership[]
+  // Supports the admin user list, which filters by role and sorts by signup date.
+  @@index([platformRole])
+  @@index([createdAt])
 }
 
 model Session {
@@ -116,7 +145,10 @@ model Organization {
 
 model Membership {
   id             String       @id @default(cuid())
-  role           String       @default("owner")
+  // Was a free-form String defaulting to "owner" that no code ever read. Now a typed
+  // enum so a role can actually be compared, and so a typo cannot silently create an
+  // unrecognised role that fails open.
+  role           MemberRole   @default(OWNER)
   userId         String
   organizationId String
   createdAt      DateTime     @default(now())

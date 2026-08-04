@@ -28,12 +28,12 @@ const activeIntegrations = [
     icon: QrCode,
     status: "Active",
     category: "Payment Method",
-    description: "Generate scannable UPI QR codes with pre-filled payment details for instant mobile payments.",
+    description: "Generate scannable UPI QR codes with pre-filled payment details. The payment goes straight to your UPI ID, so you confirm receipt yourself.",
     features: [
       "Auto-generated QR codes",
       "Pre-filled amounts",
       "All UPI apps supported",
-      "Instant confirmation"
+      "Paid directly to your UPI ID"
     ]
   }
 ];
@@ -271,10 +271,10 @@ export default function IntegrationsPage() {
                 <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <Link
-                href="/help"
+                href="/faq"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
               >
-                Contact support
+                Read the FAQ
               </Link>
             </div>
           </div>

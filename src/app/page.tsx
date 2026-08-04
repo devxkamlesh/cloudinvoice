@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BarChart3, BadgeCheck, BellRing, Check, CheckCircle2, ChevronRight, CircleHelp, CircleMinus, CirclePlus, CreditCard, FileCheck2, FileText, Globe2, LayoutDashboard, LockKeyhole, MailCheck, Palette, QrCode, ReceiptText, ShieldCheck, Sparkles, UsersRound, WalletCards, Zap } from "lucide-react";
+import { ArrowRight, BarChart3, BadgeCheck, BellRing, CheckCircle2, ChevronRight, CircleMinus, CirclePlus, CreditCard, FileCheck2, FileText, Globe2, LockKeyhole, MailCheck, Palette, QrCode, ReceiptText, ShieldCheck, Sparkles, UsersRound, WalletCards, Zap } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
 import { ProductShowcase } from "@/components/marketing/product-showcase";
 import { PricingPreview } from "@/components/marketing/pricing-preview";

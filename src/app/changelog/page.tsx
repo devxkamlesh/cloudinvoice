@@ -136,11 +136,11 @@ export default function ChangelogPage() {
         
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <Link
-            href="/resources"
+            href="/"
             className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-all duration-300 hover:text-white hover:gap-3"
           >
             <ArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to resources
+            Back to home
           </Link>
 
           <div className="mt-8 max-w-3xl">

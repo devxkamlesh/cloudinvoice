@@ -1,6 +1,26 @@
-import { headers } from "next/headers";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { Sidebar } from "@/components/dashboard/sidebar";
+import { DashboardChrome } from "@/components/dashboard/dashboard-chrome";
 import { getCurrentMembership } from "@/lib/organization";
+import { isPlatformAdmin } from "@/lib/authz";
 
-export async function DashboardShell({ children }: { children: React.ReactNode }) { const [{ membership, session }, headerList] = await Promise.all([getCurrentMembership(), headers()]); const pathname = headerList.get("x-pathname") ?? ""; return <div className="flex min-h-screen"><Sidebar pathname={pathname} /><div className="min-w-0 flex-1"><DashboardHeader name={session.user.name} organizationName={membership.organization.name} />{children}</div></div>; }
+/**
+ * Server wrapper for the authenticated app.
+ *
+ * Resolves the user, workspace, and admin flag, then hands plain serialisable values to
+ * the client chrome. The old version also read an `x-pathname` header for the active nav
+ * item; nothing set that header, so it has been dropped in favour of usePathname inside
+ * the chrome.
+ */
+export async function DashboardShell({ children }: { children: React.ReactNode }) {
+  const [{ membership, user }, admin] = await Promise.all([getCurrentMembership(), isPlatformAdmin()]);
+
+  return (
+    <DashboardChrome
+      userName={user.name}
+      userEmail={user.email}
+      organizationName={membership.organization.name}
+      isAdmin={admin}
+    >
+      {children}
+    </DashboardChrome>
+  );
+}

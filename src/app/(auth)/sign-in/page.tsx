@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { authClient } from "@/lib/auth-client";
+import { authSignInSchema, authSignUpSchema } from "@/lib/validations";
 import { ArrowRight } from "lucide-react";
 
 type ValidationErrors = {
@@ -19,26 +20,28 @@ export default function SignInPage() {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [busy, setBusy] = useState(false);
 
+  // Validates against the shared Zod schemas rather than a hand-rolled copy. The
+  // previous inline checks only tested password length, so sign-up silently accepted
+  // passwords the declared schema was written to reject.
   function validateForm(input: { name?: string; email: string; password: string }): boolean {
+    const result = mode === "signup"
+      ? authSignUpSchema.safeParse({ name: input.name ?? "", email: input.email, password: input.password })
+      : authSignInSchema.safeParse({ email: input.email, password: input.password });
+
+    if (result.success) {
+      setValidationErrors({});
+      return true;
+    }
+
     const errors: ValidationErrors = {};
-    
-    if (mode === "signup" && input.name) {
-      if (input.name.trim().length < 2) {
-        errors.name = "Name must be at least 2 characters";
+    for (const issue of result.error.issues) {
+      const field = issue.path[0];
+      if (field === "name" || field === "email" || field === "password") {
+        errors[field] ??= issue.message;
       }
     }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(input.email)) {
-      errors.email = "Please enter a valid email address";
-    }
-    
-    if (input.password.length < 8) {
-      errors.password = "Password must be at least 8 characters";
-    }
-    
     setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    return false;
   }
 
   async function submit(form: FormData) {
@@ -142,7 +145,14 @@ export default function SignInPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-zinc-300">Password</label>
+                <div className="flex items-baseline justify-between gap-3">
+                  <label className="text-sm font-medium text-zinc-300">Password</label>
+                  {mode === "signin" && (
+                    <Link href="/forgot-password" className="text-xs font-medium text-zinc-400 transition hover:text-white">
+                      Forgot password?
+                    </Link>
+                  )}
+                </div>
                 <input
                   name="password"
                   type="password"
@@ -189,7 +199,7 @@ export default function SignInPage() {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-zinc-400">
-                {mode === "signin" ? "Don&apos;t have an account?" : "Already have an account?"}{" "}
+                {mode === "signin" ? "Don\u2019t have an account?" : "Already have an account?"}{" "}
                 <button
                   onClick={() => {
                     setMode(mode === "signin" ? "signup" : "signin");

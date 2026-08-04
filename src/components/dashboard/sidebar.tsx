@@ -1,7 +1,0 @@
-import Link from "next/link";
-import { BarChart3, Building2, FileText, LayoutDashboard, Plus, Settings } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
-import { cn } from "@/lib/utils";
-
-const nav = [{ href: "/dashboard", label: "Overview", icon: LayoutDashboard }, { href: "/invoices", label: "Invoices", icon: FileText }, { href: "/clients", label: "Clients", icon: Building2 }, { href: "/analytics", label: "Analytics", icon: BarChart3 }];
-export function Sidebar({ pathname }: { pathname: string }) { return <aside className="hidden w-64 shrink-0 border-r bg-card p-4 lg:flex lg:flex-col"><Link href="/dashboard" className="mb-9 px-2"><Logo /></Link><Link href="/invoices/new" className="mb-6 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white"><Plus className="size-4" />New invoice</Link><nav className="space-y-1">{nav.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className={cn("flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground", pathname === href && "bg-muted text-foreground")}><Icon className="size-4" />{label}</Link>)}</nav><div className="mt-auto"><Link href="/settings" className="flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"><Settings className="size-4" />Settings</Link></div></aside>; }

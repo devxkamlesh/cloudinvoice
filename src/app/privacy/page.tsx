@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BellRing, Database, Eye, FileText, Globe2, Scale, Share2 } from "lucide-react";
 import { InlineLink, JsonLd, LegalMeta, Notice, PageCta, Panel, Section, TrustPage, breadcrumbSchema, marketingMetadata } from "@/components/marketing/owned-trust-pages/shared";
 

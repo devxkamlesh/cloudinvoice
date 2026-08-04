@@ -12,8 +12,12 @@ export function AmbientGlow({ className }: { className?: string }) {
   return <div aria-hidden="true" className={cn("pointer-events-none absolute -z-10 rounded-full bg-violet-600/15 blur-[120px]", className)} />;
 }
 
-export function Breadcrumbs({ current, parent = "Resources", parentHref = "/resources" }: { current: string; parent?: string; parentHref?: string }) {
-  return <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-medium text-zinc-500"><Link href="/" className="transition hover:text-zinc-200">Home</Link><ChevronRight className="size-3" /><Link href={parentHref} className="transition hover:text-zinc-200">{parent}</Link><ChevronRight className="size-3" /><span className="text-zinc-300" aria-current="page">{current}</span></nav>;
+// The middle segment is opt-in. It previously defaulted to a "Resources" parent at
+// /resources, which meant any caller that omitted the prop rendered a breadcrumb
+// pointing at a route that does not exist. Pass both parent and parentHref together
+// when a page genuinely sits under a section.
+export function Breadcrumbs({ current, parent, parentHref }: { current: string; parent?: string; parentHref?: string }) {
+  return <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-medium text-zinc-500"><Link href="/" className="transition hover:text-zinc-200">Home</Link>{parent && parentHref && <><ChevronRight className="size-3" aria-hidden="true" /><Link href={parentHref} className="transition hover:text-zinc-200">{parent}</Link></>}<ChevronRight className="size-3" aria-hidden="true" /><span className="text-zinc-300" aria-current="page">{current}</span></nav>;
 }
 
 type Action = {

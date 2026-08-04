@@ -30,6 +30,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # NEXT_PUBLIC_* must be present at BUILD time, not just run time: Next inlines
+      # them into the client bundle and into the metadata of statically prerendered
+      # pages. Without these, every static marketing page bakes its canonical and
+      # og:url as http://localhost:3000. The `environment:` block below is run-time
+      # only and does not cover this.
+      args:
+        - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+        - NEXT_PUBLIC_SUPPORT_EMAIL=${NEXT_PUBLIC_SUPPORT_EMAIL}
+        - NEXT_PUBLIC_SECURITY_EMAIL=${NEXT_PUBLIC_SECURITY_EMAIL}
     container_name: cloudinvoice-app
     restart: unless-stopped
     ports:
@@ -64,6 +73,7 @@ services:
       # rendered sitemap and JSON-LD without being passed as a Docker build arg.
       # A client component reading this would need an ARG in the Dockerfile instead.
       - NEXT_PUBLIC_SUPPORT_EMAIL=${NEXT_PUBLIC_SUPPORT_EMAIL}
+      - NEXT_PUBLIC_SECURITY_EMAIL=${NEXT_PUBLIC_SECURITY_EMAIL}
     networks:
       - cloudinvoice-network
     healthcheck:

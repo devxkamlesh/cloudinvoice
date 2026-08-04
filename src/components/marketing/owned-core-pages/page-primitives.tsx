@@ -47,12 +47,15 @@ export function SecondaryLink({ href, children, className = "" }: { href: string
   );
 }
 
-export function SectionHeading({ eyebrow, title, description, align = "left" }: { eyebrow: string; title: ReactNode; description?: ReactNode; align?: "left" | "center" }) {
+// `titleId` exists so a section using aria-labelledby can point at this real <h2>.
+// Without it, callers were forced to hang the id off an unrelated element, which
+// made the section announce the wrong name.
+export function SectionHeading({ eyebrow, title, description, align = "left", titleId }: { eyebrow: string; title: ReactNode; description?: ReactNode; align?: "left" | "center"; titleId?: string }) {
   const centered = align === "center";
   return (
     <div className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">{title}</h2>
+      <h2 id={titleId} className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">{title}</h2>
       {description ? <p className="mt-5 text-base leading-8 text-zinc-400 sm:text-lg">{description}</p> : null}
     </div>
   );

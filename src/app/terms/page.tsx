@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AlertTriangle, BadgeCheck, Ban, FileSignature, Landmark, Scale, WalletCards } from "lucide-react";
+import { BadgeCheck, Ban, FileSignature, Landmark, Scale, WalletCards } from "lucide-react";
 import { InlineLink, JsonLd, LegalMeta, Notice, PageCta, Panel, Section, TrustPage, breadcrumbSchema, marketingMetadata } from "@/components/marketing/owned-trust-pages/shared";
 
 export const metadata: Metadata = marketingMetadata({

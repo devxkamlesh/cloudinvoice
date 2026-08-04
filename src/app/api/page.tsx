@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookOpen, Braces, Database, KeyRound, LockKeyhole, Webhook } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
 import { marketingMetadata, PageJsonLd } from "@/components/marketing/owned-resource-pages/seo";
-import { Breadcrumbs, CardLink, CodeWindow, CtaLink, DotList, GlowCard, IconBadge, MarketingPage, PageHero, Section, SectionHeading, TextLink } from "@/components/marketing/owned-resource-pages/ui";
+import { Breadcrumbs, CodeWindow, CtaLink, DotList, GlowCard, IconBadge, MarketingPage, PageHero, Section, SectionHeading, TextLink } from "@/components/marketing/owned-resource-pages/ui";
 
 export const metadata: Metadata = marketingMetadata({
   title: "CloudInvoice API | Developer platform preview",
@@ -39,7 +39,7 @@ export default function ApiPage() {
         eyebrow="Developer platform"
         title={<>Build for the invoice moment, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-sky-200">not around it.</span></>}
         description={<>CloudInvoice is shaping a developer API for teams that want invoicing to fit into their own workflow. The dashboard remains the supported way to work today; public API credentials are not generally available yet. This preview is intentionally clear about the direction and the boundary.</>}
-        actions={[{ href: "/docs", label: "Read product docs" }, { href: "/contact", label: "Discuss an integration", secondary: true }]}
+        actions={[{ href: "/integrations", label: "See what connects today" }, { href: "/changelog", label: "Follow product updates", secondary: true }]}
         visual={<CodeWindow title="illustrative request shape">{`GET /v1/invoices/inv_01J9...\nAuthorization: Bearer ci_live_••••\n\n{\n  "status": "sent",\n  "currency": "INR",\n  "amount_due": 56640,\n  "payment_url": "https://…"\n}`}</CodeWindow>}
       />
 
@@ -49,7 +49,7 @@ export default function ApiPage() {
       </Section>
 
       <Section className="border-y border-white/[.08] bg-white/[.018]">
-        <div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-start"><div><SectionHeading eyebrow="The expected flow" title="A simple shape for a complex financial handoff." description="The public contract will focus on the facts an integration needs to know, with clear state transitions and a durable audit trail." /><div className="mt-8"><CtaLink href="/contact" label="Share your use case" secondary /></div></div><ol className="space-y-0 rounded-2xl border border-white/[.10] bg-[#0a0a0b] px-5 sm:px-7">{[
+        <div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-start"><div><SectionHeading eyebrow="The expected flow" title="A simple shape for a complex financial handoff." description="The public contract will focus on the facts an integration needs to know, with clear state transitions and a durable audit trail." /><div className="mt-8"><CtaLink href="/faq" label="Read common questions" secondary /></div></div><ol className="space-y-0 rounded-2xl border border-white/[.10] bg-[#0a0a0b] px-5 sm:px-7">{[
           ["01", "Identify the workspace", "An integration begins with an explicit organization context rather than a hidden default."],
           ["02", "Create or reference the client", "Use a stable client record so billing history stays connected to the right relationship."],
           ["03", "Prepare the invoice", "Pass line items, tax treatment, dates, and terms in a format that can be reviewed before it is sent."],
@@ -58,10 +58,10 @@ export default function ApiPage() {
       </Section>
 
       <Section>
-        <div className="grid gap-5 lg:grid-cols-[1fr_.82fr]"><GlowCard className="p-7 sm:p-8"><div className="flex items-center gap-3"><IconBadge icon={KeyRound} /><div><p className="text-xs font-bold uppercase tracking-[.15em] text-violet-200">Availability</p><h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">No public key issuance in this release.</h2></div></div><p className="mt-6 max-w-2xl leading-7 text-zinc-400">If your team is evaluating CloudInvoice for a future integration, tell us what system owns the source data and what needs to happen after payment. That feedback guides the first supported API access.</p><div className="mt-7 flex flex-wrap gap-4 text-sm"><TextLink href="/contact">Talk through an integration</TextLink><TextLink href="/changelog">Follow product updates</TextLink></div></GlowCard><div className="rounded-2xl border border-violet-300/15 bg-gradient-to-br from-violet-300/10 via-transparent to-sky-300/10 p-7"><Braces className="size-6 text-violet-200" /><h2 className="mt-5 text-xl font-semibold text-white">Building in the open enough to be useful.</h2><DotList className="mt-5" items={["No invented endpoint availability or artificial API examples presented as live.", "No sensitive keys in documentation or browser-delivered configuration.", "A product-led rollout that lets support and auditability mature with the surface area."]} /></div></div>
+        <div className="grid gap-5 lg:grid-cols-[1fr_.82fr]"><GlowCard className="p-7 sm:p-8"><div className="flex items-center gap-3"><IconBadge icon={KeyRound} /><div><p className="text-xs font-bold uppercase tracking-[.15em] text-violet-200">Availability</p><h2 className="mt-1 text-2xl font-semibold tracking-tight text-white">No public key issuance in this release.</h2></div></div><p className="mt-6 max-w-2xl leading-7 text-zinc-400">There is no public key issuance and no published integration contact channel yet, so this page does not ask you to write to one. When API access opens it will be announced in the changelog, alongside the endpoints and the credential model it ships with.</p><div className="mt-7 flex flex-wrap gap-4 text-sm"><TextLink href="/changelog">Follow product updates</TextLink><TextLink href="/status">Check service status</TextLink></div></GlowCard><div className="rounded-2xl border border-violet-300/15 bg-gradient-to-br from-violet-300/10 via-transparent to-sky-300/10 p-7"><Braces className="size-6 text-violet-200" /><h2 className="mt-5 text-xl font-semibold text-white">Building in the open enough to be useful.</h2><DotList className="mt-5" items={["No invented endpoint availability or artificial API examples presented as live.", "No sensitive keys in documentation or browser-delivered configuration.", "A product-led rollout that lets support and auditability mature with the surface area."]} /></div></div>
       </Section>
 
-      <section className="border-t border-white/[.08] bg-[#080808]"><div className="mx-auto max-w-7xl px-5 py-12"><div className="flex flex-col gap-5 rounded-2xl border border-white/[.09] bg-white/[.025] p-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-lg font-semibold text-white">Need a workflow the API should support?</p><p className="mt-1 text-sm text-zinc-400">Share the outcome you need, not just the endpoint you expect.</p></div><Link href="/contact" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-violet-200 hover:text-white">Contact the product team <BookOpen className="size-4" /></Link></div></div></section>
+      <section className="border-t border-white/[.08] bg-[#080808]"><div className="mx-auto max-w-7xl px-5 py-12"><div className="flex flex-col gap-5 rounded-2xl border border-white/[.09] bg-white/[.025] p-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-lg font-semibold text-white">Want to use CloudInvoice while the API is being designed?</p><p className="mt-1 text-sm text-zinc-400">The web app is the supported way to invoice today, and it is free to start.</p></div><Link href="/sign-in" className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-violet-200 hover:text-white">Create a workspace <BookOpen className="size-4" /></Link></div></div></section>
     </MarketingPage>
   </MarketingShell>;
 }
