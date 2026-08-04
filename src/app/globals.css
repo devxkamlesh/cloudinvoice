@@ -24,10 +24,12 @@
 
 /* Signed-in product palette. The primary is pulled toward the violet used on the
    marketing surface so the two halves read as one product, while the neutrals stay
-   light and high-contrast — this is where people read invoices and print them. */
+   light and high-contrast — this is where people read invoices and print them.
+   
+   Light mode is the default. The @media query is removed so dark mode only activates
+   when explicitly toggled. */
 :root { --background: #f7f8fc; --foreground: #14172b; --muted: #eef0f8; --muted-foreground: #5d6480; --card: #ffffff; --border: #e3e6f0; --primary: #5b4ae0; }
 .dark { --background: #0a0b12; --foreground: #f0f1fa; --muted: #171a26; --muted-foreground: #a0a5bd; --card: #101220; --border: #232636; --primary: #a99bff; }
-@media (prefers-color-scheme: dark) { :root:not(.light) { --background: #0a0b12; --foreground: #f0f1fa; --muted: #171a26; --muted-foreground: #a0a5bd; --card: #101220; --border: #232636; --primary: #a99bff; } }
 * { border-color: var(--border); }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; }
 ::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }

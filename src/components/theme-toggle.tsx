@@ -17,7 +17,8 @@ export function ThemeToggle() {
 
   useEffect(() => {
     const saved = localStorage.getItem("cloudinvoice-theme");
-    const initial = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // Default to light mode. Only go dark if explicitly saved as "dark".
+    const initial = saved === "dark";
     document.documentElement.classList.toggle("dark", initial);
     document.documentElement.classList.toggle("light", !initial);
     setDark(initial);
