@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 
 export interface HomepageStats {
   totalRevenue: string;
@@ -15,7 +15,7 @@ export interface HomepageStats {
 export async function getHomepageStats(): Promise<HomepageStats> {
   try {
     // Get total revenue from all paid invoices
-    const paidInvoices = await db.invoice.aggregate({
+    const paidInvoices = await prisma.invoice.aggregate({
       where: {
         status: "PAID",
       },
@@ -25,7 +25,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     });
 
     // Get count of active users (users with at least one invoice or client)
-    const usersWithActivity = await db.user.count({
+    const usersWithActivity = await prisma.user.count({
       where: {
         OR: [
           { invoices: { some: {} } },
@@ -36,7 +36,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
 
     // Calculate payment success rate
     // (Total paid invoices / Total sent invoices) * 100
-    const totalSentInvoices = await db.invoice.count({
+    const totalSentInvoices = await prisma.invoice.count({
       where: {
         status: {
           in: ["SENT", "VIEWED", "PAID", "PARTIALLY_PAID", "OVERDUE"],
@@ -44,7 +44,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
       },
     });
 
-    const totalPaidInvoices = await db.invoice.count({
+    const totalPaidInvoices = await prisma.invoice.count({
       where: {
         status: "PAID",
       },
