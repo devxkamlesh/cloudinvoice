@@ -12,6 +12,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed-status": "tsx prisma/seed-status.ts",
     "deploy": "bash deploy.sh"
   },
   "dependencies": {
