@@ -19,22 +19,14 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      // Direct API call to avoid Better Auth client encoding issues
-      const response = await fetch("/api/auth/forget-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          redirectTo: "/reset-password",
-        }),
+      // Use forgetPassword (not requestPasswordReset) to avoid encoding bug
+      const result = await authClient.forgetPassword({
+        email,
+        redirectTo: "/reset-password",
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to send reset email");
+      if (result.error) {
+        throw new Error(result.error.message || "Failed to send reset email");
       }
 
       setIsSuccess(true);
