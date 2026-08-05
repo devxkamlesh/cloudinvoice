@@ -19,10 +19,9 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      // Use callbackURL instead of redirectTo - Better Auth expects this parameter
       const result = await authClient.requestPasswordReset({
         email,
-        callbackURL: "/reset-password",
+        redirectTo: "/reset-password",
       });
 
       if (result.error) {
