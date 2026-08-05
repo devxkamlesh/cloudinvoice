@@ -18,17 +18,19 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/forget-password`, {
+      const response = await fetch("/api/auth/forget-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           email,
-          redirectTo: "/reset-password",
+          redirectTo: `${window.location.origin}/reset-password`,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send reset email");
+      const data = await response.json();
+
+      if (!response.ok || data.error) {
+        throw new Error(data.error?.message || "Failed to send reset email");
       }
 
       setIsSuccess(true);
