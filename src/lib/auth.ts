@@ -19,5 +19,15 @@ export const auth = betterAuth({
     }
   },
   session: { expiresIn: 60 * 60 * 24 * 14, updateAge: 60 * 60 * 24 },
-  trustedOrigins: [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"]
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+    "https://cloudinvoice.co.in",
+    "http://localhost:3000"
+  ],
+  // Allow decoded callback URLs
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: false
+    }
+  }
 });
