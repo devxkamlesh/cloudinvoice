@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hash } from "@node-rs/argon2";
+import { hash } from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,12 +44,7 @@ export async function POST(request: NextRequest) {
     const userId = verification.identifier.replace("password-reset:", "");
 
     // Hash new password
-    const hashedPassword = await hash(password, {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1,
-    });
+    const hashedPassword = await hash(password, 10);
 
     // Update user password
     await prisma.account.updateMany({
