@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     }
 
     // Calculate amount paid (convert paise to currency units)
-    const amountPaid = payment.amount / 100;
+    const amountPaid = Number(payment.amount) / 100;
     const newTotalPaid = Number(invoice.amountPaid) + amountPaid;
     const isPaid = newTotalPaid >= Number(invoice.total);
 
