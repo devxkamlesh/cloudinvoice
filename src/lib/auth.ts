@@ -10,21 +10,15 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
     minPasswordLength: 8,
-    // One hour is long enough to find the email and short enough that a leaked link
-    // in an inbox or proxy log stops being useful quickly.
     resetPasswordTokenExpiresIn: 60 * 60,
-    // Better Auth builds the tokenised URL; we only choose where it lands.
     sendResetPassword: async ({ user, url }) => {
       await sendPasswordResetEmail({ to: user.email, link: url, name: user.name });
     }
   },
   session: { expiresIn: 60 * 60 * 24 * 14, updateAge: 60 * 60 * 24 },
-  // Remove trustedOrigins - this might be causing the validation to reject encoded URLs
+  // Better Auth 1.6+ requires trustedOrigins for strict callback URL validation
+  trustedOrigins: ["https://cloudinvoice.co.in"],
   advanced: {
-    crossSubDomainCookies: {
-      enabled: false
-    },
-    // Disable strict callback URL validation
     useSecureCookies: process.env.NODE_ENV === "production"
   }
 });
