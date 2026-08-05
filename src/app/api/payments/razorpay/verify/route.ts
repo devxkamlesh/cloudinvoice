@@ -94,7 +94,6 @@ export async function POST(request: Request) {
         id: updatedInvoice.id,
         status: updatedInvoice.status,
         amountPaid: updatedInvoice.amountPaid,
-        paidAt: updatedInvoice.paidAt,
       },
       payment: {
         id: payment.id,
