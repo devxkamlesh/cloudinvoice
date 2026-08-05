@@ -98,8 +98,14 @@ export function RazorpayCheckoutButton({ token }: RazorpayCheckoutButtonProps) {
         return;
       }
 
+      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+      if (!razorpayKey) {
+        setError('Payment gateway configuration error.');
+        return;
+      }
+
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         amount: data.amount,
         currency: data.currency,
         name: data.invoice!.organizationName,
