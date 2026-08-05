@@ -12,11 +12,15 @@ import { getAuthenticatedUser } from "@/lib/authz";
 // RangeError on an unknown code. Since the value is copied onto every invoice at
 // creation, one crafted request could permanently break that workspace's dashboard,
 // invoice list, and public payment pages.
-const supportedCurrencies = ["INR", "USD", "EUR", "GBP"] as const;
+const supportedCurrencies = [
+  "INR", "USD", "EUR", "GBP", "CAD", "AUD", "SGD", "AED", 
+  "JPY", "BRL", "MXN", "ZAR", "CHF", "SEK"
+] as const;
 
 const workspaceSchema = z.object({
   name: z.string().trim().min(2, "Enter a business name of at least 2 characters").max(120, "Business name is too long"),
-  currency: z.enum(supportedCurrencies)
+  currency: z.enum(supportedCurrencies),
+  country: z.string().length(2, "Invalid country code")
 });
 
 export async function createWorkspace(formData: FormData): Promise<void> {
@@ -24,7 +28,8 @@ export async function createWorkspace(formData: FormData): Promise<void> {
 
   const parsed = workspaceSchema.safeParse({
     name: formData.get("name") ?? "",
-    currency: formData.get("currency") ?? "INR"
+    currency: formData.get("currency") ?? "INR",
+    country: formData.get("country") ?? "IN"
   });
   if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Check the workspace details.");
 
@@ -35,7 +40,12 @@ export async function createWorkspace(formData: FormData): Promise<void> {
 
   await prisma.$transaction(async (tx) => {
     const organization = await tx.organization.create({
-      data: { name: parsed.data.name, slug, currency: parsed.data.currency }
+      data: { 
+        name: parsed.data.name, 
+        slug, 
+        currency: parsed.data.currency,
+        country: parsed.data.country
+      }
     });
     // The creator owns the workspace they just made. MemberRole.OWNER is now a typed
     // enum rather than the free-form "owner" string, so it can actually be compared.

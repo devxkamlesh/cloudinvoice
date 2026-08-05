@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { authClient } from "@/lib/auth-client";
 import { authSignInSchema, authSignUpSchema } from "@/lib/validations";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 
 type ValidationErrors = {
   name?: string;
@@ -19,6 +19,7 @@ export default function SignInPage() {
   const [error, setError] = useState<string>();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Validates against the shared Zod schemas rather than a hand-rolled copy. The
   // previous inline checks only tested password length, so sign-up silently accepted
@@ -153,20 +154,39 @@ export default function SignInPage() {
                     </Link>
                   )}
                 </div>
-                <input
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                  placeholder="••••••••"
-                  className={`mt-2 block w-full rounded-lg border ${
-                    validationErrors.password
-                      ? "border-red-500 bg-red-500/10"
-                      : "border-zinc-700 bg-zinc-800"
-                  } px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600`}
-                />
+                <div className="relative mt-2">
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                    placeholder="••••••••"
+                    className={`block w-full rounded-lg border ${
+                      validationErrors.password
+                        ? "border-red-500 bg-red-500/10"
+                        : "border-zinc-700 bg-zinc-800"
+                    } px-4 py-3 pr-11 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition hover:text-white"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="size-5" />
+                    ) : (
+                      <Eye className="size-5" />
+                    )}
+                  </button>
+                </div>
                 {validationErrors.password && (
                   <p className="mt-1.5 text-xs text-red-400">{validationErrors.password}</p>
+                )}
+                {mode === "signup" && !validationErrors.password && (
+                  <p className="mt-1.5 text-xs text-zinc-500">
+                    At least 8 characters with uppercase, lowercase, and number
+                  </p>
                 )}
               </div>
 

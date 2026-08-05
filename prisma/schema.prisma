@@ -128,6 +128,7 @@ model Organization {
   email           String?
   phone           String?
   address         String?
+  country         String?      // ISO 3166-1 alpha-2 country code (e.g., IN, US, GB)
   gstin           String?
   pan             String?
   stateCode       String?
