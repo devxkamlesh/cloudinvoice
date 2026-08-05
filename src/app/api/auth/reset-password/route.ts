@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hash } from "bcryptjs";
+import crypto from "crypto";
+
+// Simple password hashing using Node's built-in crypto
+function hashPassword(password: string): string {
+  return crypto.createHash("sha256").update(password).digest("hex");
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,7 +49,7 @@ export async function POST(request: NextRequest) {
     const userId = verification.identifier.replace("password-reset:", "");
 
     // Hash new password
-    const hashedPassword = await hash(password, 10);
+    const hashedPassword = hashPassword(password);
 
     // Update user password
     await prisma.account.updateMany({
