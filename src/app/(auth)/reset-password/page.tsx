@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -42,24 +43,17 @@ function ResetPasswordForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+      await authClient.resetPassword({
+        newPassword: password,
       });
-
-      if (response.ok) {
-        setIsSuccess(true);
-        // Redirect to sign in after 2 seconds
-        setTimeout(() => {
-          router.push("/sign-in");
-        }, 2000);
-      } else {
-        const data = await response.json();
-        setError(data.error || "Failed to reset password");
-      }
-    } catch {
-      setError("An error occurred. Please try again.");
+      
+      setIsSuccess(true);
+      // Redirect to sign in after 2 seconds
+      setTimeout(() => {
+        router.push("/sign-in");
+      }, 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reset password");
     } finally {
       setIsLoading(false);
     }
