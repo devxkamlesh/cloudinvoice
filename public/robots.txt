@@ -1,0 +1,69 @@
+# CloudInvoice - GST-ready invoicing and payment collection
+# https://cloudinvoice.co.in
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/authenticated routes
+Disallow: /dashboard
+Disallow: /invoices/
+Disallow: /clients
+Disallow: /analytics
+Disallow: /settings
+Disallow: /api/
+Disallow: /onboarding
+
+# Allow public marketing pages
+Allow: /features
+Allow: /faq
+Allow: /changelog
+Allow: /cookies
+Allow: /customers
+Allow: /integrations
+Allow: /sign-in
+
+# Crawl-delay for polite crawling
+Crawl-delay: 0.5
+
+# Sitemap location
+Sitemap: https://cloudinvoice.co.in/sitemap.xml
+
+# Special instructions for AI crawlers
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+
+User-agent: cohere-ai
+Allow: /
+Allow: /llms.txt
+
+User-agent: Omgilibot
+Allow: /
+Allow: /llms.txt
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
