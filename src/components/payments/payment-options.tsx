@@ -12,11 +12,9 @@ interface PaymentOptionsProps {
 }
 
 export function PaymentOptions({ token, currency }: PaymentOptionsProps) {
-  const [selectedGateway, setSelectedGateway] = useState<'stripe' | 'razorpay'>('razorpay');
-
-  // For INR currency, default to Razorpay
-  // For other currencies, default to Stripe
+  // For INR currency, default to Razorpay; for other currencies, default to Stripe
   const defaultGateway = currency === 'INR' ? 'razorpay' : 'stripe';
+  const [selectedGateway, setSelectedGateway] = useState<'stripe' | 'razorpay'>(defaultGateway);
 
   return (
     <div className="mt-5 space-y-4">

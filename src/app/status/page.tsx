@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CheckCircle2, Globe, Database, Mail, CreditCard, Server, Lock, Zap } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SystemStatus } from "@prisma/client";
@@ -245,12 +246,12 @@ export default async function StatusPage() {
 
         {/* Back to Home */}
         <div className="mt-8 text-center">
-          <a
+          <Link
             href="/"
             className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
           >
             ← Back to CloudInvoice
-          </a>
+          </Link>
         </div>
       </div>
     </main>

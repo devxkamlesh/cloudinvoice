@@ -9,7 +9,7 @@ export default function OnboardingPage() {
       <section className="surface w-full max-w-xl rounded-2xl p-7 sm:p-10">
         <Logo />
         <div className="mt-10">
-          <p className="text-sm font-semibold text-primary">LET'S SET UP YOUR WORKSPACE</p>
+          <p className="text-sm font-semibold text-primary">LET&apos;S SET UP YOUR WORKSPACE</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">
             Tell us about your business.
           </h1>
