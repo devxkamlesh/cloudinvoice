@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "CloudInvoice — invoices that get paid", description: "GST-ready invoicing and payment collection for independent businesses." }
 };
 
+export const dynamic = 'force-dynamic';
+
 const featureSet = [
   { icon: ReceiptText, title: "Professional invoices", text: "Create clean, client-ready invoices with line items, terms, notes, dates, and a purposeful visual template.", status: "Live" },
   { icon: FileCheck2, title: "GST ready", text: "Calculate CGST + SGST or IGST line by line, while retaining GSTIN, state-code, HSN, and SAC context.", status: "Live" },

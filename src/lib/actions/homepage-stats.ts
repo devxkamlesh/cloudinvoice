@@ -24,8 +24,8 @@ export async function getHomepageStats(): Promise<HomepageStats> {
       },
     });
 
-    // Get count of active users (users with at least one invoice or client)
-    const usersWithActivity = await prisma.user.count({
+    // Get count of organizations (not users, since one user can belong to multiple orgs)
+    const activeOrganizations = await prisma.organization.count({
       where: {
         OR: [
           { invoices: { some: {} } },
@@ -56,12 +56,12 @@ export async function getHomepageStats(): Promise<HomepageStats> {
         : "N/A";
 
     // Format revenue - show 0 if no data
-    const revenueInRupees = paidInvoices._sum.total || 0;
+    const revenueInRupees = paidInvoices._sum.total ? Number(paidInvoices._sum.total) : 0;
     const revenueFormatted = formatIndianCurrency(revenueInRupees);
 
     return {
       totalRevenue: revenueFormatted,
-      activeUsers: usersWithActivity,
+      activeUsers: activeOrganizations,
       paymentSuccessRate: totalSentInvoices > 0 ? `${successRate}%` : "N/A",
     };
   } catch (error) {

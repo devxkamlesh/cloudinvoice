@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   description: "Current status and uptime for all CloudInvoice systems",
 };
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60; // Revalidate every minute
 
 const iconMap: Record<string, React.ElementType> = {
