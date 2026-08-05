@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
+import { signIn } from "next-auth/react";
 import { authSignInSchema, authSignUpSchema } from "@/lib/validations";
 import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
@@ -58,15 +58,42 @@ export default function SignInPage() {
       return;
     }
     
-    const result =
-      mode === "signin"
-        ? await authClient.signIn.email({ email: input.email, password: input.password })
-        : await authClient.signUp.email(input);
-    
-    setBusy(false);
-    if (result.error) return setError(result.error.message ?? "We could not sign you in.");
-    router.push("/dashboard");
-    router.refresh();
+    try {
+      if (mode === "signup") {
+        // Create account via API
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          setBusy(false);
+          return setError(data.error || "Failed to create account");
+        }
+      }
+
+      // Sign in with NextAuth
+      const result = await signIn("credentials", {
+        email: input.email,
+        password: input.password,
+        redirect: false,
+      });
+
+      setBusy(false);
+      
+      if (result?.error) {
+        return setError("Invalid email or password");
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch (error) {
+      setBusy(false);
+      setError("Something went wrong. Please try again.");
+    }
   }
 
   return (

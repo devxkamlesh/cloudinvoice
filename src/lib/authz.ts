@@ -1,8 +1,7 @@
 import { cache } from "react";
-import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { MemberRole, PlatformRole } from "@prisma/client";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth-config";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -29,7 +28,7 @@ import { prisma } from "@/lib/prisma";
  * fourteen-day session.
  */
 export const getAuthenticatedUser = cache(async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth();
   if (!session?.user) redirect("/sign-in");
 
   const user = await prisma.user.findUnique({

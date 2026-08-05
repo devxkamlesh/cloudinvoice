@@ -42,18 +42,19 @@ function ResetPasswordForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/reset-password`, {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           token,
-          password,
+          newPassword: password,
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to reset password");
+        throw new Error(data.error || "Failed to reset password");
       }
       
       setIsSuccess(true);

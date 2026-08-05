@@ -7,7 +7,7 @@ import { BarChart3, Building2, FileText, LayoutDashboard, LogOut, Menu, Plus, Se
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { authClient } from "@/lib/auth-client";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -187,7 +187,7 @@ export function DashboardChrome({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => authClient.signOut({ fetchOptions: { onSuccess: () => window.location.assign("/") } })}
+              onClick={() => signOut({ callbackUrl: "/" })}
             >
               <LogOut className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">Sign out</span>
