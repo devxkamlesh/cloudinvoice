@@ -21,3 +21,11 @@ cloudinvoice-latest.tar.gz
 # Editor / OS
 .DS_Store
 Thumbs.db
+
+# Local deployment notes (may contain secrets)
+DEPLOYMENT_SUCCESS.md
+EMAIL_CONFIG_STATUS.md
+RAZORPAY_TEST_CREDENTIALS.md
+AWS_TEST_REPORT.md
+AWS_NGINX_INSTRUCTIONS.md
+AUTH_IMPROVEMENTS.md
