@@ -24,15 +24,8 @@ export async function getHomepageStats(): Promise<HomepageStats> {
       },
     });
 
-    // Get count of organizations (not users, since one user can belong to multiple orgs)
-    const activeOrganizations = await prisma.organization.count({
-      where: {
-        OR: [
-          { invoices: { some: {} } },
-          { clients: { some: {} } },
-        ],
-      },
-    });
+    // Get count of active users (users who have signed up)
+    const activeUsers = await prisma.user.count();
 
     // Calculate payment success rate
     // (Total paid invoices / Total sent invoices) * 100
@@ -61,7 +54,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
 
     return {
       totalRevenue: revenueFormatted,
-      activeUsers: activeOrganizations,
+      activeUsers: activeUsers,
       paymentSuccessRate: totalSentInvoices > 0 ? `${successRate}%` : "N/A",
     };
   } catch (error) {
