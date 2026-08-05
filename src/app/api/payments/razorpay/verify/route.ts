@@ -77,7 +77,6 @@ export async function POST(request: Request) {
       data: {
         status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIALLY_PAID,
         amountPaid: newTotalPaid,
-        paidAt: isPaid ? new Date() : undefined,
       },
     });
 
