@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     // Store token in verification table
     await prisma.verification.create({
       data: {
+        id: crypto.randomUUID(),
         identifier: `password-reset:${user.id}`,
         value: resetToken,
         expiresAt: resetTokenExpiry,
