@@ -11,6 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/sign-in",
     error: "/sign-in",
   },
+  trustHost: true, // Trust proxy headers for production
   providers: [
     Credentials({
       name: "credentials",
