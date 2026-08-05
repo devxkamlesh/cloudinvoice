@@ -15,10 +15,5 @@ export const auth = betterAuth({
       await sendPasswordResetEmail({ to: user.email, link: url, name: user.name });
     }
   },
-  session: { expiresIn: 60 * 60 * 24 * 14, updateAge: 60 * 60 * 24 },
-  // Better Auth 1.6+ requires trustedOrigins for strict callback URL validation
-  trustedOrigins: ["https://cloudinvoice.co.in"],
-  advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production"
-  }
+  session: { expiresIn: 60 * 60 * 24 * 14, updateAge: 60 * 60 * 24 }
 });
