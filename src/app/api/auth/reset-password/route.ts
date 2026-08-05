@@ -18,7 +18,9 @@ export async function POST(request: Request) {
     const verification = await prisma.verification.findFirst({
       where: {
         value: token,
-        identifier: "password-reset",
+        identifier: {
+          startsWith: "password-reset:",
+        },
         expiresAt: {
           gt: new Date(),
         },
