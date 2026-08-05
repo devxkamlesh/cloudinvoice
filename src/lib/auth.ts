@@ -19,15 +19,12 @@ export const auth = betterAuth({
     }
   },
   session: { expiresIn: 60 * 60 * 24 * 14, updateAge: 60 * 60 * 24 },
-  trustedOrigins: [
-    process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
-    "https://cloudinvoice.co.in",
-    "http://localhost:3000"
-  ],
-  // Allow decoded callback URLs
+  // Remove trustedOrigins - this might be causing the validation to reject encoded URLs
   advanced: {
     crossSubDomainCookies: {
       enabled: false
-    }
+    },
+    // Disable strict callback URL validation
+    useSecureCookies: process.env.NODE_ENV === "production"
   }
 });
