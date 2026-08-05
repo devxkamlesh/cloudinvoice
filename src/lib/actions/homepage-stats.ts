@@ -10,7 +10,7 @@ export interface HomepageStats {
 
 /**
  * Fetch real statistics from the database for homepage display
- * Falls back to default values if database query fails
+ * Returns actual values only - no fake/default data
  */
 export async function getHomepageStats(): Promise<HomepageStats> {
   try {
@@ -53,34 +53,35 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     const successRate =
       totalSentInvoices > 0
         ? ((totalPaidInvoices / totalSentInvoices) * 100).toFixed(0)
-        : "95";
+        : "N/A";
 
-    // Format revenue in Indian currency format
+    // Format revenue - show 0 if no data
     const revenueInRupees = paidInvoices._sum.total || 0;
     const revenueFormatted = formatIndianCurrency(revenueInRupees);
 
     return {
       totalRevenue: revenueFormatted,
-      activeUsers: usersWithActivity || 150,
-      paymentSuccessRate: `${successRate}%`,
+      activeUsers: usersWithActivity,
+      paymentSuccessRate: totalSentInvoices > 0 ? `${successRate}%` : "N/A",
     };
   } catch (error) {
     console.error("Error fetching homepage stats:", error);
     
-    // Return default fallback values
+    // Return zeros on error - no fake data
     return {
-      totalRevenue: "₹12L+",
-      activeUsers: 150,
-      paymentSuccessRate: "95%",
+      totalRevenue: "₹0",
+      activeUsers: 0,
+      paymentSuccessRate: "N/A",
     };
   }
 }
 
 /**
  * Format number to Indian currency format (Lakhs and Crores)
+ * Shows actual values only - returns ₹0 if amount is 0
  */
 function formatIndianCurrency(amount: number): string {
-  if (amount === 0) return "₹12L+";
+  if (amount === 0) return "₹0";
   
   // Convert paise to rupees (assuming amount is in paise)
   const rupees = amount / 100;
@@ -97,6 +98,6 @@ function formatIndianCurrency(amount: number): string {
     const thousands = rupees / 1000;
     return `₹${thousands.toFixed(0)}K+`;
   } else {
-    return "₹12L+"; // Default for low amounts
+    return `₹${rupees.toFixed(0)}`;
   }
 }

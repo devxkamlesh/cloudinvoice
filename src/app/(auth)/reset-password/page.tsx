@@ -1,159 +1,189 @@
 "use client";
 
+import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, CheckCircle2, ShieldAlert } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
-import { authClient } from "@/lib/auth-client";
-import { resetPasswordSchema } from "@/lib/validations";
+import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-function ResetPasswordForm() {
+export default function ResetPasswordPage() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const params = useSearchParams();
-  // Better Auth appends the token to the redirect target it was given.
-  const token = params.get("token");
-  const [error, setError] = useState<string>();
-  const [done, setDone] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const token = searchParams.get("token");
 
-  async function submit(formData: FormData) {
-    setBusy(true);
-    setError(undefined);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-    // Same rules the sign-up schema declares, so a reset cannot be used to set a
-    // weaker password than registration would have allowed.
-    const parsed = resetPasswordSchema.safeParse({
-      password: String(formData.get("password") ?? ""),
-      confirmPassword: String(formData.get("confirmPassword") ?? "")
-    });
-    if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Please check the password.");
-      setBusy(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
     if (!token) {
-      setError("This reset link is missing its token. Request a new link.");
-      setBusy(false);
+      setError("Invalid or missing reset token");
       return;
     }
 
-    const result = await authClient.resetPassword({ newPassword: parsed.data.password, token });
-    setBusy(false);
+    setIsLoading(true);
 
-    if (result.error) {
-      setError(result.error.message ?? "This reset link is no longer valid. Request a new one.");
-      return;
+    try {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        // Redirect to sign in after 2 seconds
+        setTimeout(() => {
+          router.push("/sign-in");
+        }, 2000);
+      } else {
+        const data = await response.json();
+        setError(data.error || "Failed to reset password");
+      }
+    } catch {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    setDone(true);
-  }
+  };
 
   if (!token) {
     return (
-      <div className="text-center">
-        <span className="mx-auto grid size-12 place-items-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-          <ShieldAlert className="size-6 text-amber-300" aria-hidden="true" />
-        </span>
-        <h1 className="mt-5 text-2xl font-bold text-white">This link is not usable</h1>
-        <p className="mt-3 text-sm leading-6 text-zinc-400">
-          Password reset links carry a one-time token. This one has none, which usually means it was truncated by an email client or already used.
-        </p>
-        <Link href="/forgot-password" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-zinc-300">
-          Request a new link <ArrowRight className="size-4" aria-hidden="true" />
-        </Link>
-      </div>
+      <main className="grid min-h-screen place-items-center bg-gradient-to-br from-blue-50 to-purple-50 p-5">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm p-8 shadow-xl text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Invalid Reset Link</h1>
+          <p className="mt-3 text-sm text-gray-600">
+            This password reset link is invalid or has expired.
+          </p>
+          <Link href="/forgot-password" className="mt-6 inline-block">
+            <Button>Request New Reset Link</Button>
+          </Link>
+        </div>
+      </main>
     );
   }
 
-  if (done) {
+  if (isSuccess) {
     return (
-      <div className="text-center">
-        <span className="mx-auto grid size-12 place-items-center rounded-xl border border-emerald-500/25 bg-emerald-500/10">
-          <CheckCircle2 className="size-6 text-emerald-300" aria-hidden="true" />
-        </span>
-        <h1 className="mt-5 text-2xl font-bold text-white">Password updated</h1>
-        <p className="mt-3 text-sm leading-6 text-zinc-400">You can now sign in with your new password.</p>
-        <button
-          type="button"
-          onClick={() => router.push("/sign-in")}
-          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition hover:bg-zinc-100"
-        >
-          Go to sign in <ArrowRight className="size-4" aria-hidden="true" />
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-white">Choose a new password</h1>
-        <p className="mt-2 text-sm text-zinc-400">At least 8 characters, with an uppercase letter, a lowercase letter, and a number.</p>
-      </div>
-
-      <form
-        onSubmit={(event) => { event.preventDefault(); submit(new FormData(event.currentTarget)); }}
-        className="mt-8 space-y-4"
-      >
-        <div>
-          <label htmlFor="password" className="text-sm font-medium text-zinc-300">New password</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            autoComplete="new-password"
-            autoFocus
-            placeholder="••••••••"
-            className="mt-2 block w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="confirmPassword" className="text-sm font-medium text-zinc-300">Confirm new password</label>
-          <input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            required
-            autoComplete="new-password"
-            placeholder="••••••••"
-            className="mt-2 block w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600"
-          />
-        </div>
-
-        {error && (
-          <div role="alert" className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-200">{error}</div>
-        )}
-
-        <button
-          type="submit"
-          disabled={busy}
-          className="group mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition hover:bg-zinc-100 disabled:pointer-events-none disabled:opacity-60"
-        >
-          {busy ? "Updating…" : <>Update password <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" /></>}
-        </button>
-      </form>
-    </>
-  );
-}
-
-export default function ResetPasswordPage() {
-  return (
-    <main className="relative min-h-screen bg-black">
-      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50" />
-
-      <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-12">
-        <Link href="/" className="mb-12"><Logo className="text-white" /></Link>
-        <div className="w-full max-w-md">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl">
-            {/* useSearchParams needs a Suspense boundary to avoid opting the whole
-                route out of static rendering. */}
-            <Suspense fallback={<p className="text-center text-sm text-zinc-400">Loading…</p>}>
-              <ResetPasswordForm />
-            </Suspense>
+      <main className="grid min-h-screen place-items-center bg-gradient-to-br from-blue-50 to-purple-50 p-5">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm p-8 shadow-xl">
+          <div className="flex flex-col items-center text-center">
+            <div className="flex size-16 items-center justify-center rounded-full bg-green-100 mb-4">
+              <CheckCircle2 className="size-8 text-green-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">Password reset successfully!</h1>
+            <p className="mt-3 text-sm text-gray-600">
+              Your password has been changed. Redirecting to sign in...
+            </p>
           </div>
         </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="grid min-h-screen place-items-center bg-gradient-to-br from-blue-50 to-purple-50 p-5">
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm p-8 shadow-xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Set new password</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Your new password must be different from previously used passwords.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              New Password
+            </label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter new password"
+                required
+                disabled={isLoading}
+                className="w-full pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-gray-500">Must be at least 8 characters</p>
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+                required
+                disabled={isLoading}
+                className="w-full pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+              {error}
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full"
+          >
+            {isLoading ? "Resetting..." : "Reset password"}
+          </Button>
+
+          <div className="text-center">
+            <Link
+              href="/sign-in"
+              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Back to Sign In
+            </Link>
+          </div>
+        </form>
       </div>
     </main>
   );

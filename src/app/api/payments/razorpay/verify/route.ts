@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     const updatedInvoice = await prisma.invoice.update({
       where: { id: body.invoiceId },
       data: {
-        status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIAL,
+        status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIALLY_PAID,
         amountPaid: newTotalPaid,
         paidAt: isPaid ? new Date() : undefined,
       },
