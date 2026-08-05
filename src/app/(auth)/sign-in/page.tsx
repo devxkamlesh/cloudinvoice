@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { authClient } from "@/lib/auth-client";
 import { authSignInSchema, authSignUpSchema } from "@/lib/validations";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
 type ValidationErrors = {
   name?: string;
@@ -21,9 +21,6 @@ export default function SignInPage() {
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Validates against the shared Zod schemas rather than a hand-rolled copy. The
-  // previous inline checks only tested password length, so sign-up silently accepted
-  // passwords the declared schema was written to reject.
   function validateForm(input: { name?: string; email: string; password: string }): boolean {
     const result = mode === "signup"
       ? authSignUpSchema.safeParse({ name: input.name ?? "", email: input.email, password: input.password })
@@ -73,104 +70,152 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="relative min-h-screen bg-black">
-      {/* Subtle grid background */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50" />
+    <main className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-100 opacity-20 blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-purple-100 opacity-20 blur-3xl"></div>
+      </div>
 
       <div className="relative flex min-h-screen flex-col items-center justify-center px-6 py-12">
         {/* Logo */}
-        <Link href="/" className="mb-12">
-          <Logo className="text-white" />
+        <Link href="/" className="mb-8">
+          <Logo />
         </Link>
 
         {/* Auth Card */}
         <div className="w-full max-w-md">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl">
+          <div className="rounded-3xl border border-gray-200 bg-white/80 backdrop-blur-xl p-8 shadow-2xl shadow-blue-500/10">
+            {/* Header */}
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-white">
-                {mode === "signin" ? "Welcome back" : "Create account"}
+              <h1 className="text-3xl font-bold text-gray-900">
+                {mode === "signin" ? "Welcome back" : "Get started"}
               </h1>
-              <p className="mt-2 text-sm text-zinc-400">
+              <p className="mt-2 text-sm text-gray-600">
                 {mode === "signin"
                   ? "Sign in to your CloudInvoice workspace"
-                  : "Start managing invoices in minutes"}
+                  : "Create your account in seconds"}
               </p>
             </div>
 
+            {/* Mode Toggle Tabs */}
+            <div className="mt-6 flex rounded-xl bg-gray-100 p-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signin");
+                  setError(undefined);
+                  setValidationErrors({});
+                }}
+                className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  mode === "signin"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("signup");
+                  setError(undefined);
+                  setValidationErrors({});
+                }}
+                className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  mode === "signup"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Sign up
+              </button>
+            </div>
+
+            {/* Form */}
             <form
-              action={submit}
               onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
                 submit(formData);
               }}
-              className="mt-8 space-y-4"
+              className="mt-8 space-y-5"
             >
               {mode === "signup" && (
                 <div>
-                  <label className="text-sm font-medium text-zinc-300">Name</label>
-                  <input
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="Your name"
-                    className={`mt-2 block w-full rounded-lg border ${
-                      validationErrors.name
-                        ? "border-red-500 bg-red-500/10"
-                        : "border-zinc-700 bg-zinc-800"
-                    } px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600`}
-                  />
+                  <label className="text-sm font-medium text-gray-700">Full name</label>
+                  <div className="relative mt-2">
+                    <User className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      name="name"
+                      type="text"
+                      required
+                      placeholder="John Doe"
+                      className={`block w-full rounded-xl border ${
+                        validationErrors.name
+                          ? "border-red-300 bg-red-50"
+                          : "border-gray-200 bg-white"
+                      } py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10`}
+                    />
+                  </div>
                   {validationErrors.name && (
-                    <p className="mt-1.5 text-xs text-red-400">{validationErrors.name}</p>
+                    <p className="mt-2 text-xs text-red-600">{validationErrors.name}</p>
                   )}
                 </div>
               )}
 
               <div>
-                <label className="text-sm font-medium text-zinc-300">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="you@company.com"
-                  className={`mt-2 block w-full rounded-lg border ${
-                    validationErrors.email
-                      ? "border-red-500 bg-red-500/10"
-                      : "border-zinc-700 bg-zinc-800"
-                  } px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600`}
-                />
+                <label className="text-sm font-medium text-gray-700">Email address</label>
+                <div className="relative mt-2">
+                  <Mail className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="you@company.com"
+                    className={`block w-full rounded-xl border ${
+                      validationErrors.email
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-200 bg-white"
+                    } py-3 pl-11 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10`}
+                  />
+                </div>
                 {validationErrors.email && (
-                  <p className="mt-1.5 text-xs text-red-400">{validationErrors.email}</p>
+                  <p className="mt-2 text-xs text-red-600">{validationErrors.email}</p>
                 )}
               </div>
 
               <div>
-                <div className="flex items-baseline justify-between gap-3">
-                  <label className="text-sm font-medium text-zinc-300">Password</label>
+                <div className="flex items-baseline justify-between">
+                  <label className="text-sm font-medium text-gray-700">Password</label>
                   {mode === "signin" && (
-                    <Link href="/forgot-password" className="text-xs font-medium text-zinc-400 transition hover:text-white">
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs font-medium text-blue-600 transition hover:text-blue-700"
+                    >
                       Forgot password?
                     </Link>
                   )}
                 </div>
                 <div className="relative mt-2">
+                  <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                   <input
                     name="password"
                     type={showPassword ? "text" : "password"}
                     required
                     autoComplete={mode === "signin" ? "current-password" : "new-password"}
                     placeholder="••••••••"
-                    className={`block w-full rounded-lg border ${
+                    className={`block w-full rounded-xl border ${
                       validationErrors.password
-                        ? "border-red-500 bg-red-500/10"
-                        : "border-zinc-700 bg-zinc-800"
-                    } px-4 py-3 pr-11 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600 focus:ring-2 focus:ring-zinc-600`}
+                        ? "border-red-300 bg-red-50"
+                        : "border-gray-200 bg-white"
+                    } py-3 pl-11 pr-12 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 transition hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition hover:text-gray-600"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
@@ -181,17 +226,17 @@ export default function SignInPage() {
                   </button>
                 </div>
                 {validationErrors.password && (
-                  <p className="mt-1.5 text-xs text-red-400">{validationErrors.password}</p>
+                  <p className="mt-2 text-xs text-red-600">{validationErrors.password}</p>
                 )}
                 {mode === "signup" && !validationErrors.password && (
-                  <p className="mt-1.5 text-xs text-zinc-500">
+                  <p className="mt-2 text-xs text-gray-500">
                     At least 8 characters with uppercase, lowercase, and number
                   </p>
                 )}
               </div>
 
               {error && (
-                <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-200">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                   {error}
                 </div>
               )}
@@ -199,44 +244,29 @@ export default function SignInPage() {
               <button
                 type="submit"
                 disabled={busy}
-                className="group mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition-all duration-300 hover:bg-zinc-100 hover:scale-105 disabled:pointer-events-none disabled:opacity-60"
+                className="group mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
               >
                 {busy ? (
-                  "Please wait..."
-                ) : mode === "signin" ? (
-                  <>
-                    Sign in
-                    <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </>
+                  <span className="flex items-center gap-2">
+                    <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Please wait...
+                  </span>
                 ) : (
                   <>
-                    Create account
+                    {mode === "signin" ? "Sign in" : "Create account"}
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </>
                 )}
               </button>
             </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-zinc-400">
-                {mode === "signin" ? "Don\u2019t have an account?" : "Already have an account?"}{" "}
-                <button
-                  onClick={() => {
-                    setMode(mode === "signin" ? "signup" : "signin");
-                    setError(undefined);
-                    setValidationErrors({});
-                  }}
-                  className="font-semibold text-white transition hover:text-zinc-300"
-                >
-                  {mode === "signin" ? "Sign up" : "Sign in"}
-                </button>
-              </p>
-            </div>
           </div>
 
-          {/* Footer Links */}
-          <div className="mt-6 text-center text-xs text-zinc-500">
-            <Link href="/" className="hover:text-zinc-400">
+          {/* Footer */}
+          <div className="mt-6 text-center">
+            <Link href="/" className="text-sm text-gray-600 transition hover:text-gray-900">
               ← Back to home
             </Link>
           </div>
