@@ -23,6 +23,10 @@ interface RazorpayOptions {
   name: string;
   description?: string;
   order_id: string;
+  prefill?: {
+    name?: string;
+    email?: string;
+  };
   handler: (response: RazorpayResponse) => void;
   modal?: {
     ondismiss?: () => void;
