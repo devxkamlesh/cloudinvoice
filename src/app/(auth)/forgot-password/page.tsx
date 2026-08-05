@@ -19,8 +19,7 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      // Use forgetPassword (not requestPasswordReset) to avoid encoding bug
-      const result = await authClient.forgetPassword({
+      const result = await authClient.requestPasswordReset({
         email,
         redirectTo: "/reset-password",
       });
