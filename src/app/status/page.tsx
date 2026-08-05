@@ -1,145 +1,92 @@
 import type { Metadata } from "next";
 import { CheckCircle2, Globe, Database, Mail, CreditCard, Server, Lock, Zap } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { SystemStatus } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "CloudInvoice Status",
   description: "Current status and uptime for all CloudInvoice systems",
 };
 
-// Simulate 90 days of uptime data (green = operational, yellow = degraded, red = down)
-function generateUptimeData(uptime: number): { status: "up" | "degraded" | "down"; date: string }[] {
-  const days = 90;
-  const data: { status: "up" | "degraded" | "down"; date: string }[] = [];
-  const now = new Date();
-  
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    
-    // Random status based on uptime percentage
-    const random = Math.random() * 100;
-    const status = random < uptime ? "up" : random < uptime + 2 ? "degraded" : "down";
-    
-    data.push({
-      status,
-      date: date.toISOString().split('T')[0]
-    });
-  }
-  
-  return data;
-}
+export const revalidate = 60; // Revalidate every minute
 
-type SystemStatus = {
-  name: string;
-  status: "operational" | "degraded" | "down";
-  uptime: number;
-  icon: React.ElementType;
-  description: string;
+const iconMap: Record<string, React.ElementType> = {
+  Globe,
+  Server,
+  Database,
+  Mail,
+  CreditCard,
+  Lock,
+  Zap,
 };
 
-const systems: SystemStatus[] = [
-  {
-    name: "Web Application",
-    status: "operational",
-    uptime: 99.99,
-    icon: Globe,
-    description: "CloudInvoice web interface and dashboard"
-  },
-  {
-    name: "API Endpoints",
-    status: "operational",
-    uptime: 99.95,
-    icon: Server,
-    description: "REST API for invoice operations"
-  },
-  {
-    name: "Database",
-    status: "operational",
-    uptime: 100.0,
-    icon: Database,
-    description: "PostgreSQL database services"
-  },
-  {
-    name: "Email Delivery",
-    status: "operational",
-    uptime: 99.87,
-    icon: Mail,
-    description: "Invoice and notification emails via Resend"
-  },
-  {
-    name: "Payment Gateway (Razorpay)",
-    status: "operational",
-    uptime: 99.92,
-    icon: CreditCard,
-    description: "UPI, Cards, NetBanking payments"
-  },
-  {
-    name: "Payment Gateway (Stripe)",
-    status: "operational",
-    uptime: 99.98,
-    icon: CreditCard,
-    description: "International card payments"
-  },
-  {
-    name: "SSL/HTTPS",
-    status: "operational",
-    uptime: 100.0,
-    icon: Lock,
-    description: "Cloudflare SSL encryption"
-  },
-  {
-    name: "CDN & Edge Network",
-    status: "operational",
-    uptime: 99.99,
-    icon: Zap,
-    description: "Global content delivery"
-  }
-];
-
 const statusColors = {
-  operational: {
+  OPERATIONAL: {
     badge: "bg-green-100 text-green-800 border-green-200",
     dot: "bg-green-500",
     bar: "bg-green-500"
   },
-  degraded: {
+  DEGRADED: {
     badge: "bg-yellow-100 text-yellow-800 border-yellow-200",
     dot: "bg-yellow-500",
     bar: "bg-yellow-500"
   },
-  down: {
+  DOWN: {
     badge: "bg-red-100 text-red-800 border-red-200",
     dot: "bg-red-500",
     bar: "bg-red-500"
+  },
+  MAINTENANCE: {
+    badge: "bg-blue-100 text-blue-800 border-blue-200",
+    dot: "bg-blue-500",
+    bar: "bg-blue-500"
   }
 };
 
-function UptimeBar({ uptime }: { uptime: number }) {
-  const data = generateUptimeData(uptime);
-  
+function UptimeBar({ uptimeData }: { uptimeData: { date: Date; status: SystemStatus }[] }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex flex-1 gap-[2px]">
-        {data.map((day, i) => {
-          const color = day.status === "up" ? "bg-green-500" : day.status === "degraded" ? "bg-yellow-500" : "bg-red-500";
+        {uptimeData.map((day, i) => {
+          const color = statusColors[day.status].bar;
+          const dateStr = day.date.toISOString().split('T')[0];
           return (
             <div
               key={i}
               className={`h-8 flex-1 rounded-sm ${color} hover:opacity-80 transition-opacity cursor-pointer`}
-              title={`${day.date}: ${day.status}`}
+              title={`${dateStr}: ${day.status.toLowerCase()}`}
             />
           );
         })}
       </div>
-      <span className="text-sm font-semibold text-gray-700 tabular-nums w-16 text-right">
-        {uptime.toFixed(2)}%
-      </span>
     </div>
   );
 }
 
-export default function StatusPage() {
-  const allOperational = systems.every(s => s.status === "operational");
+export default async function StatusPage() {
+  // Fetch all system components with their uptime data
+  const components = await prisma.systemComponent.findMany({
+    orderBy: { order: 'asc' },
+    include: {
+      uptimeData: {
+        orderBy: { date: 'asc' },
+        take: 90,
+      },
+    },
+  });
+
+  // Calculate uptime percentage for each component
+  const componentsWithUptime = components.map(component => {
+    const totalUptime = component.uptimeData.reduce((sum, record) => sum + record.uptime, 0);
+    const avgUptime = component.uptimeData.length > 0 ? totalUptime / component.uptimeData.length : 100;
+    
+    return {
+      ...component,
+      uptimePercentage: avgUptime,
+    };
+  });
+
+  const allOperational = components.every(c => c.status === SystemStatus.OPERATIONAL);
   
   return (
     <main className="min-h-screen bg-gray-50">
@@ -191,21 +138,19 @@ export default function StatusPage() {
           </h3>
           <p className="mb-2 text-sm text-gray-600">
             Uptime over the past 90 days.{" "}
-            <a href="#" className="text-blue-600 hover:text-blue-700">
-              View historical uptime
-            </a>
+            <span className="text-gray-400">Updated every minute</span>
           </p>
         </div>
 
         {/* Systems List */}
         <div className="space-y-6">
-          {systems.map((system) => {
-            const Icon = system.icon;
+          {componentsWithUptime.map((system) => {
+            const Icon = iconMap[system.icon] || Server;
             const colors = statusColors[system.status];
             
             return (
               <div
-                key={system.name}
+                key={system.id}
                 className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="mb-4 flex items-start justify-between">
@@ -218,7 +163,13 @@ export default function StatusPage() {
                         <h4 className="font-semibold text-gray-900">{system.name}</h4>
                         <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors.badge}`}>
                           <span className={`size-2 rounded-full ${colors.dot}`} />
-                          {system.status === "operational" ? "Operational" : system.status === "degraded" ? "Degraded" : "Down"}
+                          {system.status === SystemStatus.OPERATIONAL 
+                            ? "Operational" 
+                            : system.status === SystemStatus.DEGRADED 
+                            ? "Degraded" 
+                            : system.status === SystemStatus.MAINTENANCE
+                            ? "Maintenance"
+                            : "Down"}
                         </span>
                       </div>
                       <p className="mt-1 text-sm text-gray-600">{system.description}</p>
@@ -228,11 +179,16 @@ export default function StatusPage() {
 
                 {/* Uptime Bar */}
                 <div className="space-y-2">
-                  <UptimeBar uptime={system.uptime} />
+                  <div className="flex items-center gap-3">
+                    <UptimeBar uptimeData={system.uptimeData.map(u => ({ date: u.date, status: u.status }))} />
+                    <span className="text-sm font-semibold text-gray-700 tabular-nums w-16 text-right">
+                      {system.uptimePercentage.toFixed(2)}%
+                    </span>
+                  </div>
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>90 days ago</span>
                     <span className="font-medium text-gray-700">
-                      {system.uptime.toFixed(2)}% uptime
+                      {system.uptimePercentage.toFixed(2)}% uptime
                     </span>
                     <span>Today</span>
                   </div>
@@ -255,6 +211,7 @@ export default function StatusPage() {
               <p className="mt-1 text-sm text-gray-600">
                 This page shows the current operational status of CloudInvoice services. 
                 Uptime percentages are calculated over the past 90 days. All times are in UTC.
+                Data is updated every minute.
               </p>
               <p className="mt-2 text-sm text-gray-600">
                 Subscribe to updates or report an issue at{" "}
@@ -279,6 +236,10 @@ export default function StatusPage() {
           <div className="flex items-center gap-2">
             <span className="size-3 rounded-full bg-red-500" />
             <span className="text-gray-600">Down</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="size-3 rounded-full bg-blue-500" />
+            <span className="text-gray-600">Maintenance</span>
           </div>
         </div>
 

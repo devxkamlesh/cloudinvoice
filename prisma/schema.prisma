@@ -60,21 +60,22 @@ enum MemberRole {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String       @unique
+  emailVerified Boolean      @default(false)
   image         String?
   // Platform access. Never set from a request path — see PlatformRole.
   platformRole  PlatformRole @default(USER)
   // Set when an admin suspends an account. A suspended user keeps their data but is
   // refused at the session guard, so suspension is reversible and non-destructive.
   suspendedAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   sessions      Session[]
   accounts      Account[]
   memberships   Membership[]
+
   // Supports the admin user list, which filters by role and sorts by signup date.
   @@index([platformRole])
   @@index([createdAt])
@@ -93,7 +94,7 @@ model Session {
 }
 
 model Account {
-  id                    String   @id
+  id                    String    @id
   accountId             String
   providerId            String
   userId                String
@@ -104,9 +105,10 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([providerId, accountId])
 }
 
@@ -117,6 +119,7 @@ model Verification {
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
   @@unique([identifier, value])
 }
 
@@ -128,7 +131,7 @@ model Organization {
   email           String?
   phone           String?
   address         String?
-  country         String?      // ISO 3166-1 alpha-2 country code (e.g., IN, US, GB)
+  country         String? // ISO 3166-1 alpha-2 country code (e.g., IN, US, GB)
   gstin           String?
   pan             String?
   stateCode       String?
@@ -155,6 +158,7 @@ model Membership {
   createdAt      DateTime     @default(now())
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   @@unique([userId, organizationId])
   @@index([organizationId])
 }
@@ -173,52 +177,54 @@ model Client {
   updatedAt      DateTime     @updatedAt
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   invoices       Invoice[]
+
   @@index([organizationId, name])
 }
 
 model Invoice {
-  id                 String        @id @default(cuid())
-  organizationId     String
-  clientId           String
-  invoiceNumber      String
-  status             InvoiceStatus @default(DRAFT)
-  issueDate          DateTime      @default(now())
-  dueDate            DateTime
-  currency           String        @default("INR")
-  template           String        @default("classic")
-  taxMode            TaxMode       @default(INTRA_STATE)
-  subtotal           Decimal       @db.Decimal(12, 2)
-  discountAmount     Decimal       @default(0) @db.Decimal(12, 2)
-  taxAmount          Decimal       @default(0) @db.Decimal(12, 2)
-  total              Decimal       @db.Decimal(12, 2)
-  amountPaid         Decimal       @default(0) @db.Decimal(12, 2)
-  notes              String?
-  terms              String?
-  publicToken        String        @unique @default(cuid())
-  sentAt             DateTime?
-  viewedAt           DateTime?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  organization       Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  client             Client        @relation(fields: [clientId], references: [id])
-  items              InvoiceItem[]
-  payments           Payment[]
+  id             String        @id @default(cuid())
+  organizationId String
+  clientId       String
+  invoiceNumber  String
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime      @default(now())
+  dueDate        DateTime
+  currency       String        @default("INR")
+  template       String        @default("classic")
+  taxMode        TaxMode       @default(INTRA_STATE)
+  subtotal       Decimal       @db.Decimal(12, 2)
+  discountAmount Decimal       @default(0) @db.Decimal(12, 2)
+  taxAmount      Decimal       @default(0) @db.Decimal(12, 2)
+  total          Decimal       @db.Decimal(12, 2)
+  amountPaid     Decimal       @default(0) @db.Decimal(12, 2)
+  notes          String?
+  terms          String?
+  publicToken    String        @unique @default(cuid())
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  client         Client        @relation(fields: [clientId], references: [id])
+  items          InvoiceItem[]
+  payments       Payment[]
+
   @@unique([organizationId, invoiceNumber])
   @@index([organizationId, status, dueDate])
   @@index([publicToken])
 }
 
 model InvoiceItem {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   invoiceId   String
   description String
   hsnSac      String?
-  quantity    Decimal  @db.Decimal(10, 2)
-  unitPrice   Decimal  @db.Decimal(12, 2)
-  discount    Decimal  @default(0) @db.Decimal(12, 2)
-  taxRate     Decimal  @default(0) @db.Decimal(5, 2)
-  total       Decimal  @db.Decimal(12, 2)
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  quantity    Decimal @db.Decimal(10, 2)
+  unitPrice   Decimal @db.Decimal(12, 2)
+  discount    Decimal @default(0) @db.Decimal(12, 2)
+  taxRate     Decimal @default(0) @db.Decimal(5, 2)
+  total       Decimal @db.Decimal(12, 2)
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
@@ -233,5 +239,76 @@ model Payment {
   paidAt          DateTime?
   createdAt       DateTime      @default(now())
   invoice         Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
   @@index([invoiceId, status])
+}
+
+// System status tracking for the status page
+enum SystemStatus {
+  OPERATIONAL
+  DEGRADED
+  DOWN
+  MAINTENANCE
+}
+
+model SystemComponent {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  slug        String       @unique
+  description String
+  status      SystemStatus @default(OPERATIONAL)
+  icon        String       @default("Server")
+  order       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  incidents  Incident[]
+  uptimeData UptimeRecord[]
+
+  @@index([status])
+}
+
+model UptimeRecord {
+  id          String       @id @default(cuid())
+  componentId String
+  date        DateTime     @db.Date
+  status      SystemStatus
+  uptime      Float        @default(100.0) // Percentage for that day
+  downtime    Int          @default(0) // Minutes of downtime
+
+  component SystemComponent @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  @@unique([componentId, date])
+  @@index([componentId])
+  @@index([date])
+}
+
+model Incident {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  status      String    @default("investigating") // investigating, identified, monitoring, resolved
+  severity    String    @default("minor") // minor, major, critical
+  startedAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  affectedComponents SystemComponent[]
+  updates            IncidentUpdate[]
+
+  @@index([status])
+  @@index([startedAt])
+}
+
+model IncidentUpdate {
+  id         String   @id @default(cuid())
+  incidentId String
+  status     String
+  message    String
+  createdAt  DateTime @default(now())
+
+  incident Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId])
 }
