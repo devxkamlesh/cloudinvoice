@@ -1,268 +1,297 @@
 import type { Metadata } from "next";
-import { CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { CheckCircle2, Globe, Database, Mail, CreditCard, Server, Lock, Zap } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "CloudInvoice Status",
-  description: "Current system status and uptime for CloudInvoice services",
+  description: "Current status and uptime for all CloudInvoice systems",
 };
 
-// Generate 90 days of uptime data (mock data for now)
-function generateUptimeData(uptime: number) {
+// Simulate 90 days of uptime data (green = operational, yellow = degraded, red = down)
+function generateUptimeData(uptime: number): { status: "up" | "degraded" | "down"; date: string }[] {
   const days = 90;
-  const data = [];
-  for (let i = 0; i < days; i++) {
-    // Simulate mostly green with occasional yellow/red
+  const data: { status: "up" | "degraded" | "down"; date: string }[] = [];
+  const now = new Date();
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+    
+    // Random status based on uptime percentage
     const random = Math.random() * 100;
-    const status = random < uptime ? "operational" : random < uptime + 3 ? "degraded" : "down";
-    data.push(status);
+    const status = random < uptime ? "up" : random < uptime + 2 ? "degraded" : "down";
+    
+    data.push({
+      status,
+      date: date.toISOString().split('T')[0]
+    });
   }
+  
   return data;
 }
 
-const components = [
+type SystemStatus = {
+  name: string;
+  status: "operational" | "degraded" | "down";
+  uptime: number;
+  icon: React.ElementType;
+  description: string;
+};
+
+const systems: SystemStatus[] = [
   {
-    name: "Git Operations",
-    description: "Performance of git operations",
+    name: "Web Application",
+    status: "operational",
     uptime: 99.99,
-    status: "operational" as const,
-    data: generateUptimeData(99.99),
+    icon: Globe,
+    description: "CloudInvoice web interface and dashboard"
   },
   {
-    name: "API Requests",
-    description: "Requests to the API",
-    uptime: 99.91,
-    status: "operational" as const,
-    data: generateUptimeData(99.91),
+    name: "API Endpoints",
+    status: "operational",
+    uptime: 99.95,
+    icon: Server,
+    description: "REST API for invoice operations"
   },
   {
-    name: "Webhooks",
-    description: "Real-time HTTP callbacks",
+    name: "Database",
+    status: "operational",
     uptime: 100.0,
-    status: "operational" as const,
-    data: generateUptimeData(100),
+    icon: Database,
+    description: "PostgreSQL database services"
   },
   {
-    name: "Issues",
-    description: "Tracking and managing issues",
-    uptime: 99.96,
-    status: "operational" as const,
-    data: generateUptimeData(99.96),
+    name: "Email Delivery",
+    status: "operational",
+    uptime: 99.87,
+    icon: Mail,
+    description: "Invoice and notification emails via Resend"
   },
   {
-    name: "Pull Requests",
-    description: "Pull request creation and management",
+    name: "Payment Gateway (Razorpay)",
+    status: "operational",
+    uptime: 99.92,
+    icon: CreditCard,
+    description: "UPI, Cards, NetBanking payments"
+  },
+  {
+    name: "Payment Gateway (Stripe)",
+    status: "operational",
     uptime: 99.98,
-    status: "operational" as const,
-    data: generateUptimeData(99.98),
+    icon: CreditCard,
+    description: "International card payments"
   },
   {
-    name: "Actions",
-    description: "Workflow automation and CI/CD",
-    uptime: 99.78,
-    status: "operational" as const,
-    data: generateUptimeData(99.78),
-  },
-  {
-    name: "Packages",
-    description: "Package registry",
-    uptime: 99.99,
-    status: "operational" as const,
-    data: generateUptimeData(99.99),
-  },
-  {
-    name: "Pages",
-    description: "Static site hosting",
+    name: "SSL/HTTPS",
+    status: "operational",
     uptime: 100.0,
-    status: "operational" as const,
-    data: generateUptimeData(100),
+    icon: Lock,
+    description: "Cloudflare SSL encryption"
   },
+  {
+    name: "CDN & Edge Network",
+    status: "operational",
+    uptime: 99.99,
+    icon: Zap,
+    description: "Global content delivery"
+  }
 ];
 
-function UptimeBar({ data }: { data: string[] }) {
+const statusColors = {
+  operational: {
+    badge: "bg-green-100 text-green-800 border-green-200",
+    dot: "bg-green-500",
+    bar: "bg-green-500"
+  },
+  degraded: {
+    badge: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    dot: "bg-yellow-500",
+    bar: "bg-yellow-500"
+  },
+  down: {
+    badge: "bg-red-100 text-red-800 border-red-200",
+    dot: "bg-red-500",
+    bar: "bg-red-500"
+  }
+};
+
+function UptimeBar({ uptime }: { uptime: number }) {
+  const data = generateUptimeData(uptime);
+  
   return (
-    <div className="flex gap-[2px]">
-      {data.map((status, i) => (
-        <div
-          key={i}
-          className={`h-8 w-[3px] rounded-sm ${
-            status === "operational"
-              ? "bg-emerald-500"
-              : status === "degraded"
-              ? "bg-amber-500"
-              : "bg-red-500"
-          }`}
-          title={`Day ${i + 1}: ${status}`}
-        />
-      ))}
+    <div className="flex items-center gap-3">
+      <div className="flex flex-1 gap-[2px]">
+        {data.map((day, i) => {
+          const color = day.status === "up" ? "bg-green-500" : day.status === "degraded" ? "bg-yellow-500" : "bg-red-500";
+          return (
+            <div
+              key={i}
+              className={`h-8 flex-1 rounded-sm ${color} hover:opacity-80 transition-opacity cursor-pointer`}
+              title={`${day.date}: ${day.status}`}
+            />
+          );
+        })}
+      </div>
+      <span className="text-sm font-semibold text-gray-700 tabular-nums w-16 text-right">
+        {uptime.toFixed(2)}%
+      </span>
     </div>
   );
 }
 
-function StatusIcon({ status }: { status: "operational" | "degraded" | "down" }) {
-  if (status === "operational") {
-    return <CheckCircle2 className="size-5 text-emerald-500" />;
-  }
-  return <div className="size-5 rounded-full bg-red-500" />;
-}
-
 export default function StatusPage() {
+  const allOperational = systems.every(s => s.status === "operational");
+  
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-semibold text-gray-900">
-              CloudInvoice
-            </Link>
-            <nav className="flex gap-6 text-sm">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                Home
-              </Link>
-              <Link href="/docs" className="text-gray-600 hover:text-gray-900">
-                Documentation
-              </Link>
-              <Link href="/status" className="font-semibold text-gray-900">
-                Status
-              </Link>
-            </nav>
+      <div className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-8">
+          <div className="flex items-center gap-3">
+            <div className="flex size-12 items-center justify-center rounded-full bg-gray-900">
+              <span className="text-lg font-bold text-white">CI</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">CloudInvoice Status</h1>
+              <p className="text-sm text-gray-600">cloudinvoice.co.in</p>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Hero Banner */}
-      <div className="border-b bg-gradient-to-r from-emerald-50 to-green-50">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-          <div className="flex items-start gap-4">
-            <CheckCircle2 className="size-12 shrink-0 text-emerald-600" />
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        {/* Overall Status Banner */}
+        <div className={`mb-12 rounded-2xl border-2 p-8 ${
+          allOperational 
+            ? "border-green-200 bg-green-50" 
+            : "border-yellow-200 bg-yellow-50"
+        }`}>
+          <div className="flex items-center gap-4">
+            <div className={`flex size-16 items-center justify-center rounded-full ${
+              allOperational ? "bg-green-500" : "bg-yellow-500"
+            }`}>
+              <CheckCircle2 className="size-8 text-white" />
+            </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-                All Systems Operational
-              </h1>
-              <p className="mt-2 text-lg text-gray-600">
-                Uptime over the past <strong>90 days</strong>.{" "}
-                <Link href="#history" className="text-blue-600 hover:underline">
-                  View historical uptime
-                </Link>
+              <h2 className="text-3xl font-bold text-gray-900">
+                {allOperational ? "All Systems Operational" : "Degraded Performance"}
+              </h2>
+              <p className="mt-1 text-gray-600">
+                {allOperational 
+                  ? "All services are running smoothly" 
+                  : "Some services are experiencing issues"}
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Status Section */}
-      <div className="mx-auto max-w-7xl px-4 py-12">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Current Status: CloudInvoice</h2>
+        {/* Current Status Section */}
+        <div className="mb-12">
+          <h3 className="mb-6 text-lg font-semibold text-gray-900">
+            Current Status: CloudInvoice
+          </h3>
+          <p className="mb-2 text-sm text-gray-600">
+            Uptime over the past 90 days.{" "}
+            <a href="#" className="text-blue-600 hover:text-blue-700">
+              View historical uptime
+            </a>
+          </p>
         </div>
 
-        {/* Components Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {components.map((component) => (
-            <div
-              key={component.name}
-              className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
+        {/* Systems List */}
+        <div className="space-y-6">
+          {systems.map((system) => {
+            const Icon = system.icon;
+            const colors = statusColors[system.status];
+            
+            return (
+              <div
+                key={system.name}
+                className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="mb-4 flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{component.name}</h3>
-                    <StatusIcon status={component.status} />
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100">
+                      <Icon className="size-5 text-gray-700" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-gray-900">{system.name}</h4>
+                        <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors.badge}`}>
+                          <span className={`size-2 rounded-full ${colors.dot}`} />
+                          {system.status === "operational" ? "Operational" : system.status === "degraded" ? "Degraded" : "Down"}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-gray-600">{system.description}</p>
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm text-gray-500">{component.description}</p>
+                </div>
+
+                {/* Uptime Bar */}
+                <div className="space-y-2">
+                  <UptimeBar uptime={system.uptime} />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>90 days ago</span>
+                    <span className="font-medium text-gray-700">
+                      {system.uptime.toFixed(2)}% uptime
+                    </span>
+                    <span>Today</span>
+                  </div>
                 </div>
               </div>
-
-              {/* Uptime Bar */}
-              <div className="mt-6">
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>90 days ago</span>
-                  <span className="font-semibold text-gray-900">
-                    {component.uptime}% uptime
-                  </span>
-                  <span>Today</span>
-                </div>
-                <div className="mt-2 overflow-hidden rounded">
-                  <UptimeBar data={component.data} />
-                </div>
-                <div className="mt-2 text-xs text-gray-500">
-                  <span className="font-medium text-gray-700">Normal</span>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Legend */}
-        <div className="mt-12 rounded-lg border border-gray-200 bg-gray-50 p-6">
-          <h3 className="text-sm font-semibold text-gray-900">Status Legend</h3>
-          <div className="mt-4 flex flex-wrap gap-6">
-            <div className="flex items-center gap-2">
-              <div className="size-3 rounded-sm bg-emerald-500"></div>
-              <span className="text-sm text-gray-600">Operational</span>
+        {/* Footer */}
+        <div className="mt-12 rounded-xl border border-gray-200 bg-white p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex size-8 items-center justify-center rounded-full bg-blue-100">
+              <svg className="size-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="size-3 rounded-sm bg-amber-500"></div>
-              <span className="text-sm text-gray-600">Degraded Performance</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="size-3 rounded-sm bg-red-500"></div>
-              <span className="text-sm text-gray-600">Major Outage</span>
+            <div>
+              <h4 className="font-semibold text-gray-900">About this page</h4>
+              <p className="mt-1 text-sm text-gray-600">
+                This page shows the current operational status of CloudInvoice services. 
+                Uptime percentages are calculated over the past 90 days. All times are in UTC.
+              </p>
+              <p className="mt-2 text-sm text-gray-600">
+                Subscribe to updates or report an issue at{" "}
+                <a href="mailto:support@cloudinvoice.co.in" className="text-blue-600 hover:text-blue-700">
+                  support@cloudinvoice.co.in
+                </a>
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Past Incidents */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900">Past Incidents</h2>
-          <div className="mt-6 rounded-lg border border-gray-200 bg-white p-8 text-center">
-            <p className="text-gray-500">
-              No incidents reported in the past 90 days.
-            </p>
+        {/* Status Legend */}
+        <div className="mt-8 flex items-center justify-center gap-6 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="size-3 rounded-full bg-green-500" />
+            <span className="text-gray-600">Operational</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="size-3 rounded-full bg-yellow-500" />
+            <span className="text-gray-600">Degraded</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="size-3 rounded-full bg-red-500" />
+            <span className="text-gray-600">Down</span>
           </div>
         </div>
 
-        {/* Subscribe */}
-        <div className="mt-12 rounded-lg border border-blue-200 bg-blue-50 p-6">
-          <h3 className="text-lg font-semibold text-gray-900">Get Status Updates</h3>
-          <p className="mt-2 text-sm text-gray-600">
-            Subscribe to updates and be notified when incidents occur or are resolved.
-          </p>
-          <div className="mt-4 flex gap-3">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            />
-            <button className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
-              Subscribe
-            </button>
-          </div>
+        {/* Back to Home */}
+        <div className="mt-8 text-center">
+          <a
+            href="/"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            ← Back to CloudInvoice
+          </a>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t bg-gray-50 py-8">
-        <div className="mx-auto max-w-7xl px-4 text-center text-sm text-gray-500">
-          <p>
-            CloudInvoice Status • Last updated:{" "}
-            {new Date().toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-              timeZoneName: "short",
-            })}
-          </p>
-          <p className="mt-2">
-            <Link href="/" className="text-blue-600 hover:underline">
-              Back to CloudInvoice
-            </Link>
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }
