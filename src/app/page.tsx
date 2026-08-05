@@ -5,6 +5,7 @@ import { MarketingShell } from "@/components/marketing/site-shell";
 import { ProductShowcase } from "@/components/marketing/product-showcase";
 import { PricingPreview } from "@/components/marketing/pricing-preview";
 import { marketingFaqs } from "@/lib/marketing-content";
+import { getHomepageStats } from "@/lib/actions/homepage-stats";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -161,7 +162,9 @@ function MiniDashboard() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const stats = await getHomepageStats();
+  
   return <MarketingShell>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
     <section className="relative overflow-hidden bg-[#0a0a0a]">
@@ -229,15 +232,15 @@ export default function Home() {
           {/* Animated stats */}
           <div className="mt-16 grid grid-cols-3 gap-8 border-t border-zinc-800 pt-12 text-center animate-fade-in-delay-2">
             <div className="transition-transform duration-300 hover:scale-110">
-              <p className="text-3xl font-bold text-white">₹12L+</p>
+              <p className="text-3xl font-bold text-white">{stats.totalRevenue}</p>
               <p className="mt-2 text-sm text-zinc-500">Invoiced this month</p>
             </div>
             <div className="transition-transform duration-300 hover:scale-110">
-              <p className="text-3xl font-bold text-white">150+</p>
+              <p className="text-3xl font-bold text-white">{stats.activeUsers}+</p>
               <p className="mt-2 text-sm text-zinc-500">Active users</p>
             </div>
             <div className="transition-transform duration-300 hover:scale-110">
-              <p className="text-3xl font-bold text-white">95%</p>
+              <p className="text-3xl font-bold text-white">{stats.paymentSuccessRate}</p>
               <p className="mt-2 text-sm text-zinc-500">Payment success rate</p>
             </div>
           </div>
