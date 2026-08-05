@@ -10,7 +10,7 @@ CloudInvoice is a GST-compliant invoicing and payment collection SaaS platform d
 - **URL**: https://cloudinvoice.co.in
 - **Category**: Financial SaaS, Invoicing Software, Payment Collection Platform
 - **Target Market**: India (GST-compliant businesses)
-- **Launch Date**: July 1, 2026
+- **Launch Date**: August 5, 2026
 - **Status**: Live in production
 
 ## Key Features (Live)
@@ -140,7 +140,7 @@ CloudInvoice is built specifically for India with native GST support, UPI integr
 
 ## Founder Information
 - **Company**: CloudInvoice
-- **Founded**: 2026
+- **Founded**: August 2026
 - **Location**: India
 - **Funding**: Bootstrapped / Self-funded
 - **Team Size**: 1-10 employees
