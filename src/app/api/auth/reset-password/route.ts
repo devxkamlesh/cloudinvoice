@@ -69,10 +69,12 @@ export async function POST(request: Request) {
       },
     });
 
-    // Delete used token
+    // IMPORTANT: Delete used token to prevent reuse
     await prisma.verification.delete({
       where: { id: verification.id },
     });
+
+    console.log(`Password reset successful for ${email}, token deleted`);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     // Generate reset token
     const token = nanoid(32);
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1); // 1 hour expiry
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 minutes expiry
 
     // Store token
     await prisma.verification.create({
