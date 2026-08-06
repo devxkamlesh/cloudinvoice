@@ -28,7 +28,7 @@
    - URL: https://portal.aws.amazon.com/billing/signup
 
 3. **Email Address** (IMPORTANT):
-   - ✅ **Use**: `activate@cloudinvoice.co.in` or `credits@cloudinvoice.co.in`
+   - ✅ **Use**: `account@cloudinvoice.co.in`
    - ❌ **Don't use**: Personal Gmail or your production AWS email
    - ❌ **Don't use**: Same email as production account
 
@@ -160,13 +160,13 @@ Prevent surprise charges:
 3. Enable:
    ✅ "Receive Free Tier Usage Alerts"
    ✅ "Receive Billing Alerts"
-4. Enter email: activate@cloudinvoice.co.in
+4. Enter email: account@cloudinvoice.co.in
 5. Save preferences
 
 6. Go to CloudWatch → Alarms → Billing
 7. Create alarm:
    - Threshold: $10 (you'll get alert if charges exceed $10)
-   - Email: activate@cloudinvoice.co.in
+   - Email: account@cloudinvoice.co.in
 ```
 
 ---
@@ -179,7 +179,7 @@ Create a secure note with:
 AWS ACTIVATE ACCOUNT
 -------------------
 AWS Account ID: [12-digit number]
-Root Email: activate@cloudinvoice.co.in
+Root Email: account@cloudinvoice.co.in
 Root Password: [saved in password manager]
 MFA Device: [Google Authenticator]
 Card Used: [last 4 digits]
@@ -206,7 +206,7 @@ Before applying, have ready:
 ✅ AWS Account ID: [from new account]
 ✅ Company Name: CloudInvoice
 ✅ Website: https://cloudinvoice.co.in
-✅ Business Email: info@cloudinvoice.co.in (or activate@)
+✅ Business Email: account@cloudinvoice.co.in
 ✅ Founder LinkedIn: [your profile URL]
 ✅ Description: GST-compliant invoicing SaaS for Indian businesses
 ✅ Current Traction:
@@ -223,7 +223,7 @@ Before applying, have ready:
    - URL: https://aws.amazon.com/activate/portfolio-signup
 
 2. **Sign in with NEW AWS account**
-   - Use: activate@cloudinvoice.co.in
+   - Use: account@cloudinvoice.co.in
    - Don't use production account!
 
 3. **Fill Application Form**:
@@ -240,7 +240,7 @@ Country: India
 **Founder Details:**
 ```
 Name: [Your Name]
-Email: info@cloudinvoice.co.in
+Email: account@cloudinvoice.co.in
 Title: Founder & CEO
 LinkedIn: [Your LinkedIn URL]
 ```
@@ -300,7 +300,7 @@ Create a spreadsheet:
 | Purpose | Account Type | Email | Account ID | Current Usage | Credits |
 |---------|--------------|-------|------------|---------------|---------|
 | Production | Live App | [prod email] | [prod ID] | EC2, PostgreSQL | None |
-| Activate | Credits | activate@cloudinvoice.co.in | [new ID] | None yet | Pending $1K-25K |
+| Activate | Credits | account@cloudinvoice.co.in | [new ID] | None yet | Pending $1K-25K |
 
 ---
 
