@@ -34,8 +34,8 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
     issueDate: invoice.issueDate.toISOString().slice(0, 10),
     dueDate: invoice.dueDate.toISOString().slice(0, 10),
     taxMode: invoice.taxMode,
-    template: (["classic", "modern", "midnight"] as const).includes(invoice.template as "classic")
-      ? (invoice.template as "classic" | "modern" | "midnight")
+    template: (["classic", "modern", "midnight", "minimal", "corporate", "creative"] as const).includes(invoice.template as "classic")
+      ? (invoice.template as "classic" | "modern" | "midnight" | "minimal" | "corporate" | "creative")
       : "classic",
     notes: invoice.notes ?? "",
     terms: invoice.terms ?? "",

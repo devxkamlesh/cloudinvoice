@@ -18,7 +18,7 @@ export type InvoiceFormDefaults = {
   issueDate: string;
   dueDate: string;
   taxMode: "INTRA_STATE" | "INTER_STATE";
-  template: "classic" | "modern" | "midnight";
+  template: "classic" | "modern" | "midnight" | "minimal" | "corporate" | "creative";
   notes: string;
   terms: string;
   items: { description: string; hsnSac?: string; quantity: number; unitPrice: number; discount: number; taxRate: number }[];
@@ -106,7 +106,7 @@ export function InvoiceForm({
           <label className="text-sm font-medium">Issue date<Input type="date" className="mt-1.5" {...form.register("issueDate")} /></label>
           <label className="text-sm font-medium">Due date<Input type="date" className="mt-1.5" {...form.register("dueDate")} /></label>
           <label className="text-sm font-medium">Tax type<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("taxMode")}><option value="INTRA_STATE">Intra-state (CGST + SGST)</option><option value="INTER_STATE">Inter-state (IGST)</option></select></label>
-          <label className="text-sm font-medium sm:col-span-3">Invoice template<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("template")}><option value="classic">Classic — clear and traditional</option><option value="modern">Modern — calm and minimal</option><option value="midnight">Midnight — high-contrast statement</option></select></label>
+          <label className="text-sm font-medium sm:col-span-3">Invoice template<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("template")}><option value="classic">Classic — professional clarity</option><option value="modern">Modern — contemporary confidence</option><option value="midnight">Midnight — bold and memorable</option><option value="minimal">Minimal — essential simplicity</option><option value="corporate">Corporate — enterprise standard</option><option value="creative">Creative — expressive design</option></select></label>
         </div>
         {form.formState.errors.clientId && <p className="mt-3 text-sm text-red-600">Select a client.</p>}
         {form.formState.errors.dueDate && <p className="mt-3 text-sm text-red-600">{form.formState.errors.dueDate.message}</p>}

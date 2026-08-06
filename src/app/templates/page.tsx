@@ -5,7 +5,7 @@ import { MarketingShell } from "@/components/marketing/site-shell";
 
 export const metadata: Metadata = {
   title: "Invoice Templates — CloudInvoice",
-  description: "Choose from Classic, Modern, or Midnight invoice templates. Each template is designed to match your brand energy while keeping client information clear.",
+  description: "Choose from 6 professional invoice templates: Classic, Modern, Midnight, Minimal, Corporate, and Creative. Each designed to match your brand while keeping client information clear.",
   alternates: { canonical: "/templates" }
 };
 
@@ -75,6 +75,72 @@ const templates = [
       textSecondary: "text-zinc-400"
     },
     bestFor: "Digital agencies, SaaS consultants, modern studios"
+  },
+  {
+    id: "minimal",
+    name: "Minimal",
+    icon: Check,
+    tagline: "Essential simplicity",
+    description: "Maximum clarity with minimum visual noise. Every element serves the core purpose: show what was delivered and what it costs.",
+    features: [
+      "Reduced visual elements for focus",
+      "Ultra-clean line item spacing",
+      "Single accent color for totals",
+      "Maximum whitespace utilization",
+      "Fast to scan and understand"
+    ],
+    preview: {
+      bg: "bg-white",
+      border: "border-zinc-100",
+      headerBg: "bg-white",
+      textPrimary: "text-zinc-900",
+      textSecondary: "text-zinc-500"
+    },
+    bestFor: "Freelancers, photographers, designers, consultants"
+  },
+  {
+    id: "corporate",
+    name: "Corporate",
+    icon: Layers,
+    tagline: "Enterprise standard",
+    description: "Structured and formal with comprehensive details visible at a glance. Built for businesses that handle complex billing requirements.",
+    features: [
+      "Detailed header with all tax identifiers",
+      "Multi-column line items with HSN/SAC",
+      "Separate sections for taxes and totals",
+      "Formal business terminology",
+      "Compliance-focused layout"
+    ],
+    preview: {
+      bg: "bg-white",
+      border: "border-zinc-300",
+      headerBg: "bg-zinc-100",
+      textPrimary: "text-zinc-900",
+      textSecondary: "text-zinc-700"
+    },
+    bestFor: "Manufacturing, B2B vendors, enterprise services, contractors"
+  },
+  {
+    id: "creative",
+    name: "Creative",
+    icon: Sparkles,
+    tagline: "Expressive design",
+    description: "A template that makes room for visual identity while keeping financial details clear. For businesses where presentation is part of the value.",
+    features: [
+      "Large logo placement option",
+      "Brand color integration throughout",
+      "Visual dividers and accents",
+      "Photography and image support",
+      "Portfolio-style presentation"
+    ],
+    preview: {
+      bg: "bg-gradient-to-br from-purple-50 to-blue-50",
+      border: "border-purple-200",
+      headerBg: "bg-white",
+      textPrimary: "text-zinc-900",
+      textSecondary: "text-purple-700"
+    },
+    bestFor: "Creative studios, event planners, marketing agencies, architects"
   }
 ];
 
