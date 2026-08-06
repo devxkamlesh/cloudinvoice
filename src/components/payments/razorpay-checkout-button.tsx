@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useScript } from '@/hooks/use-script';
 
@@ -168,23 +168,36 @@ export function RazorpayCheckoutButton({ token }: RazorpayCheckoutButtonProps) {
   return (
     <>
       <Button
-        className="mt-5 w-full"
+        className="w-full h-12 text-base font-semibold shadow-md hover:shadow-lg transition-all"
         size="lg"
         onClick={() => checkout.mutate()}
         disabled={checkout.isPending || !razorpayLoaded}
         variant="default"
       >
-        <IndianRupee className="size-4" />
-        {checkout.isPending
-          ? 'Opening payment gateway…'
-          : !razorpayLoaded
-          ? 'Loading payment gateway…'
-          : 'Pay with UPI / Cards / NetBanking'}
+        {checkout.isPending ? (
+          <>
+            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Opening Payment Gateway...
+          </>
+        ) : !razorpayLoaded ? (
+          <>
+            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            Loading...
+          </>
+        ) : (
+          <>
+            <Lock className="size-4 mr-2" />
+            Pay with UPI / Card / NetBanking
+            <IndianRupee className="size-4 ml-2" />
+          </>
+        )}
       </Button>
       {(error || checkout.error) && (
-        <p role="alert" className="mt-3 text-center text-sm text-red-600">
-          {error || checkout.error?.message}
-        </p>
+        <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3">
+          <p role="alert" className="text-sm text-red-700 text-center">
+            {error || checkout.error?.message}
+          </p>
+        </div>
       )}
     </>
   );
