@@ -71,13 +71,40 @@ export async function POST(request: Request) {
     const newTotalPaid = Number(invoice.amountPaid) + amountPaid;
     const isPaid = newTotalPaid >= Number(invoice.total);
 
-    // Update invoice in database
-    const updatedInvoice = await prisma.invoice.update({
-      where: { id: body.invoiceId },
-      data: {
-        status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIALLY_PAID,
-        amountPaid: newTotalPaid,
-      },
+    // Record payment and update invoice in transaction
+    const updatedInvoice = await prisma.$transaction(async (tx) => {
+      // Check if payment already exists
+      const existingPayment = await tx.payment.findFirst({
+        where: {
+          invoiceId: body.invoiceId,
+          razorpayPaymentId: body.razorpay_payment_id,
+        },
+      });
+
+      // Only create payment if it doesn't exist (prevent duplicates)
+      if (!existingPayment) {
+        await tx.payment.create({
+          data: {
+            invoiceId: body.invoiceId!,
+            amount: amountPaid,
+            currency: invoice.currency,
+            status: 'SUCCEEDED',
+            method: 'RAZORPAY',
+            razorpayPaymentId: body.razorpay_payment_id,
+            razorpayOrderId: body.razorpay_order_id,
+            paidAt: new Date(),
+          },
+        });
+      }
+
+      // Update invoice
+      return tx.invoice.update({
+        where: { id: body.invoiceId },
+        data: {
+          status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIALLY_PAID,
+          amountPaid: newTotalPaid,
+        },
+      });
     });
 
     // TODO: Send payment confirmation email

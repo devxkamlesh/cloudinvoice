@@ -27,6 +27,7 @@ enum PaymentStatus {
 
 enum PaymentMethod {
   STRIPE
+  RAZORPAY
   UPI
   BANK_TRANSFER
   CASH
@@ -228,17 +229,19 @@ model InvoiceItem {
 }
 
 model Payment {
-  id              String        @id @default(cuid())
-  invoiceId       String
-  amount          Decimal       @db.Decimal(12, 2)
-  currency        String        @default("INR")
-  status          PaymentStatus @default(PENDING)
-  method          PaymentMethod
-  stripePaymentId String?       @unique
-  reference       String?
-  paidAt          DateTime?
-  createdAt       DateTime      @default(now())
-  invoice         Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  id                 String        @id @default(cuid())
+  invoiceId          String
+  amount             Decimal       @db.Decimal(12, 2)
+  currency           String        @default("INR")
+  status             PaymentStatus @default(PENDING)
+  method             PaymentMethod
+  stripePaymentId    String?       @unique
+  razorpayPaymentId  String?       @unique
+  razorpayOrderId    String?
+  reference          String?
+  paidAt             DateTime?
+  createdAt          DateTime      @default(now())
+  invoice            Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@index([invoiceId, status])
 }
