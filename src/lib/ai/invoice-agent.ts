@@ -56,11 +56,14 @@ export async function generateInvoiceWithAI(
 ): Promise<AIInvoiceData> {
   const { endpoint, apiKey } = getFoundryConfig();
 
-  const response = await fetch(endpoint, {
+  // Azure AI Agent endpoint format
+  const agentEndpoint = `${endpoint}/agents/CloudinvoiceAgent/chat/completions`;
+
+  const response = await fetch(agentEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+      "api-key": apiKey, // Azure uses "api-key" header
     },
     body: JSON.stringify({
       messages: [
@@ -83,8 +86,8 @@ export async function generateInvoiceWithAI(
 
   const result = await response.json();
 
-  // Extract the AI response
-  const aiMessage = result.choices?.[0]?.message?.content;
+  // Extract the AI response (Azure AI format)
+  const aiMessage = result.choices?.[0]?.message?.content || result.content;
   if (!aiMessage) {
     throw new Error("No response from AI agent");
   }
