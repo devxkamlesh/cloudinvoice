@@ -6,7 +6,7 @@ import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AIInvoiceGeneratorWrapper() {
-  const [generatedData, setGeneratedData] = useState<any>(null);
+  const [generatedData, setGeneratedData] = useState<Record<string, unknown> | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -95,26 +95,26 @@ export function AIInvoiceGeneratorWrapper() {
           </div>
 
           {/* Line Items */}
-          {generatedData.items && generatedData.items.length > 0 && (
+          {generatedData.items && Array.isArray(generatedData.items) && generatedData.items.length > 0 && (
             <div className="space-y-2 rounded-lg border bg-muted/30 p-4">
               <p className="text-xs font-medium text-muted-foreground">
                 LINE ITEMS
               </p>
               <div className="space-y-3">
-                {generatedData.items.map((item: any, idx: number) => (
+                {generatedData.items.map((item: Record<string, unknown>, idx: number) => (
                   <div key={idx} className="border-l-2 border-primary/30 pl-3">
-                    <p className="font-medium">{item.description}</p>
+                    <p className="font-medium">{String(item.description || '')}</p>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                       <span>Qty: {item.quantity}</span>
                       <span>Rate: ₹{item.rate}</span>
                       <span>HSN/SAC: {item.hsnSac}</span>
                       <span>GST: {item.taxRate}%</span>
-                      {item.discount > 0 && (
+                      {Number(item.discount) > 0 && (
                         <span>Discount: {item.discount}%</span>
                       )}
                     </div>
                     <p className="mt-1 font-semibold">
-                      Amount: ₹{item.amount.toFixed(2)}
+                      Amount: ₹{Number(item.amount).toFixed(2)}
                     </p>
                   </div>
                 ))}

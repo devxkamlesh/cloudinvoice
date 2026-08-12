@@ -7,7 +7,14 @@ import { Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface AIInvoiceGeneratorProps {
-  onGenerated: (data: any) => void;
+  onGenerated: (data: {
+    client: Record<string, unknown>;
+    items: Array<Record<string, unknown>>;
+    dueDate: string;
+    notes: string;
+    terms: string;
+    taxMode: string;
+  }) => void;
 }
 
 export function AIInvoiceGenerator({ onGenerated }: AIInvoiceGeneratorProps) {

@@ -96,7 +96,7 @@ export async function generateInvoiceWithAI(
   let aiData: AIInvoiceData;
   try {
     aiData = JSON.parse(aiMessage);
-  } catch (error) {
+  } catch {
     throw new Error(`Failed to parse AI response: ${aiMessage}`);
   }
 
