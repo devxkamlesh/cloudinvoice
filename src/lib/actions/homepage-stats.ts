@@ -14,18 +14,10 @@ export interface HomepageStats {
  */
 export async function getHomepageStats(): Promise<HomepageStats> {
   try {
-    // Get current month date range
-    const now = new Date();
-    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-
-    // Get total revenue invoiced THIS MONTH (all statuses except DRAFT and VOID)
-    const currentMonthInvoices = await prisma.invoice.aggregate({
+    // Get total revenue from ALL issued invoices (not just this month)
+    // This makes more sense for new businesses that don't have monthly volume yet
+    const allIssuedInvoices = await prisma.invoice.aggregate({
       where: {
-        issueDate: {
-          gte: startOfCurrentMonth,
-          lte: endOfCurrentMonth,
-        },
         status: {
           in: ["SENT", "VIEWED", "PAID", "PARTIALLY_PAID", "OVERDUE"],
         },
@@ -54,7 +46,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
         : "0";
 
     // Format revenue - show 0 if no data (value is stored in paise/cents, divide by 100)
-    const revenueInPaise = currentMonthInvoices._sum.total ? Number(currentMonthInvoices._sum.total) : 0;
+    const revenueInPaise = allIssuedInvoices._sum.total ? Number(allIssuedInvoices._sum.total) : 0;
     const revenueFormatted = formatIndianCurrency(revenueInPaise);
 
     return {

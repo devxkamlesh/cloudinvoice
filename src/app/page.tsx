@@ -235,7 +235,7 @@ export default async function Home() {
           <div className="mt-16 grid grid-cols-3 gap-8 border-t border-zinc-800 pt-12 text-center animate-fade-in-delay-2">
             <div className="transition-transform duration-300 hover:scale-110">
               <p className="text-3xl font-bold text-white">{stats.totalRevenue}</p>
-              <p className="mt-2 text-sm text-zinc-500">Invoiced this month</p>
+              <p className="mt-2 text-sm text-zinc-500">Total invoiced</p>
             </div>
             <div className="transition-transform duration-300 hover:scale-110">
               <p className="text-3xl font-bold text-white">{stats.activeUsers}+</p>
