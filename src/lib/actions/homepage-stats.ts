@@ -14,10 +14,21 @@ export interface HomepageStats {
  */
 export async function getHomepageStats(): Promise<HomepageStats> {
   try {
-    // Get total revenue from all paid invoices
-    const paidInvoices = await prisma.invoice.aggregate({
+    // Get current month date range
+    const now = new Date();
+    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    // Get total revenue invoiced THIS MONTH (all statuses except DRAFT and VOID)
+    const currentMonthInvoices = await prisma.invoice.aggregate({
       where: {
-        status: "PAID",
+        issueDate: {
+          gte: startOfCurrentMonth,
+          lte: endOfCurrentMonth,
+        },
+        status: {
+          in: ["SENT", "VIEWED", "PAID", "PARTIALLY_PAID", "OVERDUE"],
+        },
       },
       _sum: {
         total: true,
@@ -27,35 +38,29 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     // Get count of active users (users who have signed up)
     const activeUsers = await prisma.user.count();
 
-    // Calculate payment success rate
-    // (Total paid invoices / Total sent invoices) * 100
-    const totalSentInvoices = await prisma.invoice.count({
+    // Calculate payment success rate based on PAYMENTS, not invoice status
+    // This is more accurate: successful payments / total payment attempts
+    const totalPayments = await prisma.payment.count();
+    
+    const successfulPayments = await prisma.payment.count({
       where: {
-        status: {
-          in: ["SENT", "VIEWED", "PAID", "PARTIALLY_PAID", "OVERDUE"],
-        },
-      },
-    });
-
-    const totalPaidInvoices = await prisma.invoice.count({
-      where: {
-        status: "PAID",
+        status: "SUCCEEDED",
       },
     });
 
     const successRate =
-      totalSentInvoices > 0
-        ? ((totalPaidInvoices / totalSentInvoices) * 100).toFixed(0)
-        : "N/A";
+      totalPayments > 0
+        ? ((successfulPayments / totalPayments) * 100).toFixed(0)
+        : "0";
 
-    // Format revenue - show 0 if no data
-    const revenueInRupees = paidInvoices._sum.total ? Number(paidInvoices._sum.total) : 0;
-    const revenueFormatted = formatIndianCurrency(revenueInRupees);
+    // Format revenue - show 0 if no data (value is stored in paise/cents, divide by 100)
+    const revenueInPaise = currentMonthInvoices._sum.total ? Number(currentMonthInvoices._sum.total) : 0;
+    const revenueFormatted = formatIndianCurrency(revenueInPaise);
 
     return {
       totalRevenue: revenueFormatted,
       activeUsers: activeUsers,
-      paymentSuccessRate: totalSentInvoices > 0 ? `${successRate}%` : "N/A",
+      paymentSuccessRate: totalPayments > 0 ? `${successRate}%` : "0%",
     };
   } catch (error) {
     console.error("Error fetching homepage stats:", error);
@@ -64,7 +69,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     return {
       totalRevenue: "₹0",
       activeUsers: 0,
-      paymentSuccessRate: "N/A",
+      paymentSuccessRate: "0%",
     };
   }
 }
@@ -72,25 +77,27 @@ export async function getHomepageStats(): Promise<HomepageStats> {
 /**
  * Format number to Indian currency format (Lakhs and Crores)
  * Shows actual values only - returns ₹0 if amount is 0
+ * Amount is expected in paise (smallest currency unit)
  */
-function formatIndianCurrency(amount: number): string {
-  if (amount === 0) return "₹0";
+function formatIndianCurrency(amountInPaise: number): string {
+  if (amountInPaise === 0) return "₹0";
   
-  // Convert paise to rupees (assuming amount is in paise)
-  const rupees = amount / 100;
+  // Convert paise to rupees (100 paise = 1 rupee)
+  const rupees = amountInPaise / 100;
 
   if (rupees >= 10000000) {
     // 1 Crore = 10,000,000
     const crores = rupees / 10000000;
-    return `₹${crores.toFixed(1)}Cr+`;
+    return `₹${crores.toFixed(1)}Cr`;
   } else if (rupees >= 100000) {
     // 1 Lakh = 100,000
     const lakhs = rupees / 100000;
-    return `₹${lakhs.toFixed(0)}L+`;
+    return `₹${lakhs.toFixed(1)}L`;
   } else if (rupees >= 1000) {
     const thousands = rupees / 1000;
-    return `₹${thousands.toFixed(0)}K+`;
+    return `₹${thousands.toFixed(0)}K`;
   } else {
-    return `₹${rupees.toFixed(0)}`;
+    // For amounts less than 1000, show actual rupees
+    return `₹${rupees.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
   }
 }
