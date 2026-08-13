@@ -60,6 +60,9 @@ services:
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      - NEXT_PUBLIC_RAZORPAY_KEY_ID=${NEXT_PUBLIC_RAZORPAY_KEY_ID}
       - RESEND_API_KEY=${RESEND_API_KEY}
       - EMAIL_FROM=${EMAIL_FROM}
       - CLOUDINARY_URL=${CLOUDINARY_URL}
@@ -68,6 +71,11 @@ services:
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
       - UPSTASH_REDIS_REST_URL=${UPSTASH_REDIS_REST_URL}
       - UPSTASH_REDIS_REST_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+      # Microsoft Foundry AI
+      - FOUNDRY_ENDPOINT=${FOUNDRY_ENDPOINT}
+      - FOUNDRY_API_KEY=${FOUNDRY_API_KEY}
+      - FOUNDRY_OCR_ENDPOINT=${FOUNDRY_OCR_ENDPOINT}
+      - FOUNDRY_OCR_API_KEY=${FOUNDRY_OCR_API_KEY}
       # Read at runtime by MarketingShell, which is a Server Component, so a runtime
       # env var is enough here. Verified: NEXT_PUBLIC_APP_URL resolves correctly in the
       # rendered sitemap and JSON-LD without being passed as a Docker build arg.
