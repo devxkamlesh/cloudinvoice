@@ -6,15 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+interface GeneratedData {
+  client: Record<string, unknown>;
+  items: Array<Record<string, unknown>>;
+  dueDate: string;
+  notes: string;
+  terms: string;
+  taxMode: string;
+}
+
 interface AIInvoiceGeneratorProps {
-  onGenerated: (data: {
-    client: Record<string, unknown>;
-    items: Array<Record<string, unknown>>;
-    dueDate: string;
-    notes: string;
-    terms: string;
-    taxMode: string;
-  }) => void;
+  onGenerated: (data: GeneratedData) => void;
 }
 
 export function AIInvoiceGenerator({ onGenerated }: AIInvoiceGeneratorProps) {

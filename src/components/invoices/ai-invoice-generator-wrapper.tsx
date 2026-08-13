@@ -5,8 +5,17 @@ import { AIInvoiceGenerator } from "./ai-invoice-generator";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+interface GeneratedData {
+  client: Record<string, unknown>;
+  items: Array<Record<string, unknown>>;
+  dueDate: string;
+  notes: string;
+  terms: string;
+  taxMode: string;
+}
+
 export function AIInvoiceGeneratorWrapper() {
-  const [generatedData, setGeneratedData] = useState<Record<string, unknown> | null>(null);
+  const [generatedData, setGeneratedData] = useState<GeneratedData | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -15,6 +24,29 @@ export function AIInvoiceGeneratorWrapper() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const getStringValue = (value: unknown): string => {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number') return String(value);
+    return '';
+  };
+
+  const getNumberValue = (value: unknown): number => {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') return parseFloat(value) || 0;
+    return 0;
+  };
+
+  const hasProperty = (obj: unknown, prop: string): boolean => {
+    return typeof obj === 'object' && obj !== null && prop in obj;
+  };
+
+  const getProperty = (obj: unknown, prop: string): unknown => {
+    if (hasProperty(obj, prop)) {
+      return (obj as Record<string, unknown>)[prop];
+    }
+    return undefined;
   };
 
   return (
@@ -47,29 +79,31 @@ export function AIInvoiceGeneratorWrapper() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Client Info */}
-            {generatedData.client && (
+            {generatedData.client && typeof generatedData.client === 'object' && (
               <div className="space-y-2 rounded-lg border bg-muted/30 p-4">
                 <p className="text-xs font-medium text-muted-foreground">
                   CLIENT DETAILS
                 </p>
-                {generatedData.client.name && (
+                {hasProperty(generatedData.client, 'name') && Boolean(getProperty(generatedData.client, 'name')) && (
                   <p>
                     <span className="text-sm font-medium">Name:</span>{" "}
-                    {generatedData.client.name}
+                    {getStringValue(getProperty(generatedData.client, 'name'))}
                   </p>
                 )}
-                {generatedData.client.email && (
+                {hasProperty(generatedData.client, 'email') && Boolean(getProperty(generatedData.client, 'email')) && (
                   <p className="text-sm text-muted-foreground">
-                    {generatedData.client.email}
+                    {getStringValue(getProperty(generatedData.client, 'email'))}
                   </p>
                 )}
-                {generatedData.client.phone && (
+                {hasProperty(generatedData.client, 'phone') && Boolean(getProperty(generatedData.client, 'phone')) && (
                   <p className="text-sm text-muted-foreground">
-                    {generatedData.client.phone}
+                    {getStringValue(getProperty(generatedData.client, 'phone'))}
                   </p>
                 )}
-                {generatedData.client.gstin && (
-                  <p className="text-xs">GSTIN: {generatedData.client.gstin}</p>
+                {hasProperty(generatedData.client, 'gstin') && Boolean(getProperty(generatedData.client, 'gstin')) && (
+                  <p className="text-xs">
+                    GSTIN: {getStringValue(getProperty(generatedData.client, 'gstin'))}
+                  </p>
                 )}
               </div>
             )}
@@ -101,20 +135,22 @@ export function AIInvoiceGeneratorWrapper() {
                 LINE ITEMS
               </p>
               <div className="space-y-3">
-                {generatedData.items.map((item: Record<string, unknown>, idx: number) => (
+                {generatedData.items.map((item, idx) => (
                   <div key={idx} className="border-l-2 border-primary/30 pl-3">
-                    <p className="font-medium">{String(item.description || '')}</p>
+                    <p className="font-medium">
+                      {getStringValue(getProperty(item, 'description'))}
+                    </p>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                      <span>Qty: {item.quantity}</span>
-                      <span>Rate: ₹{item.rate}</span>
-                      <span>HSN/SAC: {item.hsnSac}</span>
-                      <span>GST: {item.taxRate}%</span>
-                      {Number(item.discount) > 0 && (
-                        <span>Discount: {item.discount}%</span>
+                      <span>Qty: {getStringValue(getProperty(item, 'quantity'))}</span>
+                      <span>Rate: ₹{getStringValue(getProperty(item, 'rate'))}</span>
+                      <span>HSN/SAC: {getStringValue(getProperty(item, 'hsnSac'))}</span>
+                      <span>GST: {getStringValue(getProperty(item, 'taxRate'))}%</span>
+                      {getNumberValue(getProperty(item, 'discount')) > 0 && (
+                        <span>Discount: {getStringValue(getProperty(item, 'discount'))}%</span>
                       )}
                     </div>
                     <p className="mt-1 font-semibold">
-                      Amount: ₹{Number(item.amount).toFixed(2)}
+                      Amount: ₹{getNumberValue(getProperty(item, 'amount')).toFixed(2)}
                     </p>
                   </div>
                 ))}
