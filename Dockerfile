@@ -25,6 +25,12 @@ ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_SUPPORT_EMAIL=$NEXT_PUBLIC_SUPPORT_EMAIL
 ENV NEXT_PUBLIC_SECURITY_EMAIL=$NEXT_PUBLIC_SECURITY_EMAIL
 
+# Next.js imports API modules while collecting build metadata. Prisma validates its
+# datasource during that import, so provide a non-secret, non-routable build URL.
+# The real DATABASE_URL is supplied only to the running container by Compose.
+ARG DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build"
+ENV DATABASE_URL=$DATABASE_URL
+
 # Generate Prisma Client
 RUN npx prisma generate
 
