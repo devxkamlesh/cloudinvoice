@@ -22,14 +22,10 @@
 ::view-transition-old(root) { z-index: 1; }
 ::view-transition-new(root) { z-index: 999; }
 
-/* Signed-in product palette. The primary is pulled toward the violet used on the
-   marketing surface so the two halves read as one product, while the neutrals stay
-   light and high-contrast — this is where people read invoices and print them.
-   
-   Light mode is the default. The @media query is removed so dark mode only activates
-   when explicitly toggled. */
+/* Shared product palette. Dark mode uses matte charcoal surfaces rather than tinted
+  navy panels, with one restrained blue accent for active controls and links. */
 :root { --background: #ffffff; --foreground: #33374a; --muted: #f4f6ff; --muted-foreground: #626982; --card: #ffffff; --border: #dde1f5; --primary: #0000f2; }
-.dark { --background: #0b1024; --foreground: #f7f8ff; --muted: #151b36; --muted-foreground: #aeb6d6; --card: #10162e; --border: #293154; --primary: #737dff; }
+.dark { --background: #111210; --foreground: #ecece7; --muted: #1d1e1b; --muted-foreground: #9a9b94; --card: #171815; --border: #2d2f2a; --primary: #91a7ff; }
 * { border-color: var(--border); }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; }
 ::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }
@@ -42,7 +38,7 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
   border: 1px solid var(--border);
   box-shadow: 0 1px 2px rgb(15 23 42 / .04), 0 8px 24px -16px rgb(15 23 42 / .12);
 }
-.dark .surface { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -18px rgb(0 0 0 / .6); }
+.dark .surface { box-shadow: 0 1px 0 rgb(255 255 255 / .025) inset, 0 12px 30px -26px rgb(0 0 0 / .85); }
 
 /* --- Signed-in product utilities -------------------------------------------------
    Named `app-*` to mirror the existing `marketing-*` set, so it is obvious at a
@@ -57,7 +53,7 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
   border-radius: .75rem;
   box-shadow: 0 1px 2px rgb(25 25 20 / .04), 0 14px 36px -28px rgb(25 25 20 / .28);
 }
-.dark .app-panel { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -18px rgb(0 0 0 / .6); }
+.dark .app-panel { box-shadow: 0 1px 0 rgb(255 255 255 / .025) inset, 0 14px 34px -30px rgb(0 0 0 / .9); }
 
 /* Stat tile. The tinted corner gives the numbers somewhere to sit without a border
    change on hover, which would shift layout. */
@@ -81,6 +77,8 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
   pointer-events: none;
 }
 .app-stat:hover { border-color: color-mix(in srgb, var(--primary) 34%, var(--border)); box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--primary) 55%, transparent); }
+.dark .app-stat::after { opacity: .34; }
+.dark .app-stat:hover { box-shadow: 0 14px 34px -30px rgb(0 0 0 / .95); }
 
 /* Sidebar item. The active state uses a left accent bar plus a tint rather than a
    flat grey fill, so the current section is obvious at a glance. */
@@ -105,6 +103,7 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 
 /* Subtle page backdrop so full-bleed tables do not float on flat colour. */
 .app-canvas { background-image: radial-gradient(54rem 22rem at 50% -10rem, color-mix(in srgb, var(--primary) 7%, transparent), transparent 72%); }
+.dark .app-canvas { background-image: radial-gradient(48rem 18rem at 50% -11rem, rgb(145 167 255 / .045), transparent 72%); }
 .app-canvas main { width: 100%; }
 .app-canvas table tbody tr { transition: background-color .15s ease; }
 .app-canvas table tbody tr:hover { background: color-mix(in srgb, var(--primary) 4%, transparent); }
@@ -129,6 +128,8 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 .marketing-link:hover { color: color-mix(in srgb, var(--primary) 78%, var(--foreground)); }
 .marketing-card { border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 2px rgb(20 20 16 / .03), 0 16px 40px -34px rgb(20 20 16 / .35); transition: transform .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out; }
 .marketing-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); box-shadow: 0 18px 42px -32px color-mix(in srgb, var(--primary) 48%, transparent); }
+.dark .marketing-card { box-shadow: 0 1px 0 rgb(255 255 255 / .025) inset, 0 14px 36px -32px rgb(0 0 0 / .9); }
+.dark .marketing-card:hover { border-color: #454944; box-shadow: 0 18px 44px -36px rgb(0 0 0 / 1); }
 .marketing-divider { border-color: var(--border); }
 .marketing-section { padding-block: clamp(4.5rem, 9vw, 8rem); }
 .marketing-kicker { color: var(--primary); font-family: var(--font-geist-mono); font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
@@ -141,6 +142,29 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 .marketing-button-secondary { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--primary); border-radius: .125rem; background: var(--card); color: var(--primary); padding-inline: 1.125rem; font-family: var(--font-geist-mono); font-size: .8125rem; font-weight: 650; transition: background .15s ease, transform .15s ease; }
 .marketing-button-secondary:hover { background: var(--muted); }
 .marketing-button-secondary:active { transform: scale(.96); }
+
+/* Older public pages still carry fixed zinc/black utility classes. Normalize those
+  colors only in dark mode so every route gets the same matte finish. */
+.dark .marketing .bg-black,
+.dark .marketing .bg-\[\#050505\],
+.dark .marketing .bg-\[\#070707\],
+.dark .marketing .bg-\[\#080808\],
+.dark .marketing .bg-\[\#09090b\],
+.dark .marketing .bg-\[\#0a0a0a\],
+.dark .marketing .bg-\[\#0a0a0b\],
+.dark .marketing .bg-\[\#0a0a0d\] { background-color: var(--background) !important; }
+.dark .marketing .bg-zinc-900,
+.dark .marketing .bg-zinc-800 { background-color: var(--card) !important; }
+.dark .marketing .border-zinc-800,
+.dark .marketing .border-zinc-700,
+.dark .marketing .border-white\/\[\.08\],
+.dark .marketing .border-white\/\[\.09\],
+.dark .marketing .border-white\/\[\.10\] { border-color: var(--border) !important; }
+.dark .marketing .text-violet-100,
+.dark .marketing .text-violet-200,
+.dark .marketing .text-violet-300,
+.dark .marketing .text-indigo-200,
+.dark .marketing .text-indigo-300 { color: var(--primary) !important; }
 
 /* Compatibility layer for older public pages while they use the shared token system. */
 .light .marketing .text-white, .light .marketing .text-zinc-100, .light .marketing .text-zinc-200 { color: var(--foreground) !important; }

@@ -64,7 +64,7 @@ export function SiteNav() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b bg-background/94 backdrop-blur-xl dark:bg-background/96">
       <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-5 px-4 sm:px-6 lg:px-8">
         <Link href="/" aria-label="CloudInvoice home" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
           <Logo />
@@ -125,7 +125,7 @@ export function SiteNav() {
             id="site-mobile-menu"
             ref={sheetRef}
             initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-b bg-card shadow-[0_30px_80px_rgba(0,0,0,.18)]"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-b bg-card shadow-[0_30px_80px_rgba(0,0,0,.18)] dark:shadow-[0_30px_80px_rgba(0,0,0,.55)]"
           >
             <nav aria-label="Site" className="mx-auto max-w-7xl px-5 py-5">
               <p className="px-1 text-[10px] font-bold uppercase tracking-[.16em] text-muted-foreground">Product</p>

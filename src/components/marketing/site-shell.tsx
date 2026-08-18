@@ -23,7 +23,7 @@ export function MarketingShell({ children, compact = false }: { children: React.
   return <div className="marketing min-h-screen overflow-x-clip">
     <SiteNav />
     {children}
-    {!compact && <footer className="border-t bg-card">
+    {!compact && <footer className="border-t bg-card dark:bg-[#151613]">
       <div className="mx-auto max-w-[90rem] px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(4,1fr)]">
           <div>
