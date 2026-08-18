@@ -44,6 +44,7 @@ WORKDIR /app
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
+RUN npm install --global prisma@6.19.3
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs

@@ -52,7 +52,7 @@ echo "▸ Recreating containers ..."
 $DC up -d
 
 echo "▸ Applying migrations ..."
-$DC exec -T app ./node_modules/.bin/prisma migrate deploy
+$DC exec -T app prisma migrate deploy
 
 echo "▸ Waiting for health ..."
 STATUS=starting

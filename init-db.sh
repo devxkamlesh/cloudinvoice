@@ -6,9 +6,9 @@ sleep 5
 
 echo "Running Prisma migrations..."
 cd /app
-# Prisma is installed by `npm ci` in the builder and carried into the standalone
-# image. Use that local binary instead of an npx cache, which can race during restarts.
-./node_modules/.bin/prisma migrate deploy
+# The runtime image pins this CLI globally so startup never downloads packages or
+# races an npx cache.
+prisma migrate deploy
 
 echo "Starting Next.js application..."
 exec node server.js
