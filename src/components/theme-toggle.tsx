@@ -1,6 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -68,7 +69,22 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={`Switch to ${dark ? "light" : "dark"} theme`}
     >
-      {dark ? <Moon className="size-4" aria-hidden="true" /> : <Sun className="size-4" aria-hidden="true" />}
+      <span className="relative size-4" aria-hidden="true">
+        <motion.span
+          className="absolute inset-0"
+          animate={dark ? { opacity: 1, scale: 1, filter: "blur(0px)" } : { opacity: 0, scale: 0.25, filter: "blur(4px)" }}
+          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+        >
+          <Moon className="size-4" />
+        </motion.span>
+        <motion.span
+          className="absolute inset-0"
+          animate={dark ? { opacity: 0, scale: 0.25, filter: "blur(4px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+        >
+          <Sun className="size-4" />
+        </motion.span>
+      </span>
     </Button>
   );
 }

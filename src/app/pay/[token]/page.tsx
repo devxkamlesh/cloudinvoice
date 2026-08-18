@@ -73,9 +73,9 @@ export default async function PayInvoicePage({ params, searchParams }: { params:
                 <CheckCircle2 className="size-5 text-emerald-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-emerald-900">Payment Successful!</h3>
+                <h3 className="font-semibold text-emerald-900">Payment submitted</h3>
                 <p className="mt-1 text-sm text-emerald-700">
-                  Your payment has been processed. You will receive a confirmation email shortly.
+                  Confirmation is pending. Refresh this invoice to see the payment status recorded by CloudInvoice.
                 </p>
               </div>
             </div>

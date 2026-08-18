@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 // Breakpoints here are deliberately paired: the desktop nav appears at `lg` and the
@@ -14,10 +15,9 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "/features", label: "Features" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/templates", label: "Templates" },
   { href: "/integrations", label: "Integrations" },
-  { href: "/customers", label: "Customers" },
-  { href: "/changelog", label: "Changelog" }
+  { href: "/security", label: "Security" },
+  { href: "/mission", label: "Company" }
 ];
 
 // Shown only inside the mobile sheet, where there is room for the full set.
@@ -63,28 +63,25 @@ export function SiteNav() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[.07] bg-[#050505]/85 backdrop-blur-xl">
-      {/* Hairline accent. Purely decorative, so hidden from assistive tech. */}
-      <div aria-hidden="true" className="h-px w-full bg-gradient-to-r from-transparent via-violet-400/25 to-transparent" />
-
-      <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center gap-4 px-5">
-        <Link href="/" aria-label="CloudInvoice home" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300">
-          <Logo className="text-white" />
+    <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-5 px-4 sm:px-6 lg:px-8">
+        <Link href="/" aria-label="CloudInvoice home" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
+          <Logo />
         </Link>
 
-        <nav aria-label="Primary" className="ml-2 hidden flex-1 items-center gap-1 lg:flex">
+        <nav aria-label="Primary" className="hidden flex-1 items-center gap-1 lg:flex">
           {NAV.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
               className={cn(
-                "relative rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300",
-                isActive(link.href) ? "text-white" : "text-zinc-400 hover:bg-white/[.05] hover:text-white"
+                "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                isActive(link.href) ? "text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {link.label}
-              {isActive(link.href) && <span aria-hidden="true" className="absolute inset-x-3 -bottom-px h-px bg-violet-300" />}
+              {isActive(link.href) && <span aria-hidden="true" className="absolute inset-x-3 -bottom-px h-px bg-primary" />}
             </Link>
           ))}
         </nav>
@@ -92,16 +89,17 @@ export function SiteNav() {
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/sign-in"
-            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-zinc-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 lg:inline-flex"
+            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:inline-flex"
           >
             Sign in
           </Link>
           <Link
             href="/sign-in"
-            className="hidden items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] sm:inline-flex"
+            className="hidden items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:inline-flex"
           >
             Get started <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
+          <ThemeToggle />
 
           <button
             ref={triggerRef}
@@ -110,7 +108,7 @@ export function SiteNav() {
             aria-expanded={open}
             aria-controls="site-mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="grid size-10 place-items-center rounded-lg border border-white/10 text-zinc-200 transition hover:bg-white/[.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 lg:hidden"
+            className="grid size-10 place-items-center rounded-lg border text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 lg:hidden"
           >
             {open ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
           </button>
@@ -120,14 +118,14 @@ export function SiteNav() {
       {open && (
         <>
           {/* Backdrop. Click to dismiss; the button above is the labelled control. */}
-          <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 top-[4.5rem] z-40 bg-black/60 lg:hidden" />
+          <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 top-16 z-40 bg-black/35 lg:hidden" />
           <div
             id="site-mobile-menu"
             ref={sheetRef}
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4.5rem)] overflow-y-auto border-b border-white/[.09] bg-[#08080a] shadow-[0_30px_80px_rgba(0,0,0,.6)] lg:hidden"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-b bg-card shadow-[0_30px_80px_rgba(0,0,0,.18)] lg:hidden"
           >
             <nav aria-label="Site" className="mx-auto max-w-7xl px-5 py-5">
-              <p className="px-1 text-[10px] font-bold uppercase tracking-[.16em] text-zinc-600">Product</p>
+              <p className="px-1 text-[10px] font-bold uppercase tracking-[.16em] text-muted-foreground">Product</p>
               <ul className="mt-2 grid gap-1 sm:grid-cols-2">
                 {NAV.map((link) => (
                   <li key={link.href}>
@@ -135,8 +133,8 @@ export function SiteNav() {
                       href={link.href}
                       aria-current={isActive(link.href) ? "page" : undefined}
                       className={cn(
-                        "block rounded-xl px-3 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300",
-                        isActive(link.href) ? "bg-white/[.08] text-white" : "text-zinc-300 hover:bg-white/[.06] hover:text-white"
+                        "block rounded-xl px-3 py-3 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                        isActive(link.href) ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       )}
                     >
                       {link.label}
@@ -145,7 +143,7 @@ export function SiteNav() {
                 ))}
               </ul>
 
-              <p className="mt-5 px-1 text-[10px] font-bold uppercase tracking-[.16em] text-zinc-600">More</p>
+              <p className="mt-5 px-1 text-[10px] font-bold uppercase tracking-[.16em] text-muted-foreground">More</p>
               <ul className="mt-2 grid gap-1 sm:grid-cols-2">
                 {SECONDARY.map((link) => (
                   <li key={link.href}>
@@ -153,8 +151,8 @@ export function SiteNav() {
                       href={link.href}
                       aria-current={isActive(link.href) ? "page" : undefined}
                       className={cn(
-                        "block rounded-xl px-3 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300",
-                        isActive(link.href) ? "bg-white/[.08] text-white" : "text-zinc-400 hover:bg-white/[.06] hover:text-white"
+                        "block rounded-xl px-3 py-3 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                        isActive(link.href) ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       )}
                     >
                       {link.label}
@@ -163,11 +161,11 @@ export function SiteNav() {
                 ))}
               </ul>
 
-              <div className="mt-6 grid gap-2 border-t border-white/[.08] pt-5 sm:grid-cols-2">
-                <Link href="/sign-in" className="rounded-xl border border-white/[.12] bg-white/[.04] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/[.09] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300">
+              <div className="mt-6 grid gap-3 border-t pt-5 sm:grid-cols-2">
+                <Link href="/sign-in" className="rounded-xl border bg-card px-4 py-3 text-center text-sm font-semibold text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
                   Sign in
                 </Link>
-                <Link href="/sign-in" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300">
+                <Link href="/sign-in" className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-background transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">
                   Get started <ArrowRight className="size-3.5" aria-hidden="true" />
                 </Link>
               </div>

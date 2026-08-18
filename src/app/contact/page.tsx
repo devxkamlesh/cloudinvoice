@@ -85,7 +85,7 @@ export default function ContactPage() {
             Do not paste a client&rsquo;s full billing details, a payment reference, or an invoice PDF into a first message. Describe the shape of the problem and reference the invoice number instead. If more is needed to reproduce it, we will ask for the minimum.
           </Notice>
           <Notice title="Not a channel for account recovery" tone="indigo">
-            Password reset is not available in the product yet. If you cannot access a workspace, say so explicitly and describe how it was created, rather than sending credentials.
+            Use the password-reset flow from the sign-in page first. If the reset email does not arrive or the link fails, contact support without sending your password.
           </Notice>
         </div>
       </div>

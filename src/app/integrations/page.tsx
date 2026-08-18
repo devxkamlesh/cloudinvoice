@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, CreditCard, QrCode, WalletCards, F
 import { MarketingShell } from "@/components/marketing/site-shell";
 
 export const metadata: Metadata = {
-  title: "Integrations — CloudInvoice",
+  title: "Payment Integrations",
   description: "Connect CloudInvoice with the payment methods and tools your business already uses. Built-in support for Stripe, UPI, and more coming soon.",
   alternates: { canonical: "/integrations" }
 };
@@ -24,6 +24,19 @@ const activeIntegrations = [
     ]
   },
   {
+    name: "Razorpay",
+    icon: WalletCards,
+    status: "Supported",
+    category: "Payment Gateway",
+    description: "Offer Indian cards, UPI, and NetBanking through Razorpay Checkout when deployment credentials are configured.",
+    features: [
+      "Signed checkout orders",
+      "Payment signature verification",
+      "Indian payment methods",
+      "Recorded gateway references"
+    ]
+  },
+  {
     name: "UPI",
     icon: QrCode,
     status: "Active",
@@ -40,46 +53,39 @@ const activeIntegrations = [
 
 const roadmapIntegrations = [
   {
-    name: "Razorpay",
-    icon: WalletCards,
-    category: "Payment Gateway",
-    description: "Expand payment options with Razorpay's comprehensive Indian payment infrastructure.",
-    eta: "Q3 2026"
-  },
-  {
     name: "Google Drive",
     icon: FileText,
     category: "File Storage",
     description: "Automatically backup invoice PDFs to your Google Drive workspace.",
-    eta: "Q4 2026"
+    eta: "Planned"
   },
   {
     name: "Slack",
     icon: BellRing,
     category: "Communication",
     description: "Receive real-time notifications for payment events and invoice status changes.",
-    eta: "Q4 2026"
+    eta: "Planned"
   },
   {
     name: "Zapier",
     icon: Zap,
     category: "Automation",
     description: "Connect CloudInvoice to thousands of apps with custom workflow automation.",
-    eta: "Q1 2027"
+    eta: "Planned"
   },
   {
     name: "Webhooks",
     icon: Globe2,
     category: "Developer Tools",
     description: "Build custom integrations with real-time event notifications to your endpoints.",
-    eta: "Q1 2027"
+    eta: "Planned"
   },
   {
     name: "REST API",
     icon: LockKeyhole,
     category: "Developer Tools",
     description: "Full programmatic access to create invoices, manage clients, and track payments.",
-    eta: "Q1 2027"
+    eta: "Planned"
   }
 ];
 
@@ -124,7 +130,7 @@ export default function IntegrationsPage() {
               Working today
             </h2>
             <p className="mt-4 text-lg text-zinc-400">
-              These payment methods are built in, tested, and ready to accept payments from your clients.
+              These payment paths are implemented. They become available only when the deployment and workspace have the required credentials or payment details.
             </p>
           </div>
 
@@ -229,7 +235,7 @@ export default function IntegrationsPage() {
               <Shield className="size-6 text-white" />
               <h3 className="mt-4 font-semibold text-white">Security first</h3>
               <p className="mt-2 text-sm leading-6 text-zinc-400">
-                Payment integrations use webhook verification and OAuth 2.0. Client data never leaves our infrastructure without your explicit action.
+                Payment integrations verify gateway signatures or webhooks before a successful payment changes invoice state.
               </p>
             </div>
 
@@ -237,7 +243,7 @@ export default function IntegrationsPage() {
               <Code className="size-6 text-white" />
               <h3 className="mt-4 font-semibold text-white">Developer ready</h3>
               <p className="mt-2 text-sm leading-6 text-zinc-400">
-                APIs and webhooks are documented, versioned, and designed to support custom workflows when the built-in features aren&apos;t enough.
+                A supported public API and outbound customer webhooks are planned. Internal application endpoints are not offered as a public API.
               </p>
             </div>
 

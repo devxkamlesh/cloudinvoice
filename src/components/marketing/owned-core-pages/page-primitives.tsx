@@ -13,7 +13,7 @@ export function MarketingJsonLd({ data }: { data: Record<string, unknown> }) {
 
 export function PageBackdrop({ children }: { children: ReactNode }) {
   return (
-    <main id="main-content" className="relative isolate overflow-hidden bg-[#050505] text-zinc-100">
+    <main id="main-content" className="relative isolate overflow-hidden bg-background text-foreground">
       <div aria-hidden="true" className="marketing-grid pointer-events-none absolute inset-x-0 top-0 -z-10 h-[48rem] opacity-60" />
       <div aria-hidden="true" className="marketing-halo pointer-events-none absolute -top-56 left-1/2 -z-10 h-[36rem] w-[54rem] -translate-x-1/2 opacity-90" />
       {children}
@@ -29,7 +29,7 @@ export function PrimaryLink({ href, children, className = "" }: { href: string; 
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-zinc-950 transition duration-200 hover:-translate-y-0.5 hover:bg-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] ${className}`}
+      className={`marketing-button-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${className}`}
     >
       {children} <ArrowRight className="size-4" aria-hidden="true" />
     </Link>
@@ -40,7 +40,7 @@ export function SecondaryLink({ href, children, className = "" }: { href: string
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/[.14] bg-white/[.035] px-5 py-3 text-sm font-semibold text-zinc-100 transition duration-200 hover:-translate-y-0.5 hover:border-violet-300/40 hover:bg-white/[.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505] ${className}`}
+      className={`marketing-button-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${className}`}
     >
       {children}
     </Link>
@@ -55,8 +55,8 @@ export function SectionHeading({ eyebrow, title, description, align = "left", ti
   return (
     <div className={centered ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 id={titleId} className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-white sm:text-4xl lg:text-5xl">{title}</h2>
-      {description ? <p className="mt-5 text-base leading-8 text-zinc-400 sm:text-lg">{description}</p> : null}
+      <h2 id={titleId} className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-foreground sm:text-4xl lg:text-5xl">{title}</h2>
+      {description ? <p className="mt-5 text-base leading-8 text-muted-foreground sm:text-lg">{description}</p> : null}
     </div>
   );
 }
@@ -65,8 +65,8 @@ export function CheckList({ items }: { items: string[] }) {
   return (
     <ul className="space-y-3" role="list">
       {items.map((item) => (
-        <li key={item} className="flex gap-3 text-sm leading-6 text-zinc-300">
-          <span aria-hidden="true" className="mt-1 grid size-4 shrink-0 place-items-center rounded-full bg-violet-300/15 text-[10px] text-violet-200">✓</span>
+        <li key={item} className="flex gap-3 text-sm leading-6 text-foreground">
+          <span aria-hidden="true" className="mt-1 grid size-4 shrink-0 place-items-center rounded-full bg-primary/15 text-[10px] text-primary">✓</span>
           {item}
         </li>
       ))}

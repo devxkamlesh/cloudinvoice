@@ -14,7 +14,7 @@ export const clientSchema = z.object({
 // each exported variant instead of to the shared base.
 const invoiceBase = z.object({
   clientId: z.string().cuid(), issueDate: z.coerce.date(), dueDate: z.coerce.date(),
-  taxMode: z.enum(["INTRA_STATE", "INTER_STATE"]), template: z.enum(["classic", "modern", "midnight", "minimal", "corporate", "creative"]), notes: optionalText, terms: optionalText,
+  taxMode: z.enum(["INTRA_STATE", "INTER_STATE"]), template: z.enum(["classic", "modern", "midnight"]), notes: optionalText, terms: optionalText,
   items: z.array(z.object({ description: z.string().trim().min(1).max(500), hsnSac: z.string().trim().max(20).optional(), quantity: z.coerce.number().positive(), unitPrice: z.coerce.number().nonnegative(), discount: z.coerce.number().nonnegative().default(0), taxRate: z.coerce.number().min(0).max(100) })).min(1)
 });
 

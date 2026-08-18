@@ -1,275 +1,51 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ShieldCheck, LockKeyhole, Globe2, Eye, Database, UserCheck, Clock, CheckCircle2 } from "lucide-react";
+import { ArrowRight, FileDown, LockKeyhole, ShieldCheck, UsersRound } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
 
 export const metadata: Metadata = {
-  title: "Our Customer Commitment — CloudInvoice",
-  description: "How CloudInvoice protects your data, respects your privacy, and earns trust through transparent security practices.",
-  alternates: { canonical: "/customers" }
+  title: "Customer commitment",
+  description: "A transparent account of the safeguards and product boundaries CloudInvoice can support today.",
+  alternates: { canonical: "/customers" },
 };
 
-const securityPrinciples = [
-  {
-    icon: ShieldCheck,
-    title: "Payment verification at the source",
-    description: "CloudInvoice never marks an invoice paid based on a client visiting a confirmation page. Payment state changes only after receiving and verifying a signed webhook from Stripe. This prevents false positives and ensures your revenue data reflects reality."
-  },
-  {
-    icon: LockKeyhole,
-    title: "Tenant-scoped data isolation",
-    description: "Your invoices, clients, and payment data are scoped to your organization. Database queries enforce tenant boundaries at the ORM level, preventing cross-workspace data leakage even in the presence of application bugs."
-  },
-  {
-    icon: Globe2,
-    title: "Private payment links",
-    description: "Public invoice payment pages use high-entropy cryptographic tokens instead of sequential IDs or guessable patterns. Client payment pages cannot be enumerated or discovered without the unique link you share."
-  },
-  {
-    icon: Eye,
-    title: "Minimal data collection",
-    description: "CloudInvoice collects only the data needed to generate invoices and process payments. We don&apos;t track client behavior, sell data to third parties, or use your business information for ad targeting."
-  },
-  {
-    icon: Database,
-    title: "Transparent data boundaries",
-    description: "Your invoice and client data stays within our production database. Backups are encrypted at rest. We don&apos;t share customer data with analytics platforms or third-party tools unless explicitly documented."
-  },
-  {
-    icon: UserCheck,
-    title: "Authentication and access control",
-    description: "CloudInvoice uses industry-standard OAuth 2.0 flows and secure session management. Multi-factor authentication and role-based permissions are on the roadmap for team workspaces."
-  }
-];
-
 const commitments = [
-  {
-    title: "We won&apos;t manufacture social proof",
-    description: "Customer testimonials and case studies will be published only with explicit written permission. Until we earn those stories, we&apos;d rather show you how we protect your data and respect your business."
-  },
-  {
-    title: "We won&apos;t hide behind vague claims",
-    description: "Security and privacy statements are concrete and specific. If we can&apos;t explain a practice clearly, we revisit the practice—not the explanation."
-  },
-  {
-    title: "We won&apos;t lock you in",
-    description: "You own your data. Export your invoices, client records, and payment history at any time. No restrictions, no expired access windows, no hostage fees."
-  },
-  {
-    title: "We won&apos;t change terms retroactively",
-    description: "Material changes to privacy or security practices are announced in advance. Existing users have time to review, export data, and decide whether to continue."
-  }
+  { icon: ShieldCheck, title: "Payment state is verified", text: "Stripe and Razorpay payment outcomes are recorded only after the application checks the relevant webhook or signature. A browser redirect is not treated as proof of payment." },
+  { icon: UsersRound, title: "Workspace data is scoped", text: "Authenticated client and invoice queries resolve the current organization and are intended to limit records to that workspace." },
+  { icon: LockKeyhole, title: "Client links are opaque", text: "Public invoice pages use high-entropy tokens rather than sequential invoice IDs. The sender and recipient should still treat every payment link as confidential." },
+  { icon: FileDown, title: "Invoice documents stay portable", text: "Individual invoices can be printed or saved as PDF through the browser. Bulk data export and self-service account deletion are not available yet." },
 ];
 
 export default function CustomersPage() {
   return (
     <MarketingShell>
-      {/* Header */}
-      <section className="relative border-b border-zinc-800 bg-[#0a0a0a] py-20 sm:py-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50" />
-        
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-all duration-300 hover:text-white hover:gap-3"
-          >
-            <ArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to home
-          </Link>
-
-          <div className="mt-8 max-w-3xl">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Trust should be earned, not invented
-            </h1>
-            <p className="mt-6 text-xl leading-8 text-zinc-400">
-              CloudInvoice is being built to deserve strong recommendations from independent businesses. Until customer stories are published with permission, we would rather show you how the product protects the billing moment.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Security Principles */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              HOW WE PROTECT YOUR BUSINESS
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Security and privacy by design
-            </h2>
-            <p className="mt-4 text-lg text-zinc-400">
-              These aren&apos;t marketing claims. They&apos;re architectural decisions that shape how CloudInvoice handles your data at every layer.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-8 lg:grid-cols-2">
-            {securityPrinciples.map((principle) => (
-              <article
-                key={principle.title}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-900 p-8 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-              >
-                <div className="flex size-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 transition-all duration-300 group-hover:border-zinc-600 group-hover:scale-110">
-                  <principle.icon className="size-6 text-white" />
-                </div>
-
-                <h3 className="mt-6 text-xl font-bold text-white">{principle.title}</h3>
-                <p className="mt-3 leading-7 text-zinc-400">{principle.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Commitments */}
-      <section className="border-b border-zinc-800 bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              OUR COMMITMENTS TO YOU
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              How we operate
-            </h2>
-            <p className="mt-4 text-lg text-zinc-400">
-              CloudInvoice is built on principles that respect your business, your data, and your time. These commitments aren&apos;t negotiable.
-            </p>
-          </div>
-
-          <div className="mt-12 space-y-6">
-            {commitments.map((commitment, index) => (
-              <article
-                key={commitment.title}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-xs font-bold text-white">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white">{commitment.title}</h3>
-                    <p className="mt-2 leading-7 text-zinc-400">{commitment.description}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Data Ownership */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-                YOUR DATA, YOUR CONTROL
-              </p>
-              <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Full data portability
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-zinc-400">
-                CloudInvoice never holds your data hostage. Export everything at any time, in standard formats that work with spreadsheets, accounting software, and your own backup systems.
-              </p>
-
-              <div className="mt-8 space-y-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-1 size-5 shrink-0 text-white" />
-                  <div>
-                    <p className="font-semibold text-white">Export all invoices</p>
-                    <p className="mt-1 text-sm text-zinc-400">PDF and CSV formats, complete history</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-1 size-5 shrink-0 text-white" />
-                  <div>
-                    <p className="font-semibold text-white">Export client data</p>
-                    <p className="mt-1 text-sm text-zinc-400">Names, addresses, GST details, payment history</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-1 size-5 shrink-0 text-white" />
-                  <div>
-                    <p className="font-semibold text-white">Export payment records</p>
-                    <p className="mt-1 text-sm text-zinc-400">Transaction logs, timestamps, amounts, status</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-1 size-5 shrink-0 text-white" />
-                  <div>
-                    <p className="font-semibold text-white">Delete your account</p>
-                    <p className="mt-1 text-sm text-zinc-400">Complete removal, no retention beyond legal requirements</p>
-                  </div>
-                </div>
-              </div>
+      <main id="main-content">
+        <section className="marketing-section">
+          <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl">
+              <p className="marketing-kicker">Customer commitment</p>
+              <h1 className="marketing-title mt-4">Trust should be earned before it becomes a testimonial.</h1>
+              <p className="marketing-copy mt-6 max-w-3xl">CloudInvoice does not publish invented logos, customer counts, or case studies. Customer stories will appear here only with permission. Until then, the useful thing to publish is what the product does and where its current boundary sits.</p>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8">
-              <Database className="size-10 text-white" />
-              <h3 className="mt-6 text-xl font-bold text-white">Data retention policy</h3>
-              <div className="mt-6 space-y-4 text-sm leading-7 text-zinc-400">
-                <p>
-                  <strong className="text-white">Active accounts:</strong> Your data is retained as long as your workspace is active. You control when and how it&apos;s deleted.
-                </p>
-                <p>
-                  <strong className="text-white">Closed accounts:</strong> Data is permanently deleted within 30 days of account closure, except where legal or regulatory requirements mandate longer retention (tax records, payment logs).
-                </p>
-                <p>
-                  <strong className="text-white">Backups:</strong> Encrypted backups are retained for 90 days for disaster recovery, then automatically purged.
-                </p>
-              </div>
+            <div className="mt-16 grid gap-4 md:grid-cols-2">
+              {commitments.map(({ icon: Icon, title, text }) => <article key={title} className="marketing-card rounded-xl p-6 sm:p-8"><span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" /></span><h2 className="mt-7 text-xl font-semibold">{title}</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p></article>)}
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Transparency */}
-      <section className="border-b border-zinc-800 bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <Clock className="mx-auto size-12 text-white" />
-            <h2 className="mt-8 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Real customers, real stories
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-zinc-400">
-              CloudInvoice is in active use by independent businesses today. As we grow and earn permission to share their experiences, this page will feature genuine case studies and testimonials. Until then, the product&apos;s security and design speak for themselves.
-            </p>
-            <p className="mt-6 text-sm text-zinc-500">
-              If you&apos;re a CloudInvoice user and would like to share your experience, we&apos;d be honored. Reach out through your workspace settings.
-            </p>
-          </div>
-        </div>
-      </section>
+            <section className="mt-16 grid gap-8 rounded-2xl border bg-card p-6 sm:p-9 lg:grid-cols-[.8fr_1.2fr]">
+              <div><p className="marketing-kicker">Current boundaries</p><h2 className="mt-4 text-3xl font-semibold tracking-[-.045em]">What CloudInvoice does not claim.</h2></div>
+              <ul className="space-y-4 text-sm leading-7 text-muted-foreground">
+                <li>There is no published customer testimonial until a customer approves one.</li>
+                <li>There is no self-service bulk export or account-deletion workflow today.</li>
+                <li>There is no published backup-retention or historical uptime commitment.</li>
+                <li>There is no claim of SOC 2, ISO 27001, PCI DSS certification, or an independent security audit.</li>
+              </ul>
+            </section>
 
-      {/* CTA */}
-      <section className="bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              See how we protect your business
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-zinc-400">
-              Try CloudInvoice and experience the difference that security by design and honest communication make.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/sign-in"
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition-all duration-300 hover:bg-zinc-100 hover:scale-105"
-              >
-                Create your workspace
-                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/security"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-              >
-                Read security details
-              </Link>
-            </div>
+            <div className="mt-14 flex flex-wrap gap-3"><Link href="/security" className="marketing-button-primary">Review the trust center <ArrowRight className="size-4" /></Link><Link href="/privacy" className="marketing-button-secondary">Read the privacy policy</Link></div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </MarketingShell>
   );
 }

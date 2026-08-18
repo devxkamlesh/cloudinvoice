@@ -8,19 +8,19 @@ import { CheckList, MarketingJsonLd, PageBackdrop, PrimaryLink, SecondaryLink, S
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Features | GST Invoicing, Payments & Revenue Clarity",
-  description: "Explore CloudInvoice features: GST-aware invoices, client records, secure payment pages, UPI QR, Stripe Checkout, payment tracking, and revenue analytics.",
+  title: "Online Invoice Builder and Bill Generator",
+  description: "Build professional invoices and bills online with GST calculation, reusable client records, private payment links, PDF download, and revenue tracking.",
   alternates: { canonical: "/features" },
   openGraph: {
-    title: "CloudInvoice features for work that deserves to be paid",
-    description: "GST invoices, private payment pages, UPI QR, Stripe Checkout, and revenue clarity in one composed workspace.",
+    title: "Online Invoice Builder and Bill Generator | CloudInvoice",
+    description: "Create professional GST invoices and bills with client records, private payment links, and revenue tracking.",
     url: "/features",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "CloudInvoice features",
-    description: "A composed invoicing workflow for independent businesses."
+    title: "Online Invoice Builder and Bill Generator",
+    description: "Build GST-ready invoices and bills online with CloudInvoice."
   }
 };
 
@@ -76,8 +76,8 @@ export default function FeaturesPage() {
           <div className="grid gap-14 lg:grid-cols-[.95fr_1.05fr] lg:items-center">
             <div>
               <p className="marketing-eyebrow inline-flex items-center gap-2"><Sparkles className="size-3.5" /> BUILT AROUND THE MOMENT YOU GET PAID</p>
-              <h1 className="mt-5 max-w-3xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl">The invoice is just the beginning.</h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-400 sm:text-xl">CloudInvoice puts the client, tax treatment, payment experience, and revenue picture in one deliberate flow—so your back office feels as considered as your work.</p>
+              <h1 className="mt-5 max-w-3xl text-5xl font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl">An online invoice builder for bills clients can understand.</h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-400 sm:text-xl">An online invoice builder lets a business create, calculate, review, and share an invoice without formatting it manually. CloudInvoice adds Indian GST fields, reusable client records, private payment links, and revenue tracking to that workflow.</p>
               <div className="mt-8 flex flex-wrap gap-3"><PrimaryLink href="/sign-in">Create your workspace</PrimaryLink><SecondaryLink href="#workflow">See the workflow</SecondaryLink></div>
               <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-zinc-400"><span className="inline-flex items-center gap-2"><CheckCircle2 className="size-4 text-violet-200" />GST-aware by design</span><span className="inline-flex items-center gap-2"><CheckCircle2 className="size-4 text-violet-200" />Secure payment confirmation</span></div>
             </div>

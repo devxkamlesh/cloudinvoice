@@ -19,7 +19,7 @@ const safeguards = [
   {
     icon: KeyRound,
     title: "Account sessions",
-    text: "CloudInvoice uses Better Auth for account and session handling. Email-and-password sessions are configured to expire, rather than remaining valid forever."
+    text: "CloudInvoice uses Auth.js with email-and-password credentials and JWT-backed sessions. Password reset links are time-limited and single-use."
   },
   {
     icon: CreditCard,

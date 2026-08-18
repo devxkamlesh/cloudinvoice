@@ -28,10 +28,8 @@ const routes: { path: string; priority: number; changeFrequency: MetadataRoute.S
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  const lastModified = new Date();
   return routes.map(({ path, priority, changeFrequency }) => ({
     url: `${baseUrl}${path === "/" ? "" : path}`,
-    lastModified,
     changeFrequency,
     priority
   }));

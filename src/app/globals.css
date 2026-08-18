@@ -28,8 +28,8 @@
    
    Light mode is the default. The @media query is removed so dark mode only activates
    when explicitly toggled. */
-:root { --background: #f7f8fc; --foreground: #14172b; --muted: #eef0f8; --muted-foreground: #5d6480; --card: #ffffff; --border: #e3e6f0; --primary: #5b4ae0; }
-.dark { --background: #0a0b12; --foreground: #f0f1fa; --muted: #171a26; --muted-foreground: #a0a5bd; --card: #101220; --border: #232636; --primary: #a99bff; }
+:root { --background: #ffffff; --foreground: #33374a; --muted: #f4f6ff; --muted-foreground: #626982; --card: #ffffff; --border: #dde1f5; --primary: #0000f2; }
+.dark { --background: #0b1024; --foreground: #f7f8ff; --muted: #151b36; --muted-foreground: #aeb6d6; --card: #10162e; --border: #293154; --primary: #737dff; }
 * { border-color: var(--border); }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; }
 ::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }
@@ -54,8 +54,8 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 .app-panel {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 1px 2px rgb(15 23 42 / .04), 0 8px 24px -16px rgb(15 23 42 / .12);
+  border-radius: .75rem;
+  box-shadow: 0 1px 2px rgb(25 25 20 / .04), 0 14px 36px -28px rgb(25 25 20 / .28);
 }
 .dark .app-panel { box-shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px -18px rgb(0 0 0 / .6); }
 
@@ -66,8 +66,8 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
   overflow: hidden;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  transition: border-color .2s ease, box-shadow .2s ease;
+  border-radius: .75rem;
+  transition: border-color .15s ease, box-shadow .15s ease;
 }
 .app-stat::after {
   content: "";
@@ -104,34 +104,46 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 .app-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-foreground); }
 
 /* Subtle page backdrop so full-bleed tables do not float on flat colour. */
-.app-canvas { background-image: radial-gradient(60rem 24rem at 50% -8rem, color-mix(in srgb, var(--primary) 9%, transparent), transparent 70%); }
+.app-canvas { background-image: radial-gradient(54rem 22rem at 50% -10rem, color-mix(in srgb, var(--primary) 7%, transparent), transparent 72%); }
 .grid-bg { background-image: linear-gradient(to right, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px); background-size: 44px 44px; }
 @media print { aside, header, .no-print { display: none !important; } body { background: white; } .surface { border: 0; box-shadow: none; } }
 
-/* Public marketing surface — intentionally scoped so the signed-in product retains its focused UI. */
+/* Public marketing surface. It shares the product tokens, so every public route gains
+   the same light/dark behavior without duplicating a second theme. */
 .marketing {
-  --background: #050505;
-  --foreground: #f5f7ff;
-  --muted: #12131a;
-  --muted-foreground: #a2a6b7;
-  --card: #0c0d12;
-  --border: #23242d;
-  --primary: #8b7cff;
-  background: #050505;
-  color: #f5f7ff;
+  background: var(--background);
+  color: var(--foreground);
 }
-.marketing ::selection { background: rgb(139 124 255 / .45); color: white; }
+.marketing ::selection { background: color-mix(in srgb, var(--primary) 30%, transparent); }
 .marketing-noise { position: relative; isolation: isolate; }
-.marketing-noise::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .22; background-image: radial-gradient(rgb(255 255 255 / .14) .55px, transparent .55px); background-size: 5px 5px; mask-image: linear-gradient(to bottom, black, transparent 75%); }
-.marketing-grid { background-image: linear-gradient(rgb(255 255 255 / .055) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .055) 1px, transparent 1px); background-size: 56px 56px; mask-image: linear-gradient(to bottom, black, transparent 80%); }
-.marketing-glass { border: 1px solid rgb(255 255 255 / .1); background: linear-gradient(145deg, rgb(255 255 255 / .085), rgb(255 255 255 / .025)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .08), 0 28px 80px rgb(0 0 0 / .3); backdrop-filter: blur(18px); }
-.marketing-halo { background: radial-gradient(circle, rgb(125 105 255 / .22), transparent 67%); filter: blur(4px); }
-.marketing-eyebrow { color: #aaa0ff; font-size: .72rem; font-weight: 700; letter-spacing: .16em; }
-.marketing-link { color: #aaa0ff; transition: color .2s ease; }
-.marketing-link:hover { color: #d3ceff; }
-.marketing-card { border: 1px solid rgb(255 255 255 / .09); background: linear-gradient(145deg, rgb(255 255 255 / .065), rgb(255 255 255 / .018)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06); transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease; }
-.marketing-card:hover { transform: translateY(-4px); border-color: rgb(167 154 255 / .37); background: linear-gradient(145deg, rgb(139 124 255 / .13), rgb(255 255 255 / .03)); }
-.marketing-divider { border-color: rgb(255 255 255 / .1); }
+.marketing-noise::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .16; background-image: radial-gradient(color-mix(in srgb, var(--foreground) 32%, transparent) .55px, transparent .55px); background-size: 5px 5px; mask-image: linear-gradient(to bottom, black, transparent 75%); }
+.marketing-grid { background-image: linear-gradient(color-mix(in srgb, var(--foreground) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--foreground) 7%, transparent) 1px, transparent 1px); background-size: 64px 64px; mask-image: linear-gradient(to bottom, black, transparent 82%); }
+.marketing-glass { border: 1px solid var(--border); background: color-mix(in srgb, var(--card) 88%, transparent); box-shadow: 0 24px 70px -42px rgb(0 0 0 / .45); backdrop-filter: blur(18px); }
+.marketing-halo { background: radial-gradient(circle, color-mix(in srgb, var(--primary) 18%, transparent), transparent 67%); }
+.marketing-eyebrow { color: var(--primary); font-family: var(--font-geist-mono); font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.marketing-link { color: var(--primary); transition: color .15s ease; }
+.marketing-link:hover { color: color-mix(in srgb, var(--primary) 78%, var(--foreground)); }
+.marketing-card { border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 2px rgb(20 20 16 / .03), 0 16px 40px -34px rgb(20 20 16 / .35); transition: transform .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out; }
+.marketing-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); box-shadow: 0 18px 42px -32px color-mix(in srgb, var(--primary) 48%, transparent); }
+.marketing-divider { border-color: var(--border); }
+.marketing-section { padding-block: clamp(4.5rem, 9vw, 8rem); }
+.marketing-kicker { color: var(--primary); font-family: var(--font-geist-mono); font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.marketing-display { color: var(--foreground); font-family: var(--font-display); font-size: clamp(3.25rem, 7.6vw, 7.5rem); line-height: .94; letter-spacing: -.048em; font-weight: 700; text-wrap: balance; }
+.marketing-title { color: var(--foreground); font-family: var(--font-display); font-size: clamp(2.25rem, 4.6vw, 4.75rem); line-height: 1.04; letter-spacing: -.042em; font-weight: 700; text-wrap: balance; }
+.marketing-copy { color: var(--muted-foreground); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.75; }
+.marketing-button-primary { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border-radius: .125rem; background: var(--primary); color: white; padding-inline: 1.125rem; font-family: var(--font-geist-mono); font-size: .8125rem; font-weight: 650; transition: opacity .15s ease, transform .15s ease; }
+.marketing-button-primary:hover { opacity: .86; }
+.marketing-button-primary:active { transform: scale(.96); }
+.marketing-button-secondary { display: inline-flex; min-height: 2.75rem; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--primary); border-radius: .125rem; background: var(--card); color: var(--primary); padding-inline: 1.125rem; font-family: var(--font-geist-mono); font-size: .8125rem; font-weight: 650; transition: background .15s ease, transform .15s ease; }
+.marketing-button-secondary:hover { background: var(--muted); }
+.marketing-button-secondary:active { transform: scale(.96); }
+
+/* Compatibility layer for older public pages while they use the shared token system. */
+.light .marketing .text-white, .light .marketing .text-zinc-100, .light .marketing .text-zinc-200 { color: var(--foreground) !important; }
+.light .marketing .text-zinc-300, .light .marketing .text-zinc-400, .light .marketing .text-zinc-500, .light .marketing .text-zinc-600 { color: var(--muted-foreground) !important; }
+.light .marketing .bg-black, .light .marketing .bg-\[\#050505\], .light .marketing .bg-\[\#070707\], .light .marketing .bg-\[\#09090b\], .light .marketing .bg-\[\#0a0a0a\], .light .marketing .bg-\[\#0a0a0d\] { background-color: var(--background) !important; }
+.light .marketing .bg-zinc-900, .light .marketing .bg-zinc-800 { background-color: var(--card) !important; }
+.light .marketing .border-zinc-800, .light .marketing .border-zinc-700 { border-color: var(--border) !important; }
 
 /* Page animations */
 @keyframes fade-in {

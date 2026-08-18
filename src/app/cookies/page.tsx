@@ -41,7 +41,7 @@ export default function CookiesPage() {
             <div><p className="font-semibold text-zinc-200">Authentication session cookie</p><p className="mt-1 text-xs text-zinc-600">Set by the authentication flow</p></div>
             <p>Lets the application recognize a signed-in user and keep the account session available across requests.</p>
             <p className="inline-flex items-start gap-2 text-zinc-300"><CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-300" aria-hidden="true" />Yes</p>
-            <p>Session configuration is set to a 14-day maximum in the application. Browser behavior can vary by security settings and sign-out activity.</p>
+            <p>Session lifetime follows the Auth.js configuration used by the deployment. Browser behavior can vary with security settings, cookie controls, and sign-out activity.</p>
           </div>
           <div className="grid gap-3 p-5 text-sm leading-6 text-zinc-400 md:grid-cols-[1.1fr_1.2fr_.8fr_1fr] md:gap-5">
             <div><p className="font-semibold text-zinc-200">Theme preference</p><p className="mt-1 text-xs text-zinc-600">Browser local storage, not a cookie</p></div>

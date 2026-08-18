@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { BarChart3, Building2, FileText, LayoutDashboard, LogOut, Menu, Plus, Settings, ShieldCheck, X } from "lucide-react";
+import { BarChart3, Building2, CircleHelp, FileText, LayoutDashboard, LogOut, Menu, Plus, Settings, ShieldCheck, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -101,6 +101,13 @@ export function DashboardChrome({
       >
         <Settings className="size-4 shrink-0" aria-hidden="true" />Settings
       </Link>
+      <Link
+        href="/faq"
+        onClick={onNavigate}
+        className="app-nav-item flex h-10 items-center gap-3 px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+      >
+        <CircleHelp className="size-4 shrink-0" aria-hidden="true" />Help & terms
+      </Link>
       {isAdmin && (
         <Link
           href="/admin"
@@ -114,29 +121,33 @@ export function DashboardChrome({
   );
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r bg-card px-4 py-5 lg:flex">
-        <Link href="/dashboard" className="mb-8 px-2" aria-label="CloudInvoice dashboard"><Logo /></Link>
+      <aside className="hidden w-60 shrink-0 flex-col border-r bg-card px-3 py-4 lg:flex">
+        <Link href="/dashboard" className="mb-6 px-2 py-1" aria-label="CloudInvoice dashboard"><Logo /></Link>
+        <div className="mb-5 rounded-xl border bg-background/65 p-3">
+          <p className="truncate text-sm font-semibold">{organizationName}</p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">{userEmail}</p>
+        </div>
         <Link
           href="/invoices/new"
-          className="mb-7 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white shadow-sm shadow-primary/25 transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+          className="mb-6 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-foreground px-4 text-sm font-semibold text-background transition-[opacity,transform] duration-150 hover:opacity-85 active:scale-[.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
         >
           <Plus className="size-4" aria-hidden="true" />New invoice
         </Link>
         <p className="app-eyebrow mb-2 px-3">Workspace</p>
         <nav aria-label="Main" className="space-y-1">{navLinks()}</nav>
-        <div className="mt-auto space-y-1 border-t pt-4">{footerLinks()}</div>
+        <div className="mt-auto space-y-1 pt-5">{footerLinks()}</div>
       </aside>
 
       {/* Mobile drawer */}
       {open && (
         <>
-          <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 z-40 bg-slate-950/50 lg:hidden" />
+          <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 z-40 bg-black/35 lg:hidden" />
           <div
             id="dashboard-drawer"
             ref={drawerRef}
-            className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r bg-card p-4 shadow-2xl lg:hidden"
+            className="fixed inset-y-0 start-0 z-50 flex w-72 flex-col border-e bg-card p-4 shadow-2xl lg:hidden"
           >
             <div className="mb-8 flex items-center justify-between px-2">
               <Logo />
@@ -147,7 +158,7 @@ export function DashboardChrome({
             <Link
               href="/invoices/new"
               onClick={() => setOpen(false)}
-              className="mb-6 inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-white"
+              className="mb-6 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-foreground px-4 text-sm font-semibold text-background active:scale-[.96]"
             >
               <Plus className="size-4" aria-hidden="true" />New invoice
             </Link>
@@ -159,7 +170,7 @@ export function DashboardChrome({
       )}
 
       <div className="app-canvas flex min-w-0 flex-1 flex-col bg-background">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-card/85 px-4 backdrop-blur-xl sm:px-7">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/90 px-4 backdrop-blur-xl sm:px-7">
           <div className="flex min-w-0 items-center gap-3">
             <button
               ref={triggerRef}
@@ -168,13 +179,13 @@ export function DashboardChrome({
               aria-label="Open menu"
               aria-expanded={open}
               aria-controls="dashboard-drawer"
-              className="grid size-9 shrink-0 place-items-center rounded-lg border transition hover:bg-muted lg:hidden"
+              className="grid size-10 shrink-0 place-items-center rounded-lg border transition-colors duration-150 hover:bg-muted lg:hidden"
             >
               <Menu className="size-4" aria-hidden="true" />
             </button>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">{organizationName}</p>
-              <p className="text-xs text-muted-foreground">Workspace</p>
+              <p className="text-xs text-muted-foreground">CloudInvoice workspace</p>
             </div>
           </div>
 

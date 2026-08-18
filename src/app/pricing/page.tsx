@@ -1,252 +1,53 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, IndianRupee, ShieldCheck } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
-import { marketingFaqs } from "@/lib/marketing-content";
 
 export const metadata: Metadata = {
-  title: "Pricing — CloudInvoice",
-  description: "Straightforward plans for independent businesses. Start free, upgrade when the work demands it. GST-ready invoicing with no pricing maze.",
-  alternates: { canonical: "/pricing" }
+  title: "Free Invoice App and Early Access Pricing",
+  description: "Use CloudInvoice free during early access. Create GST invoices, manage clients, choose three invoice templates, download PDFs, and share private invoice links.",
+  alternates: { canonical: "/pricing" },
+  openGraph: { type: "website", url: "/pricing", title: "Free Invoice App and Early Access Pricing", description: "Use the current CloudInvoice invoicing workspace free during early access." },
 };
 
-// Figures mirror src/components/marketing/pricing-preview.tsx. Keep both in sync.
-const plans = [
-  {
-    name: "Starter",
-    monthly: "₹0",
-    annual: "₹0",
-    note: "For your first professional invoices",
-    action: "Start free",
-    href: "/sign-in",
-    features: [
-      "Core invoice creation",
-      "GST calculation (CGST, SGST, IGST)",
-      "Client directory",
-      "Classic invoice template",
-      "Private client payment pages"
-    ]
-  },
-  {
-    name: "Studio",
-    monthly: "₹799",
-    annual: "₹639",
-    note: "For independent professionals building momentum",
-    action: "Start free",
-    href: "/sign-in",
-    featured: true,
-    features: [
-      "Everything in Starter",
-      "Payment collection via Stripe and UPI",
-      "Revenue analytics",
-      "All three invoice templates",
-      "Payment status tracking"
-    ]
-  },
-  {
-    name: "Business",
-    monthly: "₹1,999",
-    annual: "₹1,599",
-    note: "For a more connected billing operation",
-    action: "Start free",
-    href: "/sign-in",
-    features: [
-      "Everything in Studio",
-      "Advanced invoice controls",
-      "Priority support",
-      "Batch invoice export",
-      "Custom fields and branding"
-    ]
-  }
-];
+const included = ["GST-ready invoice creation", "CGST, SGST, and IGST calculation", "Reusable client records", "Classic, Modern, and Midnight templates", "Browser print and PDF download", "Private client invoice links", "Revenue and outstanding balance overview", "Configured Stripe, Razorpay, and UPI payment paths"];
 
-const comparison = [
-  { feature: "Invoices per month", starter: "Unlimited", studio: "Unlimited", business: "Unlimited" },
-  { feature: "GST calculation", starter: true, studio: true, business: true },
-  { feature: "Client directory", starter: true, studio: true, business: true },
-  { feature: "Private payment pages", starter: true, studio: true, business: true },
-  { feature: "Stripe Checkout", starter: false, studio: true, business: true },
-  { feature: "UPI QR payments", starter: false, studio: true, business: true },
-  { feature: "Revenue analytics", starter: false, studio: true, business: true },
-  { feature: "Invoice templates", starter: "Classic", studio: "All three", business: "All three" },
-  { feature: "Batch export", starter: false, studio: false, business: true },
-  { feature: "Priority support", starter: false, studio: false, business: true }
+const faqs = [
+  { question: "Can I use CloudInvoice for free?", answer: "Yes. The current early-access workspace is free. You can create invoices, save clients, use the available templates, and review revenue without entering subscription card details." },
+  { question: "Will CloudInvoice charge me automatically later?", answer: "No. There is no subscription checkout in the product today. Any future paid plan would require a separate, explicit agreement and payment step." },
+  { question: "Are payment processor fees included?", answer: "No fee is added by CloudInvoice today. Stripe or Razorpay may charge their own processing fees under the terms of your connected gateway account." },
+  { question: "Are there plan limits?", answer: "The current release does not enforce paid tiers or feature entitlements. Fair-use and commercial plan details will be published before paid subscriptions become available." },
 ];
-
-function Cell({ value }: { value: string | boolean }) {
-  if (value === true) return <Check className="mx-auto size-4 text-white" aria-label="Included" />;
-  if (value === false) return <span className="text-zinc-600" aria-label="Not included">—</span>;
-  return <span className="text-zinc-300">{value}</span>;
-}
 
 export default function PricingPage() {
   return (
     <MarketingShell>
-      {/* Header */}
-      <section className="relative border-b border-zinc-800 bg-[#0a0a0a] py-20 sm:py-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50" />
+      <main id="main-content">
+        <section className="marketing-section">
+          <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl"><p className="marketing-kicker">Pricing</p><h1 className="marketing-title mt-4">A free invoice app during early access.</h1><p className="marketing-copy mt-6 max-w-3xl">CloudInvoice does not run paid subscription checkout today. The current invoicing workspace is free to use, and the product will not start a paid plan without a clear agreement and payment step.</p></div>
 
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-all duration-300 hover:gap-3 hover:text-white"
-          >
-            <ArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to home
-          </Link>
-
-          <div className="mt-8 max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">PRICING</p>
-            <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Start with clarity. Upgrade when the work demands it.
-            </h1>
-            <p className="mt-6 text-xl leading-8 text-zinc-400">
-              No pricing maze and no per-invoice surcharges. Pick the level of control that fits your business today.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Plans */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-3">
-            {plans.map((plan) => (
-              <article
-                key={plan.name}
-                className={
-                  plan.featured
-                    ? "relative rounded-2xl border border-zinc-700 bg-zinc-800 p-8 transition-all duration-300 hover:border-zinc-600"
-                    : "relative rounded-2xl border border-zinc-800 bg-zinc-900 p-8 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-                }
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-xl font-bold text-white">{plan.name}</h2>
-                    <p className="mt-2 min-h-10 text-sm leading-5 text-zinc-400">{plan.note}</p>
-                  </div>
-                  {plan.featured && (
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-zinc-600 bg-zinc-700 px-2.5 py-1 text-xs font-semibold text-white">
-                      <Sparkles className="size-3" />
-                      Popular
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-8">
-                  <span className="text-4xl font-bold tracking-tight text-white">{plan.monthly}</span>
-                  {plan.monthly !== "₹0" && <span className="ml-1 text-sm text-zinc-500">/ month</span>}
-                  {plan.monthly !== "₹0" && (
-                    <p className="mt-2 text-xs text-zinc-500">{plan.annual} / month billed yearly, saving 20%</p>
-                  )}
-                </div>
-
-                <Link
-                  href={plan.href}
-                  className={
-                    plan.featured
-                      ? "group mt-8 flex h-12 items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-black transition-all duration-300 hover:bg-zinc-100"
-                      : "group mt-8 flex h-12 items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-black text-sm font-semibold text-white transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-900"
-                  }
-                >
-                  {plan.action}
-                  <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
-
-                <ul className="mt-8 space-y-3 border-t border-zinc-800 pt-6">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5 text-sm text-zinc-300">
-                      <Check className="mt-0.5 size-4 shrink-0 text-zinc-500" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+            <div className="mt-14 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+              <article className="marketing-card rounded-xl p-6 sm:p-9">
+                <div className="flex flex-wrap items-start justify-between gap-5"><div><p className="marketing-kicker">Early access workspace</p><h2 className="mt-3 text-3xl font-semibold">CloudInvoice Free</h2><p className="mt-2 text-muted-foreground">For freelancers, agencies, consultants, and small businesses testing the current workflow.</p></div><div className="text-end"><span className="text-5xl font-semibold tracking-[-.06em]">₹0</span><p className="mt-1 text-xs text-muted-foreground">No subscription checkout</p></div></div>
+                <Link href="/sign-in" className="marketing-button-primary mt-8">Create an invoice free <ArrowRight className="size-4" /></Link>
+                <ul className="mt-8 grid gap-3 border-t pt-7 sm:grid-cols-2">{included.map((item) => <li key={item} className="flex gap-2.5 text-sm leading-6"><Check className="mt-1 size-4 shrink-0 text-primary" />{item}</li>)}</ul>
               </article>
-            ))}
+              <div className="grid gap-5">
+                <article className="rounded-xl border bg-card p-6"><IndianRupee className="size-6 text-primary" /><h2 className="mt-5 text-xl font-semibold">What the free price means</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">CloudInvoice does not charge a workspace subscription today. Payment gateways remain separate services, so their account requirements and processing fees still apply.</p></article>
+                <article className="rounded-xl border bg-card p-6"><ShieldCheck className="size-6 text-primary" /><h2 className="mt-5 text-xl font-semibold">What happens before paid plans</h2><p className="mt-3 text-sm leading-7 text-muted-foreground">Plan scope, taxes, renewal terms, cancellation, refunds, and support terms will be published before CloudInvoice accepts a subscription payment.</p></article>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <p className="mt-8 text-center text-sm text-zinc-500">
-            Paid-plan checkout is not enabled yet. Every workspace starts free today, and launch pricing is shown so you can plan ahead.
-          </p>
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className="border-b border-zinc-800 bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Compare plans</h2>
-
-          <div className="mt-10 overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full min-w-[36rem] border-collapse text-sm">
-              <caption className="sr-only">Feature comparison across Starter, Studio, and Business plans</caption>
-              <thead>
-                <tr className="border-b border-zinc-800 bg-zinc-900">
-                  <th scope="col" className="px-5 py-4 text-left font-semibold text-white">Feature</th>
-                  <th scope="col" className="px-5 py-4 text-center font-semibold text-white">Starter</th>
-                  <th scope="col" className="px-5 py-4 text-center font-semibold text-white">Studio</th>
-                  <th scope="col" className="px-5 py-4 text-center font-semibold text-white">Business</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparison.map((row) => (
-                  <tr key={row.feature} className="border-b border-zinc-800 last:border-0">
-                    <th scope="row" className="px-5 py-4 text-left font-medium text-zinc-300">{row.feature}</th>
-                    <td className="px-5 py-4 text-center"><Cell value={row.starter} /></td>
-                    <td className="px-5 py-4 text-center"><Cell value={row.studio} /></td>
-                    <td className="px-5 py-4 text-center"><Cell value={row.business} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <section className="marketing-section border-y bg-card">
+          <div className="mx-auto grid max-w-[90rem] gap-12 px-4 sm:px-6 lg:grid-cols-[.72fr_1.28fr] lg:px-8">
+            <div><p className="marketing-kicker">Pricing questions</p><h2 className="marketing-title mt-4">No paid plan hidden in the fine print.</h2><p className="marketing-copy mt-6">These answers describe the current release, not a proposed pricing table.</p></div>
+            <div className="divide-y border-y">{faqs.map((faq) => <details key={faq.question} className="group py-5"><summary className="cursor-pointer list-none font-semibold">{faq.question}<span className="float-end text-xl font-normal text-primary transition-transform duration-150 group-open:rotate-45">+</span></summary><p className="mt-4 text-sm leading-7 text-muted-foreground">{faq.answer}</p></details>)}</div>
           </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-3xl px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Common questions</h2>
-          <div className="mt-10 space-y-3">
-            {marketingFaqs.slice(0, 5).map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition-all duration-300 hover:border-zinc-700 open:border-zinc-700"
-              >
-                <summary className="cursor-pointer list-none font-semibold text-white">{faq.question}</summary>
-                <p className="mt-3 text-sm leading-7 text-zinc-400">{faq.answer}</p>
-              </details>
-            ))}
-          </div>
-          <div className="mt-10">
-            <Link
-              href="/faq"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-white transition-all duration-300 hover:gap-3 hover:text-zinc-300"
-            >
-              Read all FAQs
-              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-2xl px-6 text-center lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Send your first invoice today</h2>
-          <p className="mt-6 text-lg leading-8 text-zinc-400">
-            Create a free workspace, add a client, and share a payment-ready invoice in minutes.
-          </p>
-          <div className="mt-10">
-            <Link
-              href="/sign-in"
-              className="group inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-zinc-100"
-            >
-              Start free
-              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </MarketingShell>
   );
 }

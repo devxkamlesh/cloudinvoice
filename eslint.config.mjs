@@ -9,6 +9,7 @@ const config = [
 			"node_modules/**",
 			"next-env.d.ts",
 			"prisma/**/*.js",
+			"reports/**",
 		],
 	},
 	...compat.extends("next/core-web-vitals", "next/typescript"),

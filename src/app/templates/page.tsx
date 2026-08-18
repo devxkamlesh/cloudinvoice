@@ -1,235 +1,44 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Sparkles, Palette, Moon, Layers } from "lucide-react";
+import { ArrowRight, Check, FileDown, Layers3, Moon, Sparkles } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Invoice Templates — CloudInvoice",
-  description: "Choose from 6 professional invoice templates: Classic, Modern, Midnight, Minimal, Corporate, and Creative. Each designed to match your brand while keeping client information clear.",
-  alternates: { canonical: "/templates" }
+  title: "Free Invoice Templates for Professional GST Billing",
+  description: "Use Classic, Modern, or Midnight invoice templates online. Add GST details, notes, terms, and line items, then print or download the invoice as a PDF.",
+  alternates: { canonical: "/templates" },
+  openGraph: { type: "website", url: "/templates", title: "Free Invoice Templates for Professional GST Billing", description: "Create a professional invoice with three distinct online templates and download it as a PDF." },
+  twitter: { card: "summary_large_image", title: "Free Invoice Templates for GST Billing", description: "Use Classic, Modern, or Midnight invoice templates online." },
 };
 
 const templates = [
-  {
-    id: "classic",
-    name: "Classic",
-    icon: Layers,
-    tagline: "Professional clarity",
-    description: "A clean, traditional layout that puts line items and totals front and center. Ideal for established businesses that value timeless professionalism.",
-    features: [
-      "Left-aligned business details",
-      "Tabular line items with clear spacing",
-      "Prominent total and payment terms",
-      "High-contrast black text on white",
-      "PDF-friendly printing layout"
-    ],
-    preview: {
-      bg: "bg-white",
-      border: "border-zinc-200",
-      headerBg: "bg-zinc-50",
-      textPrimary: "text-zinc-900",
-      textSecondary: "text-zinc-600"
-    },
-    bestFor: "Legal, consulting, accounting, established agencies"
-  },
-  {
-    id: "modern",
-    name: "Modern",
-    icon: Sparkles,
-    tagline: "Contemporary confidence",
-    description: "A balanced design with subtle visual hierarchy and generous whitespace. For businesses that want to feel current without sacrificing readability.",
-    features: [
-      "Centered business name with accent border",
-      "Card-style line item presentation",
-      "Color-coded payment status indicators",
-      "Modern typography and spacing",
-      "Optimized for screen viewing"
-    ],
-    preview: {
-      bg: "bg-zinc-50",
-      border: "border-zinc-300",
-      headerBg: "bg-white",
-      textPrimary: "text-zinc-900",
-      textSecondary: "text-zinc-600"
-    },
-    bestFor: "Design studios, tech consultancies, creative agencies"
-  },
-  {
-    id: "midnight",
-    name: "Midnight",
-    icon: Moon,
-    tagline: "Bold and memorable",
-    description: "A dark theme that makes invoices feel intentional and distinct. For businesses whose brand identity already leans modern and confident.",
-    features: [
-      "Dark background with high contrast text",
-      "Accent colors for key financial data",
-      "Minimalist borders and dividers",
-      "Screen-first design philosophy",
-      "Eye-catching for digital delivery"
-    ],
-    preview: {
-      bg: "bg-zinc-900",
-      border: "border-zinc-700",
-      headerBg: "bg-zinc-800",
-      textPrimary: "text-white",
-      textSecondary: "text-zinc-400"
-    },
-    bestFor: "Digital agencies, SaaS consultants, modern studios"
-  },
-  {
-    id: "minimal",
-    name: "Minimal",
-    icon: Check,
-    tagline: "Essential simplicity",
-    description: "Maximum clarity with minimum visual noise. Every element serves the core purpose: show what was delivered and what it costs.",
-    features: [
-      "Reduced visual elements for focus",
-      "Ultra-clean line item spacing",
-      "Single accent color for totals",
-      "Maximum whitespace utilization",
-      "Fast to scan and understand"
-    ],
-    preview: {
-      bg: "bg-white",
-      border: "border-zinc-100",
-      headerBg: "bg-white",
-      textPrimary: "text-zinc-900",
-      textSecondary: "text-zinc-500"
-    },
-    bestFor: "Freelancers, photographers, designers, consultants"
-  },
-  {
-    id: "corporate",
-    name: "Corporate",
-    icon: Layers,
-    tagline: "Enterprise standard",
-    description: "Structured and formal with comprehensive details visible at a glance. Built for businesses that handle complex billing requirements.",
-    features: [
-      "Detailed header with all tax identifiers",
-      "Multi-column line items with HSN/SAC",
-      "Separate sections for taxes and totals",
-      "Formal business terminology",
-      "Compliance-focused layout"
-    ],
-    preview: {
-      bg: "bg-white",
-      border: "border-zinc-300",
-      headerBg: "bg-zinc-100",
-      textPrimary: "text-zinc-900",
-      textSecondary: "text-zinc-700"
-    },
-    bestFor: "Manufacturing, B2B vendors, enterprise services, contractors"
-  },
-  {
-    id: "creative",
-    name: "Creative",
-    icon: Sparkles,
-    tagline: "Expressive design",
-    description: "A template that makes room for visual identity while keeping financial details clear. For businesses where presentation is part of the value.",
-    features: [
-      "Large logo placement option",
-      "Brand color integration throughout",
-      "Visual dividers and accents",
-      "Photography and image support",
-      "Portfolio-style presentation"
-    ],
-    preview: {
-      bg: "bg-gradient-to-br from-purple-50 to-blue-50",
-      border: "border-purple-200",
-      headerBg: "bg-white",
-      textPrimary: "text-zinc-900",
-      textSecondary: "text-purple-700"
-    },
-    bestFor: "Creative studios, event planners, marketing agencies, architects"
-  }
+  { id: "classic", name: "Classic", icon: Layers3, tagline: "Clear and traditional", description: "A white invoice with a familiar document structure, direct line-item table, visible totals, notes, and payment terms.", bestFor: "Consultants, contractors, accountants, and established service businesses", preview: "bg-white text-slate-950", accent: "bg-slate-950", line: "border-slate-200" },
+  { id: "modern", name: "Modern", icon: Sparkles, tagline: "Clean and current", description: "A lighter presentation with more spacing and grouped financial details for clients who read invoices primarily on screen.", bestFor: "Studios, agencies, freelancers, and technology consultants", preview: "bg-slate-50 text-slate-950", accent: "bg-blue-700", line: "border-blue-100" },
+  { id: "midnight", name: "Midnight", icon: Moon, tagline: "Dark and distinctive", description: "A dark client-facing invoice treatment with high-contrast amounts and restrained accents for digital delivery.", bestFor: "Digital agencies, creative studios, and modern service brands", preview: "bg-slate-950 text-white", accent: "bg-indigo-400", line: "border-slate-700" },
 ];
 
-const customizationOptions = [
-  {
-    title: "Your logo",
-    description: "Upload your business logo to appear on every invoice. Supports PNG, JPG, and SVG formats."
-  },
-  {
-    title: "Brand colors",
-    description: "Customize accent colors to match your brand identity while maintaining readability."
-  },
-  {
-    title: "Custom fields",
-    description: "Add purchase order numbers, project codes, or other business-specific fields."
-  },
-  {
-    title: "Payment terms",
-    description: "Set default terms, late fees, and payment instructions that appear on every invoice."
-  }
-];
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: appUrl }, { "@type": "ListItem", position: 2, name: "Invoice Templates", item: `${appUrl}/templates` }] },
+    { "@type": "ItemList", name: "CloudInvoice invoice templates", numberOfItems: templates.length, itemListElement: templates.map((template, index) => ({ "@type": "ListItem", position: index + 1, name: `${template.name} invoice template`, description: template.description, url: `${appUrl}/templates#${template.id}` })) },
+  ],
+};
 
-function TemplatePreviewCard({ template }: { template: typeof templates[0] }) {
+function Preview({ template }: { template: (typeof templates)[number] }) {
+  const Icon = template.icon;
   return (
-    <article className="group rounded-2xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800">
-      {/* Icon and Name */}
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex size-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 transition-all duration-300 group-hover:scale-110">
-            <template.icon className="size-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-white">{template.name}</h3>
-            <p className="text-sm text-zinc-500">{template.tagline}</p>
-          </div>
-        </div>
+    <article id={template.id} className="marketing-card rounded-xl p-5 sm:p-6">
+      <div className="flex items-start gap-3"><span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" /></span><div><h2 className="text-xl font-semibold">{template.name}</h2><p className="mt-1 text-sm text-muted-foreground">{template.tagline}</p></div></div>
+      <div className={`mt-6 rounded-lg p-4 outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10 ${template.preview}`}>
+        <div className="flex items-start justify-between gap-4"><div><p className="text-[10px] font-semibold uppercase tracking-[.14em] opacity-55">Studio North</p><p className="mt-2 text-lg font-bold">Invoice</p></div><div className="text-end"><p className="text-xs font-semibold">INV-0042</p><p className="mt-1 text-[10px] opacity-55">Due 31 Aug 2026</p></div></div>
+        <div className={`my-5 h-px ${template.accent}`} />
+        <div className="space-y-2 text-xs"><div className={`grid grid-cols-[1fr_auto] gap-4 border-b pb-2 ${template.line}`}><span>Brand strategy</span><span>₹40,000</span></div><div className={`grid grid-cols-[1fr_auto] gap-4 border-b pb-2 ${template.line}`}><span>GST (18%)</span><span>₹7,200</span></div><div className="grid grid-cols-[1fr_auto] gap-4 pt-1 text-sm font-bold"><span>Total</span><span>₹47,200</span></div></div>
       </div>
-
-      {/* Preview */}
-      <div className="mt-6 overflow-hidden rounded-lg border border-zinc-800">
-        <div className={`${template.preview.bg} p-6`}>
-          {/* Header */}
-          <div className={`${template.preview.headerBg} rounded-lg border ${template.preview.border} p-4`}>
-            <div className={`text-xs font-semibold uppercase tracking-wide ${template.preview.textSecondary}`}>
-              Your Business Name
-            </div>
-            <div className={`mt-2 text-lg font-bold ${template.preview.textPrimary}`}>
-              INV-00042
-            </div>
-          </div>
-
-          {/* Line Items */}
-          <div className="mt-4 space-y-2">
-            {[1, 2].map((i) => (
-              <div key={i} className={`flex items-center justify-between rounded border ${template.preview.border} p-3`}>
-                <div className={`text-xs ${template.preview.textPrimary}`}>Service Item {i}</div>
-                <div className={`text-xs font-semibold ${template.preview.textPrimary}`}>₹{i * 10000}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Total */}
-          <div className={`mt-4 rounded-lg border ${template.preview.border} p-3`}>
-            <div className="flex items-center justify-between">
-              <div className={`text-sm font-bold ${template.preview.textPrimary}`}>Total</div>
-              <div className={`text-sm font-bold ${template.preview.textPrimary}`}>₹30,000</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Description */}
-      <p className="mt-6 leading-7 text-zinc-400">{template.description}</p>
-
-      {/* Features */}
-      <div className="mt-6 space-y-2">
-        {template.features.map((feature) => (
-          <div key={feature} className="flex items-start gap-2 text-sm text-zinc-400">
-            <Check className="mt-0.5 size-4 shrink-0 text-zinc-500" />
-            <span>{feature}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Best For */}
-      <div className="mt-6 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Best for</p>
-        <p className="mt-2 text-sm text-zinc-400">{template.bestFor}</p>
-      </div>
+      <p className="mt-6 text-sm leading-7 text-muted-foreground">{template.description}</p>
+      <p className="mt-5 text-xs font-semibold uppercase tracking-[.12em] text-primary">Best for</p><p className="mt-2 text-sm text-muted-foreground">{template.bestFor}</p>
     </article>
   );
 }
@@ -237,148 +46,31 @@ function TemplatePreviewCard({ template }: { template: typeof templates[0] }) {
 export default function TemplatesPage() {
   return (
     <MarketingShell>
-      {/* Header */}
-      <section className="relative border-b border-zinc-800 bg-[#0a0a0a] py-20 sm:py-28">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:64px_64px] opacity-50" />
-        
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-all duration-300 hover:text-white hover:gap-3"
-          >
-            <ArrowLeft className="size-4 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to home
-          </Link>
-
-          <div className="mt-8 max-w-3xl">
-            <div className="flex items-center gap-3">
-              <Palette className="size-8 text-white" />
-              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Invoice templates
-              </h1>
-            </div>
-            <p className="mt-6 text-xl leading-8 text-zinc-400">
-              Choose the template that matches your brand energy. Each design keeps client information clear while expressing your business identity.
-            </p>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
+      <main id="main-content">
+        <section className="marketing-section">
+          <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl"><p className="marketing-kicker">Invoice templates</p><h1 className="marketing-title mt-4">Free invoice templates for professional GST billing.</h1><p className="marketing-copy mt-6 max-w-3xl">CloudInvoice includes three distinct invoice templates: Classic, Modern, and Midnight. Choose a style while creating the invoice, add your client and GST details, then print or download the finished document as a PDF.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/sign-in" className="marketing-button-primary">Create an invoice free <ArrowRight className="size-4" /></Link><Link href="/features" className="marketing-button-secondary">See invoice features</Link></div></div>
+            <div className="mt-14 grid gap-4 lg:grid-cols-3">{templates.map((template) => <Preview key={template.id} template={template} />)}</div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Templates Grid */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
-            {templates.map((template) => (
-              <TemplatePreviewCard key={template.id} template={template} />
-            ))}
+        <section className="marketing-section border-y bg-card">
+          <div className="mx-auto grid max-w-[90rem] gap-12 px-4 sm:px-6 lg:grid-cols-[.78fr_1.22fr] lg:px-8">
+            <div><p className="marketing-kicker">How to use a template</p><h2 className="marketing-title mt-4">Choose the layout after the invoice details are right.</h2><p className="marketing-copy mt-6">A template changes presentation, not the commercial facts. Review the client, dates, tax mode, line items, notes, and terms before sending or downloading the invoice.</p></div>
+            <ol className="grid gap-8 sm:grid-cols-2">
+              {[['01','Create the invoice','Select a saved client and enter issue and due dates.'],['02','Add work and GST','Enter line items, HSN or SAC details, discounts, and the correct tax treatment.'],['03','Choose a template','Select Classic, Modern, or Midnight before saving the invoice.'],['04','Download or share','Use the browser print flow to save a PDF, or send the private invoice link.']].map(([number,title,text]) => <li key={number}><span className="font-mono text-xs font-semibold text-primary">{number}</span><h3 className="mt-4 text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-7 text-muted-foreground">{text}</p></li>)}
+            </ol>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Customization */}
-      <section className="border-b border-zinc-800 bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              MAKE IT YOURS
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Customization options
-            </h2>
-            <p className="mt-4 text-lg text-zinc-400">
-              Every template can be customized to reflect your business identity without compromising clarity or professionalism.
-            </p>
+        <section className="marketing-section">
+          <div className="mx-auto grid max-w-[90rem] gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="marketing-card rounded-xl p-6 sm:p-8"><FileDown className="size-6 text-primary" /><h2 className="mt-6 text-2xl font-semibold">Can I download an invoice template?</h2><p className="mt-4 leading-8 text-muted-foreground">CloudInvoice generates the completed invoice in your browser. Open an invoice and use Export PDF or the browser print dialog to save a PDF. The product does not currently provide blank DOCX, XLSX, or standalone template files.</p></div>
+            <div className="marketing-card rounded-xl p-6 sm:p-8"><Check className="size-6 text-primary" /><h2 className="mt-6 text-2xl font-semibold">What can I customize?</h2><p className="mt-4 leading-8 text-muted-foreground">You can choose the template and set business details, client details, line items, tax mode, HSN or SAC codes, notes, terms, dates, and currency. Custom brand colors, arbitrary custom fields, invoice photography, and automatic late fees are not available today.</p></div>
           </div>
-
-          <div className="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-2">
-            {customizationOptions.map((option) => (
-              <div
-                key={option.title}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-              >
-                <h3 className="text-lg font-semibold text-white">{option.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-zinc-400">{option.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Template Philosophy */}
-      <section className="border-b border-zinc-800 bg-black py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-              OUR DESIGN PHILOSOPHY
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Templates designed for trust
-            </h2>
-            <div className="mt-8 space-y-6 text-lg leading-8 text-zinc-400">
-              <p>
-                Invoice templates aren&apos;t about decoration. They&apos;re about making the financial details of your work immediately clear to the person reading them.
-              </p>
-              <p>
-                Each CloudInvoice template is designed with hierarchy, contrast, and whitespace that guide the eye to what matters: what was delivered, what it costs, and how to pay.
-              </p>
-              <p>
-                Whether you choose Classic for its timeless reliability, Modern for its contemporary balance, or Midnight for its bold confidence, the core structure remains the same—clear line items, visible totals, and payment terms that can&apos;t be missed.
-              </p>
-            </div>
-
-            <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-              <h3 className="text-lg font-semibold text-white">What you won&apos;t find</h3>
-              <ul className="mt-4 space-y-3 text-sm leading-7 text-zinc-400">
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-zinc-500" />
-                  <span>No decorative elements that distract from the financial information</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-zinc-500" />
-                  <span>No hidden terms buried in footnotes or fine print</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-zinc-500" />
-                  <span>No aggressive branding that overshadows the invoice purpose</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-zinc-500" />
-                  <span>No cluttered layouts that make line items hard to parse</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-[#0a0a0a] py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Try all three templates
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-zinc-400">
-              Create a workspace and test each template with your actual business details. Switch between templates anytime—no additional cost, no migration needed.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/sign-in"
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-black transition-all duration-300 hover:bg-zinc-100 hover:scale-105"
-              >
-                Create your first invoice
-                <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/features"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-6 text-sm font-semibold text-white transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-800"
-              >
-                See all features
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </MarketingShell>
   );
 }
