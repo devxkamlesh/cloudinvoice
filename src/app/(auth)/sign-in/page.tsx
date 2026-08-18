@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
-import { signIn } from "next-auth/react";
+import { Suspense, useEffect, useState } from "react";
+import { getProviders, signIn } from "next-auth/react";
 import { ArrowRight, Check, Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -27,7 +27,14 @@ function SignInContent() {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [googleAvailable, setGoogleAvailable] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    getProviders()
+      .then((providers) => setGoogleAvailable(Boolean(providers?.google)))
+      .catch(() => setGoogleAvailable(false));
+  }, []);
 
   function switchMode(nextMode: Mode) {
     setMode(nextMode);
@@ -101,9 +108,7 @@ function SignInContent() {
               {(["signin", "signup"] as const).map((value) => <button key={value} type="button" role="tab" aria-selected={mode === value} onClick={() => switchMode(value)} className={`relative min-h-11 px-4 text-sm font-semibold transition-colors duration-150 ${mode === value ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>{value === "signin" ? "Sign in" : "Create account"}{mode === value && <span className="absolute inset-x-0 -bottom-px h-0.5 bg-primary" />}</button>)}
             </div>
 
-            <button type="button" onClick={continueWithGoogle} disabled={googleBusy || busy} className="mt-7 flex h-11 w-full items-center justify-center gap-3 rounded-lg border bg-card text-sm font-semibold transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[.96] disabled:pointer-events-none disabled:opacity-60"><GoogleMark />{googleBusy ? "Opening Google..." : mode === "signin" ? "Continue with Google" : "Sign up with Google"}</button>
-
-            <div className="my-6 flex items-center gap-3"><span className="h-px flex-1 bg-border" /><span className="text-[11px] uppercase tracking-[.12em] text-muted-foreground">or use email</span><span className="h-px flex-1 bg-border" /></div>
+            {googleAvailable && <><button type="button" onClick={continueWithGoogle} disabled={googleBusy || busy} className="mt-7 flex h-11 w-full items-center justify-center gap-3 rounded-lg border bg-card text-sm font-semibold transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[.96] disabled:pointer-events-none disabled:opacity-60"><GoogleMark />{googleBusy ? "Opening Google..." : mode === "signin" ? "Continue with Google" : "Sign up with Google"}</button><div className="my-6 flex items-center gap-3"><span className="h-px flex-1 bg-border" /><span className="text-[11px] uppercase tracking-[.12em] text-muted-foreground">or use email</span><span className="h-px flex-1 bg-border" /></div></>}
 
             <form onSubmit={(event) => { event.preventDefault(); submit(new FormData(event.currentTarget)); }} className="space-y-4">
               {mode === "signup" && <div><label htmlFor="auth-name" className="text-sm font-medium">Full name</label><div className="relative mt-1.5"><UserRound className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><input id="auth-name" name="name" type="text" autoComplete="name" required placeholder="Your name" className={inputClass(validationErrors.name)} /></div>{validationErrors.name && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{validationErrors.name}</p>}</div>}
