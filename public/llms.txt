@@ -15,7 +15,7 @@ Security reports: security@cloudinvoice.co.in
 - Calculates CGST and SGST for intra-state invoices or IGST for inter-state invoices.
 - Stores GSTIN, state code, HSN, and SAC context when supplied.
 - Saves client records for reuse.
-- Provides Classic, Modern, and Midnight invoice presentations.
+- Provides five distinct invoice presentations: Classic, Modern, Midnight, Editorial, and Ledger.
 - Lets the workspace owner print or save an invoice as PDF through the browser.
 - Creates private client invoice links that do not expose sequential invoice IDs.
 - Supports Stripe, Razorpay, and UPI payment paths when the deployment and workspace are configured for them.
@@ -31,7 +31,7 @@ CloudInvoice is intended for service businesses that need professional invoices 
 1. Create a free workspace account.
 2. Add the business and client details.
 3. Enter line items, dates, currency, discounts, and GST treatment.
-4. Choose Classic, Modern, or Midnight.
+4. Choose Classic, Modern, Midnight, Editorial, or Ledger.
 5. Review and save the invoice.
 6. Download it as PDF through the browser or share its private link.
 

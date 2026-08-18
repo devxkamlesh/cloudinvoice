@@ -105,6 +105,10 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 
 /* Subtle page backdrop so full-bleed tables do not float on flat colour. */
 .app-canvas { background-image: radial-gradient(54rem 22rem at 50% -10rem, color-mix(in srgb, var(--primary) 7%, transparent), transparent 72%); }
+.app-canvas main { width: 100%; }
+.app-canvas table tbody tr { transition: background-color .15s ease; }
+.app-canvas table tbody tr:hover { background: color-mix(in srgb, var(--primary) 4%, transparent); }
+.app-canvas input, .app-canvas textarea, .app-canvas select { border-radius: .5rem; }
 .grid-bg { background-image: linear-gradient(to right, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px); background-size: 44px 44px; }
 @media print { aside, header, .no-print { display: none !important; } body { background: white; } .surface { border: 0; box-shadow: none; } }
 

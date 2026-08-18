@@ -61,10 +61,10 @@ enum MemberRole {
 }
 
 model User {
-  id            String       @id
+  id            String       @id @default(cuid())
   name          String
   email         String       @unique
-  emailVerified Boolean      @default(false)
+  emailVerified DateTime?
   image         String?
   // Platform access. Never set from a request path — see PlatformRole.
   platformRole  PlatformRole @default(USER)
@@ -83,9 +83,9 @@ model User {
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(cuid())
   expiresAt DateTime
-  token     String   @unique
+  sessionToken String @unique @map("token")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -95,22 +95,24 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
+  id                    String    @id @default(cuid())
+  type                  String    @default("credentials")
+  providerAccountId     String    @map("accountId")
+  provider              String    @map("providerId")
   userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
+  access_token          String?   @map("accessToken")
+  refresh_token         String?   @map("refreshToken")
+  id_token              String?   @map("idToken")
+  expires_at            Int?
+  token_type            String?
   scope                 String?
+  session_state         String?
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([providerId, accountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Verification {

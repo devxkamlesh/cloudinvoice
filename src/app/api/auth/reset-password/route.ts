@@ -52,9 +52,9 @@ export async function POST(request: Request) {
     // Update or create account with new password
     await prisma.account.upsert({
       where: {
-        providerId_accountId: {
-          providerId: "credential",
-          accountId: user.id,
+        provider_providerAccountId: {
+          provider: "credential",
+          providerAccountId: user.id,
         },
       },
       update: {
@@ -62,8 +62,9 @@ export async function POST(request: Request) {
       },
       create: {
         id: `${Date.now()}`,
-        accountId: user.id,
-        providerId: "credential",
+        providerAccountId: user.id,
+        provider: "credential",
+        type: "credentials",
         userId: user.id,
         password: hashedPassword,
       },

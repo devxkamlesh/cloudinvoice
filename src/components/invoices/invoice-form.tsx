@@ -18,7 +18,7 @@ export type InvoiceFormDefaults = {
   issueDate: string;
   dueDate: string;
   taxMode: "INTRA_STATE" | "INTER_STATE";
-  template: "classic" | "modern" | "midnight";
+  template: "classic" | "modern" | "midnight" | "editorial" | "ledger";
   notes: string;
   terms: string;
   items: { description: string; hsnSac?: string; quantity: number; unitPrice: number; discount: number; taxRate: number }[];
@@ -85,7 +85,7 @@ export function InvoiceForm({
   }
 
   if (!clients.length) {
-    return <div className="surface rounded-2xl p-8 text-center">
+    return <div className="app-panel p-8 text-center">
       <p className="font-semibold">Add a client first</p>
       <p className="mt-1 text-sm text-muted-foreground">An invoice needs a billing recipient.</p>
       <Button asChild className="mt-5"><a href="/clients">Go to clients</a></Button>
@@ -106,13 +106,13 @@ export function InvoiceForm({
           <label className="text-sm font-medium">Issue date<Input type="date" className="mt-1.5" {...form.register("issueDate")} /></label>
           <label className="text-sm font-medium">Due date<Input type="date" className="mt-1.5" {...form.register("dueDate")} /></label>
           <label className="text-sm font-medium">Tax type<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("taxMode")}><option value="INTRA_STATE">Intra-state (CGST + SGST)</option><option value="INTER_STATE">Inter-state (IGST)</option></select></label>
-          <label className="text-sm font-medium sm:col-span-3">Invoice template<select className="mt-1.5 h-10 w-full rounded-xl border bg-transparent px-3 text-sm" {...form.register("template")}><option value="classic">Classic - professional clarity</option><option value="modern">Modern - contemporary confidence</option><option value="midnight">Midnight - bold and memorable</option></select></label>
+          <label className="text-sm font-medium sm:col-span-3">Invoice template<select className="mt-1.5 h-10 w-full rounded-lg border bg-card px-3 text-sm" {...form.register("template")}><option value="classic">Classic - formal and familiar</option><option value="modern">Modern - spacious and current</option><option value="midnight">Midnight - dark digital presentation</option><option value="editorial">Editorial - strong typographic hierarchy</option><option value="ledger">Ledger - dense financial detail</option></select><span className="mt-1.5 block text-xs font-normal text-muted-foreground">Five distinct client-facing layouts. You can change the template while the invoice is a draft.</span></label>
         </div>
         {form.formState.errors.clientId && <p className="mt-3 text-sm text-red-600">Select a client.</p>}
         {form.formState.errors.dueDate && <p className="mt-3 text-sm text-red-600">{form.formState.errors.dueDate.message}</p>}
       </section>
 
-      <section className="surface overflow-hidden rounded-2xl">
+      <section className="app-panel overflow-hidden">
         <div className="flex items-center justify-between px-5 py-5 sm:px-6">
           <div>
             <h2 className="font-semibold">Line items</h2>

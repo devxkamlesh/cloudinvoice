@@ -55,7 +55,7 @@ export async function POST(request: Request) {
         id: userId,
         email,
         name,
-        emailVerified: false,
+        emailVerified: null,
       },
     });
 
@@ -63,8 +63,9 @@ export async function POST(request: Request) {
     await prisma.account.create({
       data: {
         id: nanoid(),
-        accountId: userId,
-        providerId: "credential",
+        providerAccountId: userId,
+        provider: "credential",
+        type: "credentials",
         userId: user.id,
         password: hashedPassword,
       },

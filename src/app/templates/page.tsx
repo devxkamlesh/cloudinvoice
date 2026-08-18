@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, FileDown, Layers3, Moon, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpenText, Check, FileDown, Landmark, Layers3, Moon, Sparkles } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   title: "Free Invoice Templates for Professional GST Billing",
-  description: "Use Classic, Modern, or Midnight invoice templates online. Add GST details, notes, terms, and line items, then print or download the invoice as a PDF.",
+  description: "Use five advanced invoice templates online: Classic, Modern, Midnight, Editorial, and Ledger. Add GST details, then print or download the invoice as a PDF.",
   alternates: { canonical: "/templates" },
   openGraph: { type: "website", url: "/templates", title: "Free Invoice Templates for Professional GST Billing", description: "Create a professional invoice with three distinct online templates and download it as a PDF." },
   twitter: { card: "summary_large_image", title: "Free Invoice Templates for GST Billing", description: "Use Classic, Modern, or Midnight invoice templates online." },
@@ -17,6 +17,8 @@ const templates = [
   { id: "classic", name: "Classic", icon: Layers3, tagline: "Clear and traditional", description: "A white invoice with a familiar document structure, direct line-item table, visible totals, notes, and payment terms.", bestFor: "Consultants, contractors, accountants, and established service businesses", preview: "bg-white text-slate-950", accent: "bg-slate-950", line: "border-slate-200" },
   { id: "modern", name: "Modern", icon: Sparkles, tagline: "Clean and current", description: "A lighter presentation with more spacing and grouped financial details for clients who read invoices primarily on screen.", bestFor: "Studios, agencies, freelancers, and technology consultants", preview: "bg-slate-50 text-slate-950", accent: "bg-blue-700", line: "border-blue-100" },
   { id: "midnight", name: "Midnight", icon: Moon, tagline: "Dark and distinctive", description: "A dark client-facing invoice treatment with high-contrast amounts and restrained accents for digital delivery.", bestFor: "Digital agencies, creative studios, and modern service brands", preview: "bg-slate-950 text-white", accent: "bg-indigo-400", line: "border-slate-700" },
+  { id: "editorial", name: "Editorial", icon: BookOpenText, tagline: "Typographic and expressive", description: "A warm paper-like layout with serif typography, a strong side rule, and a red total treatment that reads like a considered statement.", bestFor: "Writers, strategists, architects, creative directors, and boutique consultancies", preview: "bg-[#fffdf7] text-[#201d19] font-serif border-s-4 border-s-[#bb2d1f]", accent: "bg-[#bb2d1f]", line: "border-[#d8cfc0]" },
+  { id: "ledger", name: "Ledger", icon: Landmark, tagline: "Dense and financial", description: "A compact mono layout with green accounting accents, tighter rows, and a statement-style total for detail-heavy business invoices.", bestFor: "B2B vendors, operations teams, contractors, and businesses with detailed line items", preview: "bg-[#f7f5ef] text-[#17352b] font-mono border-t-4 border-t-[#17352b]", accent: "bg-[#17352b]", line: "border-[#9db0a7]" },
 ];
 
 const schema = {
@@ -50,8 +52,8 @@ export default function TemplatesPage() {
       <main id="main-content">
         <section className="marketing-section">
           <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl"><p className="marketing-kicker">Invoice templates</p><h1 className="marketing-title mt-4">Free invoice templates for professional GST billing.</h1><p className="marketing-copy mt-6 max-w-3xl">CloudInvoice includes three distinct invoice templates: Classic, Modern, and Midnight. Choose a style while creating the invoice, add your client and GST details, then print or download the finished document as a PDF.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/sign-in" className="marketing-button-primary">Create an invoice free <ArrowRight className="size-4" /></Link><Link href="/features" className="marketing-button-secondary">See invoice features</Link></div></div>
-            <div className="mt-14 grid gap-4 lg:grid-cols-3">{templates.map((template) => <Preview key={template.id} template={template} />)}</div>
+            <div className="max-w-4xl"><p className="marketing-kicker">Invoice templates</p><h1 className="marketing-title mt-4">Five advanced invoice templates for GST billing.</h1><p className="marketing-copy mt-6 max-w-3xl">CloudInvoice includes five distinct client-facing layouts: Classic, Modern, Midnight, Editorial, and Ledger. Each changes the typography, spacing, line-item treatment, and total presentation while keeping the invoice facts intact.</p><div className="mt-8 flex flex-wrap gap-3"><Link href="/sign-in" className="marketing-button-primary">Create an invoice free <ArrowRight className="size-4" /></Link><Link href="/features" className="marketing-button-secondary">See invoice features</Link></div></div>
+            <div className="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{templates.map((template) => <Preview key={template.id} template={template} />)}</div>
           </div>
         </section>
 
@@ -59,7 +61,7 @@ export default function TemplatesPage() {
           <div className="mx-auto grid max-w-[90rem] gap-12 px-4 sm:px-6 lg:grid-cols-[.78fr_1.22fr] lg:px-8">
             <div><p className="marketing-kicker">How to use a template</p><h2 className="marketing-title mt-4">Choose the layout after the invoice details are right.</h2><p className="marketing-copy mt-6">A template changes presentation, not the commercial facts. Review the client, dates, tax mode, line items, notes, and terms before sending or downloading the invoice.</p></div>
             <ol className="grid gap-8 sm:grid-cols-2">
-              {[['01','Create the invoice','Select a saved client and enter issue and due dates.'],['02','Add work and GST','Enter line items, HSN or SAC details, discounts, and the correct tax treatment.'],['03','Choose a template','Select Classic, Modern, or Midnight before saving the invoice.'],['04','Download or share','Use the browser print flow to save a PDF, or send the private invoice link.']].map(([number,title,text]) => <li key={number}><span className="font-mono text-xs font-semibold text-primary">{number}</span><h3 className="mt-4 text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-7 text-muted-foreground">{text}</p></li>)}
+              {[['01','Create the invoice','Select a saved client and enter issue and due dates.'],['02','Add work and GST','Enter line items, HSN or SAC details, discounts, and the correct tax treatment.'],['03','Choose a template','Select one of five distinct layouts before saving the invoice.'],['04','Download or share','Use the browser print flow to save a PDF, or send the private invoice link.']].map(([number,title,text]) => <li key={number}><span className="font-mono text-xs font-semibold text-primary">{number}</span><h3 className="mt-4 text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-7 text-muted-foreground">{text}</p></li>)}
             </ol>
           </div>
         </section>

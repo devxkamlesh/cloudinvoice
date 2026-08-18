@@ -44,12 +44,30 @@ export default async function PayInvoicePage({ params, searchParams }: { params:
       })
     : null;
 
-  const templateClass =
-    invoice.template === "midnight"
-      ? "bg-slate-950 text-slate-50 border-slate-700"
-      : invoice.template === "modern"
-      ? "border-primary/25 shadow-xl shadow-primary/5"
-      : "";
+  const template = (["classic", "modern", "midnight", "editorial", "ledger"] as const).includes(invoice.template as "classic")
+    ? invoice.template as "classic" | "modern" | "midnight" | "editorial" | "ledger"
+    : "classic";
+  const templateClass = {
+    classic: "bg-white text-slate-950",
+    modern: "bg-[#f7f8ff] text-[#252a45] border-t-4 border-t-[#0000f2]",
+    midnight: "bg-[#0b1024] text-slate-50",
+    editorial: "bg-[#fffdf7] text-[#201d19] font-serif border-s-8 border-s-[#bb2d1f]",
+    ledger: "bg-[#f7f5ef] text-[#17352b] font-mono border-t-8 border-t-[#17352b]",
+  }[template];
+  const itemClass = {
+    classic: "border-slate-200",
+    modern: "rounded-lg border border-[#dce0ff] bg-white px-3 py-2",
+    midnight: "border-slate-700",
+    editorial: "border-[#d8cfc0] py-3",
+    ledger: "border-[#9db0a7] py-2 text-xs",
+  }[template];
+  const totalClass = {
+    classic: "border-slate-300",
+    modern: "rounded-xl border-0 bg-[#0000f2] px-4 py-4 text-white",
+    midnight: "border-indigo-400 text-indigo-200",
+    editorial: "border-[#bb2d1f] text-[#bb2d1f]",
+    ledger: "border-[#17352b] bg-[#e4ebe5] px-3 text-[#17352b]",
+  }[template];
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 py-8 sm:py-12">
@@ -94,16 +112,14 @@ export default async function PayInvoicePage({ params, searchParams }: { params:
         {/* Main Invoice Card */}
         <div className="overflow-hidden rounded-2xl bg-white shadow-lg border border-slate-200/60">
           {/* Invoice Header */}
-          <div className={`p-6 sm:p-9 ${templateClass}`}>
+          <div className={`p-6 sm:p-9 ${templateClass}`} data-template={template}>
             <div className="flex flex-wrap items-start justify-between gap-6">
               <div className="flex-1 min-w-[200px]">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Invoice from
-                </p>
+                <p className={`text-xs font-semibold uppercase tracking-wider ${template === "midnight" ? "text-slate-400" : "opacity-55"}`}>{template === "ledger" ? "Statement issued by" : template === "editorial" ? "Invoice / Services rendered" : "Invoice from"}</p>
                 <h1 className="mt-2 text-3xl font-bold tracking-tight">
                   {invoice.organization.name}
                 </h1>
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <div className={`mt-3 flex flex-wrap items-center gap-2 text-sm ${template === "midnight" ? "text-slate-400" : "opacity-65"}`}>
                   <span className="font-medium">{invoice.invoiceNumber}</span>
                   <span>•</span>
                   <span>Due {formatDate(invoice.dueDate)}</span>
@@ -126,16 +142,16 @@ export default async function PayInvoicePage({ params, searchParams }: { params:
             </div>
 
             {/* Invoice Items */}
-            <div className="mt-8 border-t border-slate-200 pt-6">
+            <div className={`mt-8 border-t pt-6 ${template === "midnight" ? "border-slate-700" : template === "editorial" ? "border-[#d8cfc0]" : template === "ledger" ? "border-[#9db0a7]" : "border-slate-200"}`}>
               <div className="space-y-3">
                 {invoice.items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-start justify-between gap-4 text-sm"
+                    className={`flex items-start justify-between gap-4 border-b text-sm last:border-0 ${itemClass}`}
                   >
                     <div className="flex-1">
                       <p className="font-medium">{item.description}</p>
-                      <p className="text-muted-foreground">
+                      <p className={template === "midnight" ? "text-slate-400" : "opacity-60"}>
                         Qty: {item.quantity.toString()} × {money(item.unitPrice.toString(), invoice.currency)}
                       </p>
                     </div>
@@ -148,7 +164,7 @@ export default async function PayInvoicePage({ params, searchParams }: { params:
             </div>
 
             {/* Total */}
-            <div className="mt-6 flex items-center justify-between border-t-2 border-slate-300 pt-5">
+            <div className={`mt-6 flex items-center justify-between border-t-2 pt-5 ${totalClass}`}>
               <span className="text-lg font-semibold">Total</span>
               <span className="text-2xl font-bold">
                 {money(invoice.total.toString(), invoice.currency)}

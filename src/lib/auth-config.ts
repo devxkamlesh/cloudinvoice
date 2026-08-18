@@ -17,7 +17,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true, // Trust proxy headers for production
   providers: [
     ...(googleEnabled
-      ? [Google({ clientId: process.env.AUTH_GOOGLE_ID!, clientSecret: process.env.AUTH_GOOGLE_SECRET! })]
+      ? [Google({
+          clientId: process.env.AUTH_GOOGLE_ID!,
+          clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+          // Google verifies the email returned by this provider. This allows an
+          // existing password account to add Google sign-in without creating a
+          // duplicate user row for the same unique email address.
+          allowDangerousEmailAccountLinking: true,
+        })]
       : []),
     Credentials({
       name: "credentials",
@@ -46,7 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const account = await prisma.account.findFirst({
           where: {
             userId: user.id,
-            providerId: "credential",
+            provider: "credential",
           },
         });
 
