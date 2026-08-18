@@ -51,11 +51,8 @@ $DC build app
 echo "▸ Recreating containers ..."
 $DC up -d
 
-# Pin the CLI version. Bare `npx prisma` resolves to latest (7.x), which rejects the
-# `url` property in schema.prisma and fails with P1012. Keep this matching the
-# prisma version in package.json.
 echo "▸ Applying migrations ..."
-$DC exec -T app npx --yes prisma@6.19.3 migrate deploy || echo "⚠ migrate deploy failed, check logs"
+$DC exec -T app ./node_modules/.bin/prisma migrate deploy
 
 echo "▸ Waiting for health ..."
 STATUS=starting

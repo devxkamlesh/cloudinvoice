@@ -6,10 +6,9 @@ sleep 5
 
 echo "Running Prisma migrations..."
 cd /app
-# Pin the CLI version. Bare `npx prisma` resolves to latest (7.x), which rejects the
-# `url` property in schema.prisma and fails with P1012. Keep this matching the prisma
-# version in package.json.
-npx --yes prisma@6.19.3 migrate deploy || echo "Migration failed or already applied"
+# Prisma is installed by `npm ci` in the builder and carried into the standalone
+# image. Use that local binary instead of an npx cache, which can race during restarts.
+./node_modules/.bin/prisma migrate deploy
 
 echo "Starting Next.js application..."
 exec node server.js
