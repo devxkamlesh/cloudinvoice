@@ -22,7 +22,9 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { email, password, name } = body;
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const password = body.password;
+    const name = typeof body.name === "string" ? body.name.trim() : "";
 
     if (!email || !password || !name) {
       return NextResponse.json(

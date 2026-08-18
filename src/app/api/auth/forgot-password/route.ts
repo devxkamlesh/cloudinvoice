@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { email } = body;
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
 
     if (!email) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     // Generate reset token
     const token = nanoid(32);
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 minutes expiry
+    expiresAt.setHours(expiresAt.getHours() + 1);
 
     // Store token
     await prisma.verification.create({

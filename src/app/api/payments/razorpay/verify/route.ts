@@ -50,6 +50,10 @@ export async function POST(request: Request) {
       );
     }
 
+    if (payment.order_id !== body.razorpay_order_id) {
+      return NextResponse.json({ error: 'Payment order mismatch' }, { status: 400 });
+    }
+
     // Get invoice
     const invoice = await prisma.invoice.findUnique({
       where: { id: body.invoiceId },
@@ -68,8 +72,10 @@ export async function POST(request: Request) {
 
     // Calculate amount paid (convert paise to currency units)
     const amountPaid = Number(payment.amount) / 100;
-    const newTotalPaid = Number(invoice.amountPaid) + amountPaid;
-    const isPaid = newTotalPaid >= Number(invoice.total);
+    const balance = Number(invoice.total) - Number(invoice.amountPaid);
+    if (payment.currency !== invoice.currency || Math.abs(amountPaid - balance) > 0.009) {
+      return NextResponse.json({ error: 'Payment amount or currency mismatch' }, { status: 400 });
+    }
 
     // Record payment and update invoice in transaction
     const updatedInvoice = await prisma.$transaction(async (tx) => {
@@ -81,28 +87,26 @@ export async function POST(request: Request) {
         },
       });
 
-      // Only create payment if it doesn't exist (prevent duplicates)
-      if (!existingPayment) {
-        await tx.payment.create({
-          data: {
-            invoiceId: body.invoiceId!,
-            amount: amountPaid,
-            currency: invoice.currency,
-            status: 'SUCCEEDED',
-            method: 'RAZORPAY',
-            razorpayPaymentId: body.razorpay_payment_id,
-            razorpayOrderId: body.razorpay_order_id,
-            paidAt: new Date(),
-          },
-        });
-      }
+      if (existingPayment) return invoice;
 
-      // Update invoice
+      await tx.payment.create({
+        data: {
+          invoiceId: body.invoiceId!,
+          amount: amountPaid,
+          currency: invoice.currency,
+          status: 'SUCCEEDED',
+          method: 'RAZORPAY',
+          razorpayPaymentId: body.razorpay_payment_id,
+          razorpayOrderId: body.razorpay_order_id,
+          paidAt: new Date(),
+        },
+      });
+
       return tx.invoice.update({
         where: { id: body.invoiceId },
         data: {
-          status: isPaid ? InvoiceStatus.PAID : InvoiceStatus.PARTIALLY_PAID,
-          amountPaid: newTotalPaid,
+          status: InvoiceStatus.PAID,
+          amountPaid: { increment: amountPaid },
         },
       });
     });

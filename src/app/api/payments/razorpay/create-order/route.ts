@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       notes: {
         invoiceId: invoice.id,
         invoiceNumber: invoice.invoiceNumber,
-        clientName: invoice.client.name,
+        publicToken: invoice.publicToken,
       },
     });
 

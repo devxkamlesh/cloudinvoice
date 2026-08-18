@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { authSignUpSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { token, newPassword } = body;
 
-    if (!token || !newPassword) {
+    const passwordCheck = authSignUpSchema.shape.password.safeParse(newPassword);
+    if (!token || !passwordCheck.success) {
       return NextResponse.json(
-        { error: "Missing token or password" },
+        { error: passwordCheck.success ? "Missing reset token" : passwordCheck.error.issues[0]?.message },
         { status: 400 }
       );
     }
@@ -35,7 +37,7 @@ export async function POST(request: Request) {
     }
 
     // Extract email from token identifier format: "password-reset:email"
-    const email = verification.identifier.split(":")[1];
+    const email = verification.identifier.slice("password-reset:".length).trim().toLowerCase();
 
     // Find user
     const user = await prisma.user.findUnique({
@@ -75,7 +77,7 @@ export async function POST(request: Request) {
       where: { id: verification.id },
     });
 
-    console.log(`Password reset successful for ${email}, token deleted`);
+    console.info("Password reset completed and the token was deleted.");
 
     return NextResponse.json({ success: true });
   } catch (error) {

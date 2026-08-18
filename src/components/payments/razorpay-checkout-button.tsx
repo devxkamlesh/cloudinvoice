@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { IndianRupee, Lock } from 'lucide-react';
+import { IndianRupee, LoaderCircle, LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useScript } from '@/hooks/use-script';
 
@@ -144,7 +144,8 @@ export function RazorpayCheckoutButton({ token }: RazorpayCheckoutButtonProps) {
               // Redirect to success page
               window.location.href = `/pay/${token}?payment=success`;
             } else {
-              setError('Payment verification failed. Please contact support.');
+              const result = await verifyResponse.json().catch(() => null) as { error?: string } | null;
+              setError(result?.error ?? 'Payment verification failed. Please contact support.');
             }
           } catch {
             setError('Payment verification failed. Please contact support.');
@@ -168,7 +169,7 @@ export function RazorpayCheckoutButton({ token }: RazorpayCheckoutButtonProps) {
   return (
     <>
       <Button
-        className="w-full h-12 text-base font-semibold shadow-md hover:shadow-lg transition-all"
+        className="h-12 w-full text-sm font-semibold"
         size="lg"
         onClick={() => checkout.mutate()}
         disabled={checkout.isPending || !razorpayLoaded}
@@ -176,19 +177,19 @@ export function RazorpayCheckoutButton({ token }: RazorpayCheckoutButtonProps) {
       >
         {checkout.isPending ? (
           <>
-            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            Opening Payment Gateway...
+            <LoaderCircle className="size-4 animate-spin" />
+            Opening Razorpay...
           </>
         ) : !razorpayLoaded ? (
           <>
-            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            Loading...
+            <LoaderCircle className="size-4 animate-spin" />
+            Loading checkout...
           </>
         ) : (
           <>
-            <Lock className="size-4 mr-2" />
-            Pay with UPI / Card / NetBanking
-            <IndianRupee className="size-4 ml-2" />
+            <LockKeyhole className="size-4" />
+            Continue to Razorpay
+            <IndianRupee className="size-4" />
           </>
         )}
       </Button>

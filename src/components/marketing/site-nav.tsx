@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -115,14 +116,16 @@ export function SiteNav() {
         </div>
       </div>
 
-      {open && (
-        <>
+      <AnimatePresence initial={false}>
+        {open && (
+        <motion.div key="mobile-menu-layer" className="lg:hidden">
           {/* Backdrop. Click to dismiss; the button above is the labelled control. */}
-          <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 top-16 z-40 bg-black/35 lg:hidden" />
-          <div
+          <motion.div aria-hidden="true" onClick={() => setOpen(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.16, ease: "easeOut" }} className="fixed inset-0 top-16 z-40 bg-black/35" />
+          <motion.div
             id="site-mobile-menu"
             ref={sheetRef}
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-b bg-card shadow-[0_30px_80px_rgba(0,0,0,.18)] lg:hidden"
+            initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2, ease: "easeOut" }}
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100vh-4rem)] overflow-y-auto border-b bg-card shadow-[0_30px_80px_rgba(0,0,0,.18)]"
           >
             <nav aria-label="Site" className="mx-auto max-w-7xl px-5 py-5">
               <p className="px-1 text-[10px] font-bold uppercase tracking-[.16em] text-muted-foreground">Product</p>
@@ -170,9 +173,10 @@ export function SiteNav() {
                 </Link>
               </div>
             </nav>
-          </div>
-        </>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
   );
 }
