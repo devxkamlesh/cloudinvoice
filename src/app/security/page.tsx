@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CreditCard, Database, KeyRound, LockKeyhole, ServerCog, ShieldCheck, UsersRound } from "lucide-react";
+import { BadgeCheck, CreditCard, Database, KeyRound, LockKeyhole, ServerCog, ShieldCheck, UsersRound } from "lucide-react";
 import { InlineLink, JsonLd, Notice, PageCta, Panel, Section, TrustPage, breadcrumbSchema, marketingMetadata } from "@/components/marketing/owned-trust-pages/shared";
 
 export const metadata: Metadata = marketingMetadata({
@@ -52,6 +52,19 @@ export default function SecurityPage() {
     crumbs={crumbs}
   >
     <JsonLd data={breadcrumbSchema([{ label: "Home", href: "/" }, { label: "Security", href: "/security" }])} />
+    <Section className="border-y border-white/[.08] bg-white/[.02]" eyebrow="Business verification" title="Registered in India. Built for accountable business.">
+      <Panel className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:p-8">
+        <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-emerald-300/20 bg-emerald-300/[.09] text-emerald-200">
+          <BadgeCheck className="size-6" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[.15em] text-emerald-200">MSME Registered</p>
+          <h3 className="mt-2 text-lg font-semibold text-white">Ministry of MSME, Government of India</h3>
+          <p className="mt-2 text-sm leading-7 text-zinc-400">Udyam Registration No: <span className="font-medium text-zinc-200">UDYAM-RJ-17-0675217</span></p>
+        </div>
+      </Panel>
+    </Section>
+
     <Section className="border-y border-white/[.08] bg-white/[.02]" eyebrow="Current safeguards" title="Designed around the data that matters most">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {safeguards.map(({ icon: Icon, title, text }) => <Panel key={title} className="p-6">
@@ -68,7 +81,7 @@ export default function SecurityPage() {
           <h3 className="text-xl font-semibold text-white">Deployment choices are part of the security model.</h3>
           <div className="mt-6 space-y-5 text-sm leading-7 text-zinc-400">
             <p>CloudInvoice’s deployment documentation is designed for a private PostgreSQL database, secrets held outside source control, container-based releases, and narrowly scoped network access. Those controls must be configured by the production operator; they are not enabled merely by cloning this repository.</p>
-            <p>For a low-cost AWS deployment, the recommended baseline is an EC2 application host behind HTTPS, an RDS PostgreSQL instance that is not publicly reachable, a private S3 bucket for uploaded assets, and security groups limited to expected application traffic.</p>
+            <p>The production baseline keeps the application behind HTTPS, limits database access to the application network, stores uploaded assets privately, and exposes only the traffic required to operate the service.</p>
             <p>Read the <InlineLink href="/privacy">Privacy Policy</InlineLink> for how product data is handled, and review the deployment runbook before connecting a production database or payment account.</p>
           </div>
         </Panel>

@@ -2,9 +2,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
+import { rateLimit } from "@/lib/rate-limit";
+
+const limiter = rateLimit({ prefix: "signup", limit: 5, windowSeconds: 60 });
 
 export async function POST(request: Request) {
   try {
+    // Rate limit by IP (Cloudflare → nginx forwards the real IP in X-Real-IP)
+    const ip =
+      request.headers.get("x-real-ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      "unknown";
+    const { ok } = await limiter.check(ip);
+    if (!ok) {
+      return NextResponse.json(
+        { error: "Too many attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, password, name } = body;
 
@@ -21,8 +37,10 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
+      // Generic error to prevent email enumeration — an attacker cannot tell
+      // whether the email is taken or the request simply failed.
       return NextResponse.json(
-        { error: "User already exists" },
+        { error: "Unable to create account. Please try again or use a different email." },
         { status: 400 }
       );
     }

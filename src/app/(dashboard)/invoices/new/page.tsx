@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { InvoiceForm } from "@/components/invoices/invoice-form";
-import { AIInvoiceGeneratorWrapper } from "@/components/invoices/ai-invoice-generator-wrapper";
 import { prisma } from "@/lib/prisma";
 import { requireOrganization } from "@/lib/organization";
 
@@ -30,11 +29,7 @@ export default async function NewInvoicePage() {
         </h1>
       </div>
 
-      <div className="mt-7 space-y-6">
-        {/* AI Invoice Generator */}
-        <AIInvoiceGeneratorWrapper />
-
-        {/* Traditional Form */}
+      <div className="mt-7">
         <InvoiceForm clients={clients} defaultTaxMode="INTRA_STATE" />
       </div>
     </main>

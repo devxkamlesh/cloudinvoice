@@ -64,7 +64,16 @@ export function verifyRazorpaySignature({
     .update(`${orderId}|${paymentId}`)
     .digest('hex');
 
-  return generatedSignature === signature;
+  // Constant-time comparison to prevent timing side-channel attacks.
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(generatedSignature, 'hex'),
+      Buffer.from(signature, 'hex')
+    );
+  } catch {
+    // If the signature is not valid hex or lengths differ, Buffer.from throws.
+    return false;
+  }
 }
 
 // Get payment details

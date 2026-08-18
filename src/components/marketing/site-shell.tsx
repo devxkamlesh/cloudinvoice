@@ -41,9 +41,14 @@ export function MarketingShell({ children, compact = false }: { children: React.
             </ul>
           </div>)}
         </div>
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/[.08] pt-6 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} CloudInvoice. Built for work that matters.</p>
-          <p>Independent by design. Secure by default.</p>
+        <div className="mt-14 border-t border-white/[.08] pt-6 text-xs text-zinc-500">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {new Date().getFullYear()} CloudInvoice. Built for work that matters.</p>
+            <p>Independent by design. Secure by default.</p>
+          </div>
+          <p className="mt-3 max-w-4xl leading-5 text-zinc-600">
+            CloudInvoice is a registered MSME under the Ministry of MSME, Government of India — Udyam Registration No: UDYAM-RJ-17-0675217
+          </p>
         </div>
       </div>
     </footer>}

@@ -2,9 +2,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { nanoid } from "nanoid";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit";
+
+const limiter = rateLimit({ prefix: "forgot-password", limit: 3, windowSeconds: 60 });
 
 export async function POST(request: Request) {
   try {
+    // Rate limit by IP
+    const ip =
+      request.headers.get("x-real-ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      "unknown";
+    const { ok } = await limiter.check(ip);
+    if (!ok) {
+      return NextResponse.json(
+        { error: "Too many attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email } = body;
 

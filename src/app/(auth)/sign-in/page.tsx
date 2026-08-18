@@ -90,7 +90,7 @@ export default function SignInPage() {
 
       router.push("/dashboard");
       router.refresh();
-    } catch (error) {
+    } catch {
       setBusy(false);
       setError("Something went wrong. Please try again.");
     }

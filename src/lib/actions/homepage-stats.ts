@@ -45,9 +45,9 @@ export async function getHomepageStats(): Promise<HomepageStats> {
         ? ((successfulPayments / totalPayments) * 100).toFixed(0)
         : "0";
 
-    // Format revenue - show 0 if no data (value is stored in paise/cents, divide by 100)
-    const revenueInPaise = allIssuedInvoices._sum.total ? Number(allIssuedInvoices._sum.total) : 0;
-    const revenueFormatted = formatIndianCurrency(revenueInPaise);
+    // Format revenue - show 0 if no data
+    const totalRupees = allIssuedInvoices._sum.total ? Number(allIssuedInvoices._sum.total) : 0;
+    const revenueFormatted = formatIndianCurrency(totalRupees);
 
     return {
       totalRevenue: revenueFormatted,
@@ -69,13 +69,10 @@ export async function getHomepageStats(): Promise<HomepageStats> {
 /**
  * Format number to Indian currency format (Lakhs and Crores)
  * Shows actual values only - returns ₹0 if amount is 0
- * Amount is expected in paise (smallest currency unit)
+ * Amount is expected in rupees (matching Prisma Decimal(12,2) storage)
  */
-function formatIndianCurrency(amountInPaise: number): string {
-  if (amountInPaise === 0) return "₹0";
-  
-  // Convert paise to rupees (100 paise = 1 rupee)
-  const rupees = amountInPaise / 100;
+function formatIndianCurrency(rupees: number): string {
+  if (rupees === 0) return "₹0";
 
   if (rupees >= 10000000) {
     // 1 Crore = 10,000,000
