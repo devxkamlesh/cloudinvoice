@@ -13,7 +13,8 @@ import {
   UsersRound,
 } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/site-shell";
-import { marketingFaqs } from "@/lib/marketing-content";
+import { marketingFaqs, team } from "@/lib/marketing-content";
+import { TeamGrid } from "@/components/marketing/team-grid";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -190,6 +191,17 @@ export default function Home() {
                 <div><p className="marketing-kicker">MSME registered</p><h3 className="mt-3 text-2xl font-semibold tracking-[-.035em]">Ministry of MSME, Government of India</h3><p className="mt-4 text-sm leading-7 text-muted-foreground">Udyam Registration Number</p><p className="mt-1 font-mono text-base font-semibold">UDYAM-RJ-17-0675217</p></div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section aria-label="Team" className="marketing-section">
+          <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl">
+              <p className="marketing-kicker">The people behind CloudInvoice</p>
+              <h2 className="marketing-title mt-4">A small team building billing you can trust.</h2>
+              <p className="marketing-copy mt-6">CloudInvoice is built by people who care about getting invoicing, GST, and payments right for independent Indian businesses.</p>
+            </div>
+            <TeamGrid members={team} />
           </div>
         </section>
 

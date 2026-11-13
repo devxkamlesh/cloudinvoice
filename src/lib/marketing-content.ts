@@ -25,3 +25,57 @@ export const marketingFaqs = [
   { question: "Does CloudInvoice integrate with Razorpay, Slack, or Zapier?", answer: "Stripe, Razorpay, and UPI payment pathways are implemented and become available when the required operator and workspace configuration is present. Slack and Zapier are product directions, not active integrations." },
   { question: "How do I start?", answer: "Create an account, name your workspace, add your first client, and create an invoice draft. You can configure business details, GSTIN, invoice prefix, and UPI ID from settings as you go." }
 ] as const;
+
+// The team shown on the home page, ordered by the supplied groups.
+// Add a photo path under /public when an approved headshot is available.
+export type TeamMember = {
+  name: string;
+  role: string;
+  bio?: string;
+  photo?: string;
+  initials: string;
+  linkedin?: string;
+};
+
+export const team: TeamMember[] = [
+  {
+    name: "Kamlesh Kumar",
+    role: "CEO",
+    bio: "As CloudInvoice's CEO and account owner, Kamlesh guides the company's direction and leadership.",
+    initials: "KK",
+    linkedin: "https://www.linkedin.com/in/devxkamlesh/",
+  },
+  {
+    name: "Kishor Kumar",
+    role: "Product Manager",
+    bio: "Kishor works on product planning and priorities, helping shape the CloudInvoice experience.",
+    initials: "KK",
+    linkedin: "https://www.linkedin.com/in/kishor-kumar-ab845a44a",
+  },
+  {
+    name: "Kamlesh Kumar",
+    role: "Cyber Security Expert",
+    bio: "Kamlesh focuses on cybersecurity, helping identify risks and strengthen protections for CloudInvoice and its users.",
+    initials: "KK",
+  },
+  {
+    name: "Ashok Kumar",
+    role: "Senior Software Developer",
+    bio: "Ashok contributes to building and maintaining the software behind CloudInvoice.",
+    initials: "AK",
+  },
+  {
+    name: "Ramesh Kumar",
+    role: "Senior Software Developer",
+    bio: "Ramesh develops and improves CloudInvoice software, contributing to reliable product features.",
+    initials: "RK",
+    linkedin: "https://www.linkedin.com/in/ramesh-kumar-37235944a",
+  },
+  {
+    name: "Kavita Kumari",
+    role: "HR (Hiring Manager)",
+    bio: "Kavita supports HR and hiring, helping CloudInvoice recruit and welcome people to the team.",
+    initials: "KK",
+    linkedin: "https://www.linkedin.com/in/kavita-kumari-13b81044a",
+  },
+];
