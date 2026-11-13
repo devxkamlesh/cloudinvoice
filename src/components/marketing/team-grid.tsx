@@ -23,15 +23,19 @@ function Avatar({ member }: { member: TeamMember }) {
     );
   }
 
+  const isKavita = member.name === "Kavita Kumari";
+
   return (
-    <Image
-      src={member.photo}
-      alt={member.name}
-      width={64}
-      height={64}
-      className="size-16 shrink-0 rounded-full object-cover"
-      onError={() => setFailed(true)}
-    />
+    <div className="relative size-16 shrink-0 overflow-hidden rounded-full">
+      <Image
+        src={member.photo}
+        alt={member.name}
+        width={64}
+        height={64}
+        className={isKavita ? "absolute -left-[27px] -top-[9px] size-24 max-w-none object-cover" : "size-full object-cover"}
+        onError={() => setFailed(true)}
+      />
+    </div>
   );
 }
 
