@@ -43,6 +43,7 @@ export const team: TeamMember[] = [
     role: "CEO",
     bio: "As CloudInvoice's CEO and account owner, Kamlesh guides the company's direction and leadership.",
     initials: "KK",
+    photo: "/team/kamlesh-ceo.jpg",
     linkedin: "https://www.linkedin.com/in/devxkamlesh/",
   },
   {
@@ -50,6 +51,7 @@ export const team: TeamMember[] = [
     role: "Product Manager",
     bio: "Kishor works on product planning and priorities, helping shape the CloudInvoice experience.",
     initials: "KK",
+    photo: "/team/kishor-kumar.jpg",
     linkedin: "https://www.linkedin.com/in/kishor-kumar-ab845a44a",
   },
   {

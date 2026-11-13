@@ -22,10 +22,10 @@
 ::view-transition-old(root) { z-index: 1; }
 ::view-transition-new(root) { z-index: 999; }
 
-/* Shared product palette. Dark mode uses matte charcoal surfaces rather than tinted
-  navy panels, with one restrained blue accent for active controls and links. */
-:root { --background: #ffffff; --foreground: #33374a; --muted: #f4f6ff; --muted-foreground: #626982; --card: #ffffff; --border: #dde1f5; --primary: #0000f2; }
-.dark { --background: #111210; --foreground: #ecece7; --muted: #1d1e1b; --muted-foreground: #9a9b94; --card: #171815; --border: #2d2f2a; --primary: #91a7ff; }
+/* Shared product palette. Keep the brand blue intact and use neutral slate
+  surfaces to give both themes clearer contrast and separation. */
+:root { --background: #f7f8fc; --foreground: #202536; --muted: #eef1f7; --muted-foreground: #626b7e; --card: #ffffff; --border: #dfe4ee; --primary: #0000f2; }
+.dark { --background: #10131b; --foreground: #eef1f8; --muted: #1a1f2b; --muted-foreground: #a4adbf; --card: #151a24; --border: #2b3342; --primary: #91a7ff; }
 * { border-color: var(--border); }
 body { background: var(--background); color: var(--foreground); min-height: 100vh; }
 ::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }
@@ -129,7 +129,9 @@ body { background: var(--background); color: var(--foreground); min-height: 100v
 .marketing-card { border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 2px rgb(20 20 16 / .03), 0 16px 40px -34px rgb(20 20 16 / .35); transition: transform .18s ease-out, border-color .18s ease-out, box-shadow .18s ease-out; }
 .marketing-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--primary) 38%, var(--border)); box-shadow: 0 18px 42px -32px color-mix(in srgb, var(--primary) 48%, transparent); }
 .dark .marketing-card { box-shadow: 0 1px 0 rgb(255 255 255 / .025) inset, 0 14px 36px -32px rgb(0 0 0 / .9); }
-.dark .marketing-card:hover { border-color: #454944; box-shadow: 0 18px 44px -36px rgb(0 0 0 / 1); }
+.dark .marketing-card:hover { border-color: #3a4150; box-shadow: 0 18px 44px -36px rgb(0 0 0 / 1); }
+.marketing-footer { background-color: var(--muted); }
+.dark .marketing-footer { background-color: var(--card); }
 .marketing-divider { border-color: var(--border); }
 .marketing-section { padding-block: clamp(4.5rem, 9vw, 8rem); }
 .marketing-kicker { color: var(--primary); font-family: var(--font-geist-mono); font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
