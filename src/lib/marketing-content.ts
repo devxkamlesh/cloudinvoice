@@ -71,6 +71,7 @@ export const team: TeamMember[] = [
     role: "Senior Software Developer",
     bio: "Ramesh develops and improves CloudInvoice software, contributing to reliable product features.",
     initials: "RK",
+    photo: "/team/ramesh-kumar.jpg",
     linkedin: "https://www.linkedin.com/in/ramesh-kumar-37235944a",
   },
   {
@@ -78,6 +79,7 @@ export const team: TeamMember[] = [
     role: "HR (Hiring Manager)",
     bio: "Kavita supports HR and hiring, helping CloudInvoice recruit and welcome people to the team.",
     initials: "KK",
+    photo: "/team/kavita-kumari.jpg",
     linkedin: "https://www.linkedin.com/in/kavita-kumari-13b81044a",
   },
 ];
